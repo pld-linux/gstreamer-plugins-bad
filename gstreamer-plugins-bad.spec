@@ -4,30 +4,39 @@
 #
 # Conditional build:
 %bcond_without	directfb	# don't build directfb videosink plugin
+%bcond_without	dts		# don't build DTS plugin
 %bcond_without	faad		# don't build faad plugin
 %bcond_without	gsm		# don't build gsm plugin
 %bcond_without	mms		# don't build mms plugin
 %bcond_without	musepack	# don't build musepack plugin
+%bcond_without	neon		# don't build neonhttpsrc plugin
 %bcond_without	sdl		# don't build sdl plugin
+%bcond_without	swfdec		# don't build swfdec plugin
 %bcond_without	wavpack		# don't build wavpack support
+%bcond_without	xvid		# don't build XviD support
+%bcond_with	divx4linux	# build with divx4linux support
 #
 %define		gstname		gst-plugins-bad
 %define		gst_major_ver	0.10
-%define		gst_req_ver	0.10.0
+%define		gst_req_ver	0.10.3
 #
 Summary:	Bad GStreamer Streaming-media framework plugins
 Summary(pl):	Z³e wtyczki do ¶rodowiska obróbki strumieni GStreamer
 Name:		gstreamer-plugins-bad
-Version:	0.10.0
+Version:	0.10.1
 Release:	1
 License:	LGPL
 Group:		Libraries
 Source0:	http://gstreamer.freedesktop.org/src/gst-plugins-bad/%{gstname}-%{version}.tar.bz2
-# Source0-md5:	3aa64cff481b0179023d71d9be5df7d5
+# Source0-md5:	398729b82b911eebb14156c2fa02525b
 Patch0:		%{name}-bashish.patch
+Patch1:		%{name}-opengl.patch
+Patch2:		%{name}-libdts.patch
+Patch3:		%{name}-divx4linux.patch
 URL:		http://gstreamer.freedesktop.org/
 BuildRequires:	autoconf >= 2.52
 BuildRequires:	automake >= 1.6
+BuildRequires:	bzip2-devel
 BuildRequires:	glib2-devel >= 1:2.6.0
 BuildRequires:	gstreamer-devel >= %{gst_req_ver}
 BuildRequires:	gstreamer-plugins-base-devel >= %{gst_req_ver}
@@ -40,13 +49,19 @@ BuildRequires:	rpmbuild(macros) >= 1.98
 ## plugins
 ##
 %{?with_directfb:BuildRequires:	DirectFB-devel >= 1:0.9.24}
+BuildRequires:	OpenGL-devel
 %{?with_sdl:BuildRequires:	SDL-devel >= 0.11}
+%{?with_divx4linux:BuildRequires:	divx4linux-devel >= 1:5.05.20030428}
 BuildRequires:	faac-devel
 %{?with_faad:BuildRequires:	faad2-devel >= 2.0-2}
+%{?with_dts:BuildRequires:	libdts-devel}
 %{?with_gsm:BuildRequires:	libgsm-devel}
 %{?with_mms:BuildRequires:	libmms-devel >= 0.1}
 %{?with_musepack:BuildRequires:	libmpcdec-devel >= 1.2}
+%{?with_neon:BuildRequires:	neon-devel = 0.25.5}
+%{?with_swfdec:BuildRequires:	swfdec-devel >= 0.3.6}
 %{?with_wavpack:BuildRequires:	wavpack-devel >= 4.2}
+%{?with_xvid:BuildRequires:	xvid-devel >= 1.0.0}
 Requires:	gstreamer >= %{gst_req_ver}
 Obsoletes:	gstreamer-quicktime
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -98,6 +113,30 @@ Bad GStreamer audio effects plugins.
 %description -n gstreamer-audio-effects-bad -l pl
 Z³e wtyczki efektów d¼wiêkowych do GStreamera.
 
+%package -n gstreamer-divx
+Summary:	GStreamer divx plugin
+Summary(pl):	Wtyczka divx do GStreamera
+Group:		Libraries
+Requires:	gstreamer-plugins-base >= %{gst_req_ver}
+
+%description -n gstreamer-divx
+GStreamer divx plugin.
+
+%description -n gstreamer-divx -l pl
+Wtyczka divx do GStreamera.
+
+%package -n gstreamer-dts
+Summary:	GStreamer DTS plugin
+Summary(pl):	Wtyczka DTS do GStreamera
+Group:		Libraries
+Requires:	gstreamer-plugins-base >= %{gst_req_ver}
+
+%description -n gstreamer-dts
+Plugin for DTS Coherent Acoustics support.
+
+%description -n gstreamer-dts -l pl
+Wtyczka do GStreamera obs³uguj±ca DTS Coherent Acoustics.
+
 %package -n gstreamer-gsm
 Summary:	GStreamer plugin for GSM lossy audio format
 Summary(pl):	Wtyczka do GStreamera obs³uguj±ca stratny format d¼wiêku GSM
@@ -110,6 +149,19 @@ Output plugin for GStreamer to convert to GSM lossy audio format.
 %description -n gstreamer-gsm -l pl
 Wtyczka wyj¶cia d¼wiêku GSteamera konwertuj±ca do stratnego formatu
 GSM.
+
+%package -n gstreamer-imagesink-gl
+Summary:	GStreamer plugin for outputing to OpenGL
+Summary(pl):	Wtyczka wyj¶cia OpenGL do GStreamera
+Group:		Libraries
+Requires:	gstreamer >= %{gst_req_ver}
+Provides:	gstreamer-imagesink = %{version}
+
+%description -n gstreamer-imagesink-gl
+GStreamer plugin for outputing to OpenGL.
+
+%description -n gstreamer-imagesink-gl -l pl
+Wtyczka wyj¶cia OpenGL do GStreamera.
 
 %package -n gstreamer-mms
 Summary:	GStreamer mms plugin
@@ -134,6 +186,31 @@ GStreamer musepack plugin.
 
 %description -n gstreamer-musepack -l pl
 Wtyczka musepack do GStreamera.
+
+%package -n gstreamer-neon
+Summary:	GStreamer neon HTTP source plugin
+Summary(pl):	Wtyczka ¼ród³a HTTP neon do GStreamera
+Group:		Libraries
+Requires:	gstreamer >= %{gst_req_ver}
+
+%description -n gstreamer-neon
+GStreamer neon HTTP source plugin.
+
+%description -n gstreamer-neon -l pl
+Wtyczka ¼ród³a HTTP neon do GStreamera.
+
+%package -n gstreamer-swfdec
+Summary:	GStreamer Flash redering plugin
+Summary(pl):	Wtyczka renderuj±ca animacje flash dla GStreamera
+Group:		Libraries
+Requires:	gstreamer-plugins-base >= %{gst_req_ver}
+Requires:	swfdec >= 0.3.6
+
+%description -n gstreamer-swfdec
+Plugin for rendering Flash animations using swfdec library.
+
+%description -n gstreamer-swfdec -l pl
+Wtyczka renderuj±ca animacje flash w oparciu o bibliotekê swfdec.
 
 %package -n gstreamer-videosink-sdl
 Summary:	GStreamer plugin for outputing to SDL
@@ -176,9 +253,23 @@ Plugin for lossless Wavpack audio format.
 %description -n gstreamer-wavpack -l pl
 Wtyczka obs³uguj±ca bezstratny format d¼wiêku Wavpack.
 
+%package -n gstreamer-xvid
+Summary:	GStreamer xvid decoder plugin
+Summary(pl):	Wtyczka do GStreamera dekoduj±ca przy u¿yciu biblioteki xvid
+Group:		Libraries
+Requires:	gstreamer-plugins-base >= %{gst_req_ver}
+
+%description -n gstreamer-xvid
+GStreamer xvid decoder plugin.
+
+%description -n gstreamer-xvid -l pl
+Wtyczka do GStreamera dekoduj±ca przy u¿yciu biblioteki xvid.
+
 %prep
 %setup -q -n %{gstname}-%{version}
 %patch0 -p1
+%patch1 -p1
+%patch2 -p1
 
 %build
 %{__libtoolize}
@@ -187,13 +278,18 @@ Wtyczka obs³uguj±ca bezstratny format d¼wiêku Wavpack.
 %{__autoheader}
 %{__automake}
 %configure \
+	%{!?with_divx4linux:--disable-divx} \
+	%{!?with_dts:--disable-dts} \
 	%{!?with_faad:--disable-faad} \
 	%{!?with_gsm:--disable-gsm} \
 	%{!?with_mms:--disable-libmms} \
 	%{!?with_musepack:--disable-musepack} \
+	%{!?with_neon:--disable-neon} \
 	%{!?with_sdl:--disable-sdl} \
 	%{!?with_sdl:--disable-sdltest} \
+	%{!?with_swfdec:--disable-swfdec} \
 	%{!?with_wavpack:--disable-wavpack} \
+	%{!?with_xvid:--disable-xvid} \
 	--disable-static \
 	--enable-gtk-doc \
 	--with-html-dir=%{_gtkdocdir}
@@ -215,6 +311,9 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(644,root,root,755)
 %doc AUTHORS ChangeLog NEWS README RELEASE
+%attr(755,root,root) %{gstlibdir}/libgstbz2.so
+%attr(755,root,root) %{gstlibdir}/libgstcdxaparse.so
+%attr(755,root,root) %{gstlibdir}/libgstfreeze.so
 %attr(755,root,root) %{gstlibdir}/libgstqtdemux.so
 %attr(755,root,root) %{gstlibdir}/libgsttta.so
 %{_gtkdocdir}/gst-plugins-bad-plugins-*
@@ -234,11 +333,28 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %attr(755,root,root) %{gstlibdir}/libgstspeed.so
 
+%if %{with divx4linux}
+%files -n gstreamer-divx
+%defattr(644,root,root,755)
+%attr(755,root,root) %{gstlibdir}/libgstdivxdec.so
+%attr(755,root,root) %{gstlibdir}/libgstdivxenc.so
+%endif
+
+%if %{with dts}
+%files -n gstreamer-dts
+%defattr(644,root,root,755)
+%attr(755,root,root) %{gstlibdir}/libgstdtsdec.so
+%endif
+
 %if %{with gsm}
 %files -n gstreamer-gsm
 %defattr(644,root,root,755)
 %attr(755,root,root) %{gstlibdir}/libgstgsm.so
 %endif
+
+%files -n gstreamer-imagesink-gl
+%defattr(644,root,root,755)
+%attr(755,root,root) %{gstlibdir}/libgstglimagesink.so
 
 %if %{with mms}
 %files -n gstreamer-mms
@@ -246,10 +362,22 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{gstlibdir}/libgstmms.so
 %endif
 
+%if %{with neon}
+%files -n gstreamer-neon
+%defattr(644,root,root,755)
+%attr(755,root,root) %{gstlibdir}/libgstneonhttpsrc.so
+%endif
+
 %if %{with musepack}
 %files -n gstreamer-musepack
 %defattr(644,root,root,755)
 %attr(755,root,root) %{gstlibdir}/libgstmusepack.so
+%endif
+
+%if %{with swfdec}
+%files -n gstreamer-swfdec
+%defattr(644,root,root,755)
+%attr(755,root,root) %{gstlibdir}/libgstswfdec.so
 %endif
 
 %if %{with sdl}
@@ -268,4 +396,10 @@ rm -rf $RPM_BUILD_ROOT
 %files -n gstreamer-wavpack
 %defattr(644,root,root,755)
 %attr(755,root,root) %{gstlibdir}/libgstwavpack.so
+%endif
+
+%if %{with xvid}
+%files -n gstreamer-xvid
+%defattr(644,root,root,755)
+%attr(755,root,root) %{gstlibdir}/libgstxvid.so
 %endif
