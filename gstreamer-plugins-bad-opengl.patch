@@ -1,0 +1,41 @@
+--- gst-plugins-bad-0.10.1/configure.ac.orig	2006-02-20 19:52:59.000000000 +0100
++++ gst-plugins-bad-0.10.1/configure.ac	2006-02-25 00:48:13.743310250 +0100
+@@ -395,7 +395,7 @@
+   AC_MSG_NOTICE([cannot find X11 development files])
+ else
+   dnl this is much more than we want
+-  X_LIBS="$X_LIBS $X_PRE_LIBS $X_EXTRA_LIBS"
++  X_LIBS="$X_LIBS $X_EXTRA_LIBS"
+   dnl AC_PATH_XTRA only defines the path needed to find the X libs,
+   dnl it does not add the libs; therefore we add them here
+   X_LIBS="$X_LIBS -lX11"
+@@ -557,7 +557,7 @@
+ dnl *** OpenGL ***
+ translit(dnm, m, l) AM_CONDITIONAL(USE_OPENGL, true)
+ GST_CHECK_FEATURE(OPENGL, [Open GL], glsink, [
+-  GST_CHECK_LIBHEADER(GL, GLU, glTexImage2D,,
++  GST_CHECK_LIBHEADER(GL, GL, glTexImage2D,,
+                       GL/gl.h, HAVE_OPENGL="yes", HAVE_OPENGL="no")
+ ])
+ 
+--- gst-plugins-bad-0.10.1/sys/glsink/Makefile.am.orig	2006-01-30 16:47:47.000000000 +0100
++++ gst-plugins-bad-0.10.1/sys/glsink/Makefile.am	2006-02-24 23:56:30.889394000 +0100
+@@ -4,7 +4,7 @@
+ libgstglimagesink_la_SOURCES =  glimagesink.c 
+ libgstglimagesink_la_CFLAGS = $(GST_CFLAGS) $(X_CFLAGS) $(GST_BASE_CFLAGS) \
+ 	$(GST_PLUGINS_BASE_CFLAGS)
+-libgstglimagesink_la_LIBADD = $(X_LIBS) $(XSHM_LIBS) -lGL -lGLU \
++libgstglimagesink_la_LIBADD = $(X_LIBS) $(XSHM_LIBS) -lGL \
+ 	$(GST_BASE_LIBS) -lgstvideo-$(GST_MAJORMINOR) \
+ 	$(GST_PLUGINS_BASE_LIBS) -lgstinterfaces-$(GST_MAJORMINOR)
+ libgstglimagesink_la_LDFLAGS = $(GST_PLUGIN_LDFLAGS)
+--- gst-plugins-bad-0.10.1/sys/glsink/glimagesink.c.orig	2006-02-14 12:36:30.000000000 +0100
++++ gst-plugins-bad-0.10.1/sys/glsink/glimagesink.c	2006-02-24 23:55:17.184787750 +0100
+@@ -32,7 +32,6 @@
+ 
+ #include <GL/glx.h>
+ #include <GL/gl.h>
+-#include <GL/glu.h>
+ 
+ GST_DEBUG_CATEGORY (gst_debug_glimage_sink);
+ #define GST_CAT_DEFAULT gst_debug_glimage_sink
