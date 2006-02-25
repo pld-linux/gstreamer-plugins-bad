@@ -1,0 +1,11 @@
+--- gst-plugins-bad-0.10.1/configure.ac.orig	2006-02-25 00:48:13.743310000 +0100
++++ gst-plugins-bad-0.10.1/configure.ac	2006-02-25 00:57:12.156959000 +0100
+@@ -413,7 +413,7 @@
+ dnl *** DTS ***
+ translit(dnm, m, l) AM_CONDITIONAL(USE_DTS, true)
+ GST_CHECK_FEATURE(DTS, [dts library], dtsdec, [
+-  GST_CHECK_LIBHEADER(DTS, dts_pic, dts_init, -lm, dts.h, DTS_LIBS="-ldts_pic -lm")
++  GST_CHECK_LIBHEADER(DTS, dts, dts_init, -lm, dts.h, DTS_LIBS="-ldts -lm")
+   AC_SUBST(DTS_LIBS)
+ ])
+ 
