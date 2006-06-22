@@ -27,8 +27,8 @@ Summary:	Bad GStreamer Streaming-media framework plugins
 Summary(pl):	Z³e wtyczki do ¶rodowiska obróbki strumieni GStreamer
 Name:		gstreamer-plugins-bad
 Version:	0.10.3
-Release:	2
-License:	LGPL
+Release:	3
+License:	LPL
 Group:		Libraries
 Source0:	http://gstreamer.freedesktop.org/src/gst-plugins-bad/%{gstname}-%{version}.tar.bz2
 # Source0-md5:	8545a02c408976c5e9f0c2cf3c6a362e
@@ -36,6 +36,7 @@ Patch0:		%{name}-bashish.patch
 Patch1:		%{name}-libdts.patch
 Patch2:		%{name}-divx4linux.patch
 Patch3:		%{name}-soundtouch.patch
+Patch4:		%{name}-neon.patch
 URL:		http://gstreamer.freedesktop.org/
 BuildRequires:	autoconf >= 2.52
 BuildRequires:	automake >= 1.6
@@ -64,8 +65,7 @@ BuildRequires:	faac-devel
 BuildRequires:	libmusicbrainz-devel >= 2.1.0
 # for modplug and libSoundTouch
 BuildRequires:	libstdc++-devel
-%{?with_neon:BuildRequires:	neon-devel >= 0.25.5}
-%{?with_neon:BuildRequires:	neon-devel < 0.26}
+%{?with_neon:BuildRequires:	neon-devel >= 0.26}
 BuildRequires:	soundtouch-devel >= 1.3.1
 %{?with_swfdec:BuildRequires:	swfdec-devel >= 0.3.6}
 %{?with_wavpack:BuildRequires:	wavpack-devel >= 4.2}
@@ -305,6 +305,7 @@ Wtyczka do GStreamera dekoduj±ca przy u¿yciu biblioteki xvid.
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
+%patch4 -p1
 
 %build
 %{__libtoolize}
