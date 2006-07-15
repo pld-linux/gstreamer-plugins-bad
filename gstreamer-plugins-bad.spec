@@ -27,7 +27,7 @@ Summary:	Bad GStreamer Streaming-media framework plugins
 Summary(pl):	Z³e wtyczki do ¶rodowiska obróbki strumieni GStreamer
 Name:		gstreamer-plugins-bad
 Version:	0.10.3
-Release:	3
+Release:	4
 License:	LPL
 Group:		Libraries
 Source0:	http://gstreamer.freedesktop.org/src/gst-plugins-bad/%{gstname}-%{version}.tar.bz2
@@ -41,11 +41,11 @@ URL:		http://gstreamer.freedesktop.org/
 BuildRequires:	autoconf >= 2.52
 BuildRequires:	automake >= 1.6
 BuildRequires:	bzip2-devel
-BuildRequires:	glib2-devel >= 1:2.6.0
+BuildRequires:	glib2-devel >= 1:2.12.0
 BuildRequires:	gstreamer-devel >= %{gst_req_ver}
 BuildRequires:	gstreamer-plugins-base-devel >= %{gst_req_ver}
-BuildRequires:	gtk-doc >= 1.3
-BuildRequires:	liboil-devel >= 0.3.2
+BuildRequires:	gtk-doc >= 1.6
+BuildRequires:	liboil-devel >= 0.3.56
 BuildRequires:	libtool >= 1.4
 BuildRequires:	pkgconfig >= 1:0.9.0
 BuildRequires:	rpmbuild(macros) >= 1.98
@@ -313,6 +313,7 @@ Wtyczka do GStreamera dekoduj±ca przy u¿yciu biblioteki xvid.
 %{__autoconf}
 %{__autoheader}
 %{__automake}
+LDFLAGS="%{rpmldflags} -Wl,--as-needed"
 %configure \
 	%{!?with_divx4linux:--disable-divx} \
 	%{!?with_dts:--disable-dts} \
