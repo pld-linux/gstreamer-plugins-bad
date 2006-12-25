@@ -1,0 +1,11 @@
+--- gst-plugins-bad-0.10.4/configure.ac.orig	2006-12-25 01:56:17.252256000 +0100
++++ gst-plugins-bad-0.10.4/configure.ac	2006-12-25 02:56:35.158429278 +0100
+@@ -425,7 +425,7 @@
+ GST_CHECK_FEATURE(FAAD, [AAC decoder plug-in], faad, [
+   HAVE_FAAD="yes"
+   GST_CHECK_LIBHEADER(FAAD, faad, faacDecOpen, -lm, faad.h,
+-    FAAD_LIBS="-lfaad -lm", HAVE_FAAD="no")
++    FAAD_LIBS="-lfaad -lm", [GST_CHECK_LIBHEADER(FAAD, faad, NeAACDecOpen, -lm, faad.h, FAAD_LIBS="-lfaad -lm", [HAVE_FAAD="no"])])
+   if test $HAVE_FAAD = "yes"; then
+     AC_MSG_CHECKING([Checking for FAAD >= 2])
+     AC_TRY_RUN([
