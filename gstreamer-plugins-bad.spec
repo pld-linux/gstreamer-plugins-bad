@@ -3,8 +3,6 @@
 # - ivorbis (BR: tremor-devel, CVS versions only, http://www.xiph.org/vorbis/)
 # - theoradec (BR: libtheora-exp, http://people.xiph.org/~tterribe/doc/libtheora-exp/)
 # - system libmodplug?
-# - openspc (http://home.comcast.net/~brad.martin1/ or http://membres.lycos.fr/pixels/OpenSPC.html ???)
-# - mjpegtools (recheck with rel 0.2)
 #
 # Conditional build:
 %bcond_without	cdaudio		# don't build cdaudio plugin
@@ -14,11 +12,13 @@
 %bcond_without	gsm		# don't build gsm plugin
 %bcond_without	jack		# don't build JACK audio plugin
 %bcond_without	ladspa		# don't build ladspa plugin
+%bcond_without	mjpegtools	# don't build mpeg2enc plugin
 %bcond_without	mms		# don't build mms plugin
 %bcond_without	musepack	# don't build musepack plugin
 %bcond_without	neon		# don't build neonhttpsrc plugin
 %bcond_without	sdl		# don't build sdl plugin
 %bcond_without	swfdec		# don't build swfdec plugin
+%bcond_without	spc		# don't build spc plugin
 %bcond_without	wavpack		# don't build wavpack plugin
 %bcond_without	xvid		# don't build XviD plugin
 %bcond_with	amr		# build amrwb plugin
@@ -75,10 +75,11 @@ BuildRequires:	faac-devel
 %{?with_mms:BuildRequires:	libmms-devel >= 0.2}
 %{?with_musepack:BuildRequires:	libmpcdec-devel >= 1.2}
 BuildRequires:	libmusicbrainz-devel >= 2.1.0
+%{?with_spc:BuildRequires:	libopenspc-devel >= 0.3.99}
 # for modplug and libSoundTouch
 BuildRequires:	libstdc++-devel
-BuildRequires:	mjpegtools-devel >= 1.8.0
-BuildRequires:	mjpegtools-devel < 1.9.0
+%{?with_mjpegtools:BuildRequires:	mjpegtools-devel >= 1.8.0-0.2}
+%{?with_mjpegtools:BuildRequires:	mjpegtools-devel < 1.9.0}
 %{?with_neon:BuildRequires:	neon-devel >= 0.26}
 BuildRequires:	soundtouch-devel >= 1.3.1
 %{?with_swfdec:BuildRequires:	swfdec-devel >= 0.3.6}
@@ -252,6 +253,18 @@ Plugin which wraps LADSPA plugins for use by GStreamer applications.
 Wtyczka pozwalaj±ca na u¿ywanie wtyczek LADSPA przez aplikacje
 GStreamera.
 
+%package -n gstreamer-mjpegtools
+Summary:	GStreamer mpeg2enc plugin
+Summary(pl):    Wtyczka mpeg2enc do GStreamera
+Group:          Libraries
+Requires(post,postun):  %{_bindir}/gst-register-0.8
+
+%description -n gstreamer-mjpegtools
+GStreamer mpeg2enc plugin (based on mjpegtools libraries).
+
+%description -n gstreamer-mjpegtools -l pl
+Wtyczka mpeg2enc do GStreamera (oparta na bibliotekach mjpegtools).
+
 %package -n gstreamer-mms
 Summary:	GStreamer mms plugin
 Summary(pl):	Wtyczka mms do GStreamera
@@ -311,6 +324,20 @@ GStreamer soundtouch source plugin - audio pitch controller.
 
 %description -n gstreamer-soundtouch -l pl
 Wtyczka soundtouch do GStreamera, steruj±ca wysoko¶ci± d¼wiêku.
+
+%package -n gstreamer-spc
+Summary:	GStreamer SPC plugin
+Summary(pl):	Wtyczka SPC dla GStreamera
+Group:		Libraries
+Requires:	gstreamer-plugins-base >= %{gst_req_ver}
+Requires:	libopenspc >= 0.3.99
+
+%description -n gstreamer-spc
+GStreamer Plugin for playing SPC files using OpenSPC library.
+
+%description -n gstreamer-spc -l pl
+Wtyczka GStreamera odtwarzaj±ca pliki SPC przy u¿yciu biblioteki
+OpenSPC.
 
 %package -n gstreamer-swfdec
 Summary:	GStreamer Flash redering plugin
@@ -403,10 +430,12 @@ Wtyczka do GStreamera dekoduj±ca przy u¿yciu biblioteki xvid.
 	%{!?with_jack:--disable-jack} \
 	%{!?with_ladspa:--disable-ladspa} \
 	%{!?with_mms:--disable-libmms} \
+	%{!?with_mjpegtools:--disable-mpeg2enc} \
 	%{!?with_musepack:--disable-musepack} \
 	%{!?with_neon:--disable-neon} \
 	%{!?with_sdl:--disable-sdl} \
 	%{!?with_sdl:--disable-sdltest} \
+	%{!?with_spc:--disable-spc} \
 	%{!?with_swfdec:--disable-swfdec} \
 	%{!?with_wavpack:--disable-wavpack} \
 	%{!?with_xvid:--disable-xvid} \
@@ -521,6 +550,12 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{gstlibdir}/libgstladspa.so
 %endif
 
+%if %{with mjpegtools}
+%files -n gstreamer-mjpegtools
+%defattr(644,root,root,755)
+%attr(755,root,root) %{gstlibdir}/libgstmpeg2enc.so
+%endif
+
 %if %{with mms}
 %files -n gstreamer-mms
 %defattr(644,root,root,755)
@@ -546,6 +581,12 @@ rm -rf $RPM_BUILD_ROOT
 %files -n gstreamer-soundtouch
 %defattr(644,root,root,755)
 %attr(755,root,root) %{gstlibdir}/libgstpitch.so
+
+%if %{with spc}
+%files -n gstreamer-spc
+%defattr(644,root,root,755)
+%attr(755,root,root) %{gstlibdir}/libgstspc.so
+%endif
 
 %if %{with swfdec}
 %files -n gstreamer-swfdec
