@@ -155,6 +155,7 @@ Summary:	GStreamer ALSA plugin for S/PDIF output
 Summary(pl):	Wtyczka ALSA GStreamera do wyj¶cia S/PDIF
 Group:		Libraries
 Requires:	gstreamer-plugins-base >= %{gst_req_ver}
+Provides:	gstreamer-audiosink = %{version}
 
 %description -n gstreamer-audiosink-alsaspdif
 GStreamer ALSA plugin for S/PDIF output.
