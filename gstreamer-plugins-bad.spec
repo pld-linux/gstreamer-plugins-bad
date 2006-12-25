@@ -1,51 +1,57 @@
 # TODO:
 # new plugins:
 # - ivorbis (BR: tremor-devel, CVS versions only, http://www.xiph.org/vorbis/)
-# - amrwb (needs external code in tree; but maybe use shared lib?)
 # - theoradec (BR: libtheora-exp, http://people.xiph.org/~tterribe/doc/libtheora-exp/)
 # - system libmodplug?
+# - openspc (http://home.comcast.net/~brad.martin1/ or http://membres.lycos.fr/pixels/OpenSPC.html ???)
+# - mjpegtools (recheck with rel 0.2)
 #
 # Conditional build:
+%bcond_without	cdaudio		# don't build cdaudio plugin
 %bcond_without	directfb	# don't build directfb videosink plugin
 %bcond_without	dts		# don't build DTS plugin
 %bcond_without	faad		# don't build faad plugin
 %bcond_without	gsm		# don't build gsm plugin
+%bcond_without	jack		# don't build JACK audio plugin
+%bcond_without	ladspa		# don't build ladspa plugin
 %bcond_without	mms		# don't build mms plugin
 %bcond_without	musepack	# don't build musepack plugin
 %bcond_without	neon		# don't build neonhttpsrc plugin
 %bcond_without	sdl		# don't build sdl plugin
 %bcond_without	swfdec		# don't build swfdec plugin
-%bcond_without	wavpack		# don't build wavpack support
-%bcond_without	xvid		# don't build XviD support
-%bcond_with	divx4linux	# build with divx4linux support
+%bcond_without	wavpack		# don't build wavpack plugin
+%bcond_without	xvid		# don't build XviD plugin
+%bcond_with	amr		# build amrwb plugin
+%bcond_with	divx4linux	# build divx4linux plugins
 #
 %define		gstname		gst-plugins-bad
 %define		gst_major_ver	0.10
-%define		gst_req_ver	0.10.3
+%define		gst_req_ver	0.10.10.1
 #
 Summary:	Bad GStreamer Streaming-media framework plugins
 Summary(pl):	Z³e wtyczki do ¶rodowiska obróbki strumieni GStreamer
 Name:		gstreamer-plugins-bad
-Version:	0.10.3
-Release:	4
+Version:	0.10.4
+Release:	1
 License:	LPL
 Group:		Libraries
 Source0:	http://gstreamer.freedesktop.org/src/gst-plugins-bad/%{gstname}-%{version}.tar.bz2
-# Source0-md5:	8545a02c408976c5e9f0c2cf3c6a362e
+# Source0-md5:	2e57395cdf72733477fb328f1fa3f053
 Patch0:		%{name}-bashish.patch
 Patch1:		%{name}-libdts.patch
 Patch2:		%{name}-divx4linux.patch
 Patch3:		%{name}-soundtouch.patch
-Patch4:		%{name}-neon.patch
+Patch4:		%{name}-amrwb.patch
+Patch5:		%{name}-faad.patch
+Patch6:		%{name}-link.patch
 URL:		http://gstreamer.freedesktop.org/
-BuildRequires:	autoconf >= 2.52
+BuildRequires:	autoconf >= 2.59-9
 BuildRequires:	automake >= 1.6
-BuildRequires:	bzip2-devel
 BuildRequires:	glib2-devel >= 1:2.12.0
 BuildRequires:	gstreamer-devel >= %{gst_req_ver}
 BuildRequires:	gstreamer-plugins-base-devel >= %{gst_req_ver}
 BuildRequires:	gtk-doc >= 1.6
-BuildRequires:	liboil-devel >= 0.3.56
+BuildRequires:	liboil-devel >= 0.3.6
 BuildRequires:	libtool >= 1.4
 BuildRequires:	pkgconfig >= 1:0.9.0
 BuildRequires:	rpmbuild(macros) >= 1.98
@@ -55,9 +61,15 @@ BuildRequires:	rpmbuild(macros) >= 1.98
 %{?with_directfb:BuildRequires:	DirectFB-devel >= 1:0.9.24}
 BuildRequires:	OpenGL-devel
 %{?with_sdl:BuildRequires:	SDL-devel >= 0.11}
+BuildRequires:	alsa-lib-devel >= 0.9.1
+%{?with_amr:BuildRequires:	amrwb-devel}
+BuildRequires:	bzip2-devel
 %{?with_divx4linux:BuildRequires:	divx4linux-devel >= 1:5.05.20030428}
 BuildRequires:	faac-devel
 %{?with_faad:BuildRequires:	faad2-devel >= 2.0-2}
+%{?with_jack:BuildRequires:	jack-audio-connection-kit-devel >= 0.99.10}
+%{?with_ladspa:BuildRequires:	ladspa-devel >= 1.12}
+%{?with_cdaudio:BuildRequires:	libcdaudio-devel}
 %{?with_dts:BuildRequires:	libdts-devel}
 %{?with_gsm:BuildRequires:	libgsm-devel}
 %{?with_mms:BuildRequires:	libmms-devel >= 0.2}
@@ -65,15 +77,17 @@ BuildRequires:	faac-devel
 BuildRequires:	libmusicbrainz-devel >= 2.1.0
 # for modplug and libSoundTouch
 BuildRequires:	libstdc++-devel
+BuildRequires:	mjpegtools-devel >= 1.8.0
+BuildRequires:	mjpegtools-devel < 1.9.0
 %{?with_neon:BuildRequires:	neon-devel >= 0.26}
 BuildRequires:	soundtouch-devel >= 1.3.1
 %{?with_swfdec:BuildRequires:	swfdec-devel >= 0.3.6}
-%{?with_wavpack:BuildRequires:	wavpack-devel >= 4.2}
+%{?with_wavpack:BuildRequires:	wavpack-devel >= 4.40.0}
+BuildRequires:	xorg-lib-libX11-devel
 %{?with_xvid:BuildRequires:	xvid-devel >= 1.0.0}
 Requires:	gstreamer >= %{gst_req_ver}
 Requires:	gstreamer-plugins-base >= %{gst_req_ver}
 Obsoletes:	gstreamer-quicktime
-Obsoletes:	gstreamer-v4l2
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		gstlibdir 	%{_libdir}/gstreamer-%{gst_major_ver}
@@ -110,6 +124,19 @@ GStreamer plugin for AAC audio encoding and decoding.
 %description -n gstreamer-aac -l pl
 Wtyczka do GStreamera do kodowania i dekodowania plików audio AAC.
 
+%package -n gstreamer-amrwb
+Summary:	GStreamer plugin for AMR-WB audio encoding and decoding
+Summary(pl):	Wtyczka GStreamera do kodowania i dekodowania d¼wiêku w formacie AMR-WB
+Group:		Libraries
+Requires:	gstreamer >= %{gst_req_ver}
+
+%description -n gstreamer-amrwb
+GStreamer plugin for AMR-WB audio encoding and decoding.
+
+%description -n gstreamer-amrwb -l pl
+Wtyczka GStreamera do kodowania i dekodowania d¼wiêku w formacie
+AMR-WB.
+
 %package -n gstreamer-audio-effects-bad
 Summary:	Bad GStreamer audio effects plugins
 Summary(pl):	Z³e wtyczki efektów d¼wiêkowych do GStreamera
@@ -122,6 +149,31 @@ Bad GStreamer audio effects plugins.
 
 %description -n gstreamer-audio-effects-bad -l pl
 Z³e wtyczki efektów d¼wiêkowych do GStreamera.
+
+%package -n gstreamer-audiosink-alsaspdif
+Summary:	GStreamer ALSA plugin for S/PDIF output
+Summary(pl):	Wtyczka ALSA GStreamera do wyj¶cia S/PDIF
+Group:		Libraries
+Requires:	gstreamer-plugins-base >= %{gst_req_ver}
+
+%description -n gstreamer-audiosink-alsaspdif
+GStreamer ALSA plugin for S/PDIF output.
+
+%description -n gstreamer-audiosink-alsaspdif -l pl
+Wtyczka ALSA GStreamera do wyj¶cia S/PDIF.
+
+%package -n gstreamer-cdaudio
+Summary:	GStreamer plugin for CD audio input using libcdaudio
+Summary(pl):	Wtyczka do GStreamera odtwarzaj±ca p³yty CD-Audio przy u¿yciu libcdaudio
+Group:		Libraries
+Requires:	gstreamer >= %{gst_req_ver}
+
+%description -n gstreamer-cdaudio
+Plugin for playing audio tracks using libcdaudio under GStreamer.
+
+%description -n gstreamer-cdaudio -l pl
+Wtyczka do odtwarzania ¶cie¿ek d¼wiêkowych pod GStreamerem za pomoc±
+libcdaudio.
 
 %package -n gstreamer-divx
 Summary:	GStreamer divx plugin
@@ -172,6 +224,32 @@ GStreamer plugin for outputing to OpenGL.
 
 %description -n gstreamer-imagesink-gl -l pl
 Wtyczka wyj¶cia OpenGL do GStreamera.
+
+%package -n gstreamer-jack
+Summary:	GStreamer plugin for the JACK Sound Server
+Summary(pl):	Wtyczka serwera d¼wiêku JACK dla GStreamera
+Group:		Libraries
+Requires:	gstreamer-plugins-base = %{gst_req_ver}
+Provides:	gstreamer-audiosink = %{version}
+
+%description -n gstreamer-jack
+Plugin for the JACK professional sound server.
+
+%description -n gstreamer-jack -l pl
+Wtyczka dla profesjonalnego serwera d¼wiêku JACK.
+
+%package -n gstreamer-ladspa
+Summary:	GStreamer wrapper for LADSPA plugins
+Summary(pl):	Wrapper do wtyczek LADSPA dla GStreamera
+Group:		Libraries
+Requires:	gstreamer-plugins-base = %{gst_req_ver}
+
+%description -n gstreamer-ladspa
+Plugin which wraps LADSPA plugins for use by GStreamer applications.
+
+%description -n gstreamer-ladspa -l pl
+Wtyczka pozwalaj±ca na u¿ywanie wtyczek LADSPA przez aplikacje
+GStreamera.
 
 %package -n gstreamer-mms
 Summary:	GStreamer mms plugin
@@ -306,6 +384,8 @@ Wtyczka do GStreamera dekoduj±ca przy u¿yciu biblioteki xvid.
 %patch2 -p1
 %patch3 -p1
 %patch4 -p1
+%patch5 -p1
+%patch6 -p1
 
 %build
 %{__libtoolize}
@@ -313,12 +393,14 @@ Wtyczka do GStreamera dekoduj±ca przy u¿yciu biblioteki xvid.
 %{__autoconf}
 %{__autoheader}
 %{__automake}
-LDFLAGS="%{rpmldflags} -Wl,--as-needed"
 %configure \
+	%{!?with_cdaudio:--disable-cdaudio} \
 	%{!?with_divx4linux:--disable-divx} \
 	%{!?with_dts:--disable-dts} \
 	%{!?with_faad:--disable-faad} \
 	%{!?with_gsm:--disable-gsm} \
+	%{!?with_jack:--disable-jack} \
+	%{!?with_ladspa:--disable-ladspa} \
 	%{!?with_mms:--disable-libmms} \
 	%{!?with_musepack:--disable-musepack} \
 	%{!?with_neon:--disable-neon} \
@@ -352,12 +434,24 @@ rm -rf $RPM_BUILD_ROOT
 %doc AUTHORS ChangeLog NEWS README RELEASE
 %attr(755,root,root) %{gstlibdir}/libgstbz2.so
 %attr(755,root,root) %{gstlibdir}/libgstcdxaparse.so
+%attr(755,root,root) %{gstlibdir}/libgstdeinterlace.so
+%attr(755,root,root) %{gstlibdir}/libgstdvbsrc.so
+%attr(755,root,root) %{gstlibdir}/libgstfilter.so
 %attr(755,root,root) %{gstlibdir}/libgstfreeze.so
+%attr(755,root,root) %{gstlibdir}/libgsth264parse.so
 %attr(755,root,root) %{gstlibdir}/libgstmodplug.so
+%attr(755,root,root) %{gstlibdir}/libgstmultifile.so
+%attr(755,root,root) %{gstlibdir}/libgstnsf.so
+%attr(755,root,root) %{gstlibdir}/libgstnuvdemux.so
 %attr(755,root,root) %{gstlibdir}/libgstqtdemux.so
+%attr(755,root,root) %{gstlibdir}/libgstreplaygain.so
+%attr(755,root,root) %{gstlibdir}/libgstrfbsrc.so
+%attr(755,root,root) %{gstlibdir}/libgstspectrum.so
 %attr(755,root,root) %{gstlibdir}/libgsttta.so
-%attr(755,root,root) %{gstlibdir}/libgstvideo4linux2.so
+%attr(755,root,root) %{gstlibdir}/libgstvideocrop.so
+%attr(755,root,root) %{gstlibdir}/libgstvideoparse.so
 %attr(755,root,root) %{gstlibdir}/libgstxingheader.so
+%attr(755,root,root) %{gstlibdir}/libgsty4menc.so
 %{_gtkdocdir}/gst-plugins-bad-plugins-*
 
 ##
@@ -371,9 +465,25 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{gstlibdir}/libgstfaad.so
 %endif
 
+%if %{with amr}
+%files -n gstreamer-amrwb
+%defattr(644,root,root,755)
+%attr(755,root,root) %{gstlibdir}/libgstamrwb.so
+%endif
+
 %files -n gstreamer-audio-effects-bad
 %defattr(644,root,root,755)
 %attr(755,root,root) %{gstlibdir}/libgstspeed.so
+
+%files -n gstreamer-audiosink-alsaspdif
+%defattr(644,root,root,755)
+%attr(755,root,root) %{gstlibdir}/libgstalsaspdif.so
+
+%if %{with cdaudio}
+%files -n gstreamer-cdaudio
+%defattr(644,root,root,755)
+%attr(755,root,root) %{gstlibdir}/libgstcdaudio.so
+%endif
 
 %if %{with divx4linux}
 %files -n gstreamer-divx
@@ -397,6 +507,18 @@ rm -rf $RPM_BUILD_ROOT
 %files -n gstreamer-imagesink-gl
 %defattr(644,root,root,755)
 %attr(755,root,root) %{gstlibdir}/libgstglimagesink.so
+
+%if %{with jack}
+%files -n gstreamer-jack
+%defattr(644,root,root,755)
+%attr(755,root,root) %{gstlibdir}/libgstjack.so
+%endif
+
+%if %{with ladspa}
+%files -n gstreamer-ladspa
+%defattr(644,root,root,755)
+%attr(755,root,root) %{gstlibdir}/libgstladspa.so
+%endif
 
 %if %{with mms}
 %files -n gstreamer-mms
