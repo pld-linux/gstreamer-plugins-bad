@@ -231,7 +231,7 @@ Wtyczka wyj¶cia OpenGL do GStreamera.
 Summary:	GStreamer plugin for the JACK Sound Server
 Summary(pl):	Wtyczka serwera d¼wiêku JACK dla GStreamera
 Group:		Libraries
-Requires:	gstreamer-plugins-base = %{gst_req_ver}
+Requires:	gstreamer-plugins-base >= %{gst_req_ver}
 Provides:	gstreamer-audiosink = %{version}
 
 %description -n gstreamer-jack
@@ -244,7 +244,7 @@ Wtyczka dla profesjonalnego serwera d¼wiêku JACK.
 Summary:	GStreamer wrapper for LADSPA plugins
 Summary(pl):	Wrapper do wtyczek LADSPA dla GStreamera
 Group:		Libraries
-Requires:	gstreamer-plugins-base = %{gst_req_ver}
+Requires:	gstreamer-plugins-base >= %{gst_req_ver}
 
 %description -n gstreamer-ladspa
 Plugin which wraps LADSPA plugins for use by GStreamer applications.
