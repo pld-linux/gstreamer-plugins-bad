@@ -255,9 +255,9 @@ GStreamera.
 
 %package -n gstreamer-mjpegtools
 Summary:	GStreamer mpeg2enc plugin
-Summary(pl):    Wtyczka mpeg2enc do GStreamera
-Group:          Libraries
-Requires(post,postun):  %{_bindir}/gst-register-0.8
+Summary(pl):	Wtyczka mpeg2enc do GStreamera
+Group:		Libraries
+Requires(post,postun):	%{_bindir}/gst-register-0.8
 
 %description -n gstreamer-mjpegtools
 GStreamer mpeg2enc plugin (based on mjpegtools libraries).
