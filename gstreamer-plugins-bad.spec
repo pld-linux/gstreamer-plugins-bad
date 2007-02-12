@@ -29,7 +29,7 @@
 %define		gst_req_ver	0.10.10.1
 #
 Summary:	Bad GStreamer Streaming-media framework plugins
-Summary(pl):	Z³e wtyczki do ¶rodowiska obróbki strumieni GStreamer
+Summary(pl.UTF-8):   ZÅ‚e wtyczki do Å›rodowiska obrÃ³bki strumieni GStreamer
 Name:		gstreamer-plugins-bad
 Version:	0.10.4
 Release:	3
@@ -102,13 +102,13 @@ about anything else media-related. Its plugin-based architecture means
 that new data types or processing capabilities can be added simply by
 installing new plugins.
 
-%description -l pl
-GStreamer to ¶rodowisko obróbki danych strumieniowych, bazuj±ce na
-grafie filtrów operuj±cych na danych medialnych. Aplikacje u¿ywaj±ce
-tej biblioteki mog± robiæ wszystko od przetwarzania d¼wiêku w czasie
-rzeczywistym, do odtwarzania filmów i czegokolwiek innego zwi±zego z
-mediami. Architektura bazuj±ca na wtyczkach pozwala na ³atwe dodawanie
-nowych typów danych lub mo¿liwo¶ci obróbki.
+%description -l pl.UTF-8
+GStreamer to Å›rodowisko obrÃ³bki danych strumieniowych, bazujÄ…ce na
+grafie filtrÃ³w operujÄ…cych na danych medialnych. Aplikacje uÅ¼ywajÄ…ce
+tej biblioteki mogÄ… robiÄ‡ wszystko od przetwarzania dÅºwiÄ™ku w czasie
+rzeczywistym, do odtwarzania filmÃ³w i czegokolwiek innego zwiÄ…zego z
+mediami. Architektura bazujÄ…ca na wtyczkach pozwala na Å‚atwe dodawanie
+nowych typÃ³w danych lub moÅ¼liwoÅ›ci obrÃ³bki.
 
 ##
 ## Plugins
@@ -116,32 +116,32 @@ nowych typów danych lub mo¿liwo¶ci obróbki.
 
 %package -n gstreamer-aac
 Summary:	GStreamer plugin for AAC audio encoding and decoding
-Summary(pl):	Wtyczka do GStreamera do kodowania i dekodowania plików audio AAC
+Summary(pl.UTF-8):   Wtyczka do GStreamera do kodowania i dekodowania plikÃ³w audio AAC
 Group:		Libraries
 Requires:	gstreamer-plugins-base >= %{gst_req_ver}
 
 %description -n gstreamer-aac
 GStreamer plugin for AAC audio encoding and decoding.
 
-%description -n gstreamer-aac -l pl
-Wtyczka do GStreamera do kodowania i dekodowania plików audio AAC.
+%description -n gstreamer-aac -l pl.UTF-8
+Wtyczka do GStreamera do kodowania i dekodowania plikÃ³w audio AAC.
 
 %package -n gstreamer-amrwb
 Summary:	GStreamer plugin for AMR-WB audio encoding and decoding
-Summary(pl):	Wtyczka GStreamera do kodowania i dekodowania d¼wiêku w formacie AMR-WB
+Summary(pl.UTF-8):   Wtyczka GStreamera do kodowania i dekodowania dÅºwiÄ™ku w formacie AMR-WB
 Group:		Libraries
 Requires:	gstreamer >= %{gst_req_ver}
 
 %description -n gstreamer-amrwb
 GStreamer plugin for AMR-WB audio encoding and decoding.
 
-%description -n gstreamer-amrwb -l pl
-Wtyczka GStreamera do kodowania i dekodowania d¼wiêku w formacie
+%description -n gstreamer-amrwb -l pl.UTF-8
+Wtyczka GStreamera do kodowania i dekodowania dÅºwiÄ™ku w formacie
 AMR-WB.
 
 %package -n gstreamer-audio-effects-bad
 Summary:	Bad GStreamer audio effects plugins
-Summary(pl):	Z³e wtyczki efektów d¼wiêkowych do GStreamera
+Summary(pl.UTF-8):   ZÅ‚e wtyczki efektÃ³w dÅºwiÄ™kowych do GStreamera
 Group:		Libraries
 Requires:	gstreamer >= %{gst_req_ver}
 Obsoletes:	gstreamer-audio-effects
@@ -149,12 +149,12 @@ Obsoletes:	gstreamer-audio-effects
 %description -n gstreamer-audio-effects-bad
 Bad GStreamer audio effects plugins.
 
-%description -n gstreamer-audio-effects-bad -l pl
-Z³e wtyczki efektów d¼wiêkowych do GStreamera.
+%description -n gstreamer-audio-effects-bad -l pl.UTF-8
+ZÅ‚e wtyczki efektÃ³w dÅºwiÄ™kowych do GStreamera.
 
 %package -n gstreamer-audiosink-alsaspdif
 Summary:	GStreamer ALSA plugin for S/PDIF output
-Summary(pl):	Wtyczka ALSA GStreamera do wyj¶cia S/PDIF
+Summary(pl.UTF-8):   Wtyczka ALSA GStreamera do wyjÅ›cia S/PDIF
 Group:		Libraries
 Requires:	gstreamer-plugins-base >= %{gst_req_ver}
 Provides:	gstreamer-audiosink = %{version}
@@ -162,62 +162,62 @@ Provides:	gstreamer-audiosink = %{version}
 %description -n gstreamer-audiosink-alsaspdif
 GStreamer ALSA plugin for S/PDIF output.
 
-%description -n gstreamer-audiosink-alsaspdif -l pl
-Wtyczka ALSA GStreamera do wyj¶cia S/PDIF.
+%description -n gstreamer-audiosink-alsaspdif -l pl.UTF-8
+Wtyczka ALSA GStreamera do wyjÅ›cia S/PDIF.
 
 %package -n gstreamer-cdaudio
 Summary:	GStreamer plugin for CD audio input using libcdaudio
-Summary(pl):	Wtyczka do GStreamera odtwarzaj±ca p³yty CD-Audio przy u¿yciu libcdaudio
+Summary(pl.UTF-8):   Wtyczka do GStreamera odtwarzajÄ…ca pÅ‚yty CD-Audio przy uÅ¼yciu libcdaudio
 Group:		Libraries
 Requires:	gstreamer >= %{gst_req_ver}
 
 %description -n gstreamer-cdaudio
 Plugin for playing audio tracks using libcdaudio under GStreamer.
 
-%description -n gstreamer-cdaudio -l pl
-Wtyczka do odtwarzania ¶cie¿ek d¼wiêkowych pod GStreamerem za pomoc±
+%description -n gstreamer-cdaudio -l pl.UTF-8
+Wtyczka do odtwarzania Å›cieÅ¼ek dÅºwiÄ™kowych pod GStreamerem za pomocÄ…
 libcdaudio.
 
 %package -n gstreamer-divx
 Summary:	GStreamer divx plugin
-Summary(pl):	Wtyczka divx do GStreamera
+Summary(pl.UTF-8):   Wtyczka divx do GStreamera
 Group:		Libraries
 Requires:	gstreamer-plugins-base >= %{gst_req_ver}
 
 %description -n gstreamer-divx
 GStreamer divx plugin.
 
-%description -n gstreamer-divx -l pl
+%description -n gstreamer-divx -l pl.UTF-8
 Wtyczka divx do GStreamera.
 
 %package -n gstreamer-dts
 Summary:	GStreamer DTS plugin
-Summary(pl):	Wtyczka DTS do GStreamera
+Summary(pl.UTF-8):   Wtyczka DTS do GStreamera
 Group:		Libraries
 Requires:	gstreamer-plugins-base >= %{gst_req_ver}
 
 %description -n gstreamer-dts
 Plugin for DTS Coherent Acoustics support.
 
-%description -n gstreamer-dts -l pl
-Wtyczka do GStreamera obs³uguj±ca DTS Coherent Acoustics.
+%description -n gstreamer-dts -l pl.UTF-8
+Wtyczka do GStreamera obsÅ‚ugujÄ…ca DTS Coherent Acoustics.
 
 %package -n gstreamer-gsm
 Summary:	GStreamer plugin for GSM lossy audio format
-Summary(pl):	Wtyczka do GStreamera obs³uguj±ca stratny format d¼wiêku GSM
+Summary(pl.UTF-8):   Wtyczka do GStreamera obsÅ‚ugujÄ…ca stratny format dÅºwiÄ™ku GSM
 Group:		Libraries
 Requires:	gstreamer-plugins-base >= %{gst_req_ver}
 
 %description -n gstreamer-gsm
 Output plugin for GStreamer to convert to GSM lossy audio format.
 
-%description -n gstreamer-gsm -l pl
-Wtyczka wyj¶cia d¼wiêku GSteamera konwertuj±ca do stratnego formatu
+%description -n gstreamer-gsm -l pl.UTF-8
+Wtyczka wyjÅ›cia dÅºwiÄ™ku GSteamera konwertujÄ…ca do stratnego formatu
 GSM.
 
 %package -n gstreamer-imagesink-gl
 Summary:	GStreamer plugin for outputing to OpenGL
-Summary(pl):	Wtyczka wyj¶cia OpenGL do GStreamera
+Summary(pl.UTF-8):   Wtyczka wyjÅ›cia OpenGL do GStreamera
 Group:		Libraries
 Requires:	gstreamer >= %{gst_req_ver}
 Provides:	gstreamer-imagesink = %{version}
@@ -225,12 +225,12 @@ Provides:	gstreamer-imagesink = %{version}
 %description -n gstreamer-imagesink-gl
 GStreamer plugin for outputing to OpenGL.
 
-%description -n gstreamer-imagesink-gl -l pl
-Wtyczka wyj¶cia OpenGL do GStreamera.
+%description -n gstreamer-imagesink-gl -l pl.UTF-8
+Wtyczka wyjÅ›cia OpenGL do GStreamera.
 
 %package -n gstreamer-jack
 Summary:	GStreamer plugin for the JACK Sound Server
-Summary(pl):	Wtyczka serwera d¼wiêku JACK dla GStreamera
+Summary(pl.UTF-8):   Wtyczka serwera dÅºwiÄ™ku JACK dla GStreamera
 Group:		Libraries
 Requires:	gstreamer-plugins-base >= %{gst_req_ver}
 Provides:	gstreamer-audiosink = %{version}
@@ -238,97 +238,97 @@ Provides:	gstreamer-audiosink = %{version}
 %description -n gstreamer-jack
 Plugin for the JACK professional sound server.
 
-%description -n gstreamer-jack -l pl
-Wtyczka dla profesjonalnego serwera d¼wiêku JACK.
+%description -n gstreamer-jack -l pl.UTF-8
+Wtyczka dla profesjonalnego serwera dÅºwiÄ™ku JACK.
 
 %package -n gstreamer-ladspa
 Summary:	GStreamer wrapper for LADSPA plugins
-Summary(pl):	Wrapper do wtyczek LADSPA dla GStreamera
+Summary(pl.UTF-8):   Wrapper do wtyczek LADSPA dla GStreamera
 Group:		Libraries
 Requires:	gstreamer-plugins-base >= %{gst_req_ver}
 
 %description -n gstreamer-ladspa
 Plugin which wraps LADSPA plugins for use by GStreamer applications.
 
-%description -n gstreamer-ladspa -l pl
-Wtyczka pozwalaj±ca na u¿ywanie wtyczek LADSPA przez aplikacje
+%description -n gstreamer-ladspa -l pl.UTF-8
+Wtyczka pozwalajÄ…ca na uÅ¼ywanie wtyczek LADSPA przez aplikacje
 GStreamera.
 
 %package -n gstreamer-mjpegtools
 Summary:	GStreamer mpeg2enc plugin
-Summary(pl):	Wtyczka mpeg2enc do GStreamera
+Summary(pl.UTF-8):   Wtyczka mpeg2enc do GStreamera
 Group:		Libraries
 Requires(post,postun):	%{_bindir}/gst-register-0.8
 
 %description -n gstreamer-mjpegtools
 GStreamer mpeg2enc plugin (based on mjpegtools libraries).
 
-%description -n gstreamer-mjpegtools -l pl
+%description -n gstreamer-mjpegtools -l pl.UTF-8
 Wtyczka mpeg2enc do GStreamera (oparta na bibliotekach mjpegtools).
 
 %package -n gstreamer-mms
 Summary:	GStreamer mms plugin
-Summary(pl):	Wtyczka mms do GStreamera
+Summary(pl.UTF-8):   Wtyczka mms do GStreamera
 Group:		Libraries
 Requires:	gstreamer-plugins-base >= %{gst_req_ver}
 
 %description -n gstreamer-mms
 GStreamer mms plugin.
 
-%description -n gstreamer-mms -l pl
+%description -n gstreamer-mms -l pl.UTF-8
 Wtyczka mms do GStreamera.
 
 %package -n gstreamer-musepack
 Summary:	GStreamer musepack plugin
-Summary(pl):	Wtyczka musepack do GStreamera
+Summary(pl.UTF-8):   Wtyczka musepack do GStreamera
 Group:		Libraries
 Requires:	gstreamer >= %{gst_req_ver}
 
 %description -n gstreamer-musepack
 GStreamer musepack plugin.
 
-%description -n gstreamer-musepack -l pl
+%description -n gstreamer-musepack -l pl.UTF-8
 Wtyczka musepack do GStreamera.
 
 %package -n gstreamer-musicbrainz
 Summary:	GStreamer musicbrainz plugin
-Summary(pl):	Wtyczka musicbrainz do GStreamera
+Summary(pl.UTF-8):   Wtyczka musicbrainz do GStreamera
 Group:		Libraries
 Requires:	gstreamer-plugins-base >= %{gst_req_ver}
 
 %description -n gstreamer-musicbrainz
 GStreamer musicbrainz plugin - a TRM signature producer.
 
-%description -n gstreamer-musicbrainz -l pl
-Wtyczka musicbrainz do GStreamera, tworz±ca sygnatury TRM.
+%description -n gstreamer-musicbrainz -l pl.UTF-8
+Wtyczka musicbrainz do GStreamera, tworzÄ…ca sygnatury TRM.
 
 %package -n gstreamer-neon
 Summary:	GStreamer neon HTTP source plugin
-Summary(pl):	Wtyczka ¼ród³a HTTP neon do GStreamera
+Summary(pl.UTF-8):   Wtyczka ÅºrÃ³dÅ‚a HTTP neon do GStreamera
 Group:		Libraries
 Requires:	gstreamer >= %{gst_req_ver}
 
 %description -n gstreamer-neon
 GStreamer neon HTTP source plugin.
 
-%description -n gstreamer-neon -l pl
-Wtyczka ¼ród³a HTTP neon do GStreamera.
+%description -n gstreamer-neon -l pl.UTF-8
+Wtyczka ÅºrÃ³dÅ‚a HTTP neon do GStreamera.
 
 %package -n gstreamer-soundtouch
 Summary:	GStreamer soundtouch plugin
-Summary(pl):	Wtyczka soundtouch do GStreamera
+Summary(pl.UTF-8):   Wtyczka soundtouch do GStreamera
 Group:		Libraries
 Requires:	gstreamer >= %{gst_req_ver}
 
 %description -n gstreamer-soundtouch
 GStreamer soundtouch source plugin - audio pitch controller.
 
-%description -n gstreamer-soundtouch -l pl
-Wtyczka soundtouch do GStreamera, steruj±ca wysoko¶ci± d¼wiêku.
+%description -n gstreamer-soundtouch -l pl.UTF-8
+Wtyczka soundtouch do GStreamera, sterujÄ…ca wysokoÅ›ciÄ… dÅºwiÄ™ku.
 
 %package -n gstreamer-spc
 Summary:	GStreamer SPC plugin
-Summary(pl):	Wtyczka SPC dla GStreamera
+Summary(pl.UTF-8):   Wtyczka SPC dla GStreamera
 Group:		Libraries
 Requires:	gstreamer-plugins-base >= %{gst_req_ver}
 Requires:	libopenspc >= 0.3.99
@@ -336,13 +336,13 @@ Requires:	libopenspc >= 0.3.99
 %description -n gstreamer-spc
 GStreamer Plugin for playing SPC files using OpenSPC library.
 
-%description -n gstreamer-spc -l pl
-Wtyczka GStreamera odtwarzaj±ca pliki SPC przy u¿yciu biblioteki
+%description -n gstreamer-spc -l pl.UTF-8
+Wtyczka GStreamera odtwarzajÄ…ca pliki SPC przy uÅ¼yciu biblioteki
 OpenSPC.
 
 %package -n gstreamer-swfdec
 Summary:	GStreamer Flash redering plugin
-Summary(pl):	Wtyczka renderuj±ca animacje flash dla GStreamera
+Summary(pl.UTF-8):   Wtyczka renderujÄ…ca animacje flash dla GStreamera
 Group:		Libraries
 Requires:	gstreamer-plugins-base >= %{gst_req_ver}
 Requires:	swfdec >= 0.3.6
@@ -350,12 +350,12 @@ Requires:	swfdec >= 0.3.6
 %description -n gstreamer-swfdec
 Plugin for rendering Flash animations using swfdec library.
 
-%description -n gstreamer-swfdec -l pl
-Wtyczka renderuj±ca animacje flash w oparciu o bibliotekê swfdec.
+%description -n gstreamer-swfdec -l pl.UTF-8
+Wtyczka renderujÄ…ca animacje flash w oparciu o bibliotekÄ™ swfdec.
 
 %package -n gstreamer-videosink-sdl
 Summary:	GStreamer plugin for outputing to SDL
-Summary(pl):	Wtyczka wyj¶cia SDL do GStreamera
+Summary(pl.UTF-8):   Wtyczka wyjÅ›cia SDL do GStreamera
 Group:		Libraries
 Requires:	gstreamer-plugins-base >= %{gst_req_ver}
 Provides:	gstreamer-videosink = %{version}
@@ -365,13 +365,13 @@ Obsoletes:	gstreamer-SDL
 Plugin for sending output to the Simple Direct Media architecture.
 (http://www.libsdl.org/). Usefull for fullscreen playback.
 
-%description -n gstreamer-videosink-sdl -l pl
-Wtyczka przekazuj±ca wyj¶cie do architektury SDL. U¿yteczna do
-odtwarzania na pe³nym ekranie.
+%description -n gstreamer-videosink-sdl -l pl.UTF-8
+Wtyczka przekazujÄ…ca wyjÅ›cie do architektury SDL. UÅ¼yteczna do
+odtwarzania na peÅ‚nym ekranie.
 
 %package -n gstreamer-videosink-directfb
 Summary:	GStreamer DirectFB output plugin
-Summary(pl):	Wtyczka wyj¶cia obrazu DirectFB do GStreamera
+Summary(pl.UTF-8):   Wtyczka wyjÅ›cia obrazu DirectFB do GStreamera
 Group:		Libraries
 Requires:	gstreamer-plugins-base >= %{gst_req_ver}
 Provides:	gstreamer-videosink = %{version}
@@ -379,32 +379,32 @@ Provides:	gstreamer-videosink = %{version}
 %description -n gstreamer-videosink-directfb
 GStreamer DirectFB output plugin.
 
-%description -n gstreamer-videosink-directfb -l pl
-Wtyczka wyj¶cia obrazu DirectFB do GStreamera.
+%description -n gstreamer-videosink-directfb -l pl.UTF-8
+Wtyczka wyjÅ›cia obrazu DirectFB do GStreamera.
 
 %package -n gstreamer-wavpack
 Summary:	GStreamer plugin for Wavpack lossless audio format
-Summary(pl):	Wtyczka do GStreamera obs³uguj±ca bezstratny format d¼wiêku Wavpack
+Summary(pl.UTF-8):   Wtyczka do GStreamera obsÅ‚ugujÄ…ca bezstratny format dÅºwiÄ™ku Wavpack
 Group:		Libraries
 Requires:	gstreamer >= %{gst_req_ver}
 
 %description -n gstreamer-wavpack
 Plugin for lossless Wavpack audio format.
 
-%description -n gstreamer-wavpack -l pl
-Wtyczka obs³uguj±ca bezstratny format d¼wiêku Wavpack.
+%description -n gstreamer-wavpack -l pl.UTF-8
+Wtyczka obsÅ‚ugujÄ…ca bezstratny format dÅºwiÄ™ku Wavpack.
 
 %package -n gstreamer-xvid
 Summary:	GStreamer xvid decoder plugin
-Summary(pl):	Wtyczka do GStreamera dekoduj±ca przy u¿yciu biblioteki xvid
+Summary(pl.UTF-8):   Wtyczka do GStreamera dekodujÄ…ca przy uÅ¼yciu biblioteki xvid
 Group:		Libraries
 Requires:	gstreamer-plugins-base >= %{gst_req_ver}
 
 %description -n gstreamer-xvid
 GStreamer xvid decoder plugin.
 
-%description -n gstreamer-xvid -l pl
-Wtyczka do GStreamera dekoduj±ca przy u¿yciu biblioteki xvid.
+%description -n gstreamer-xvid -l pl.UTF-8
+Wtyczka do GStreamera dekodujÄ…ca przy uÅ¼yciu biblioteki xvid.
 
 %prep
 %setup -q -n %{gstname}-%{version}
