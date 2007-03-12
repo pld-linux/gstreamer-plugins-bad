@@ -32,7 +32,7 @@ Summary:	Bad GStreamer Streaming-media framework plugins
 Summary(pl):	Z³e wtyczki do ¶rodowiska obróbki strumieni GStreamer
 Name:		gstreamer-plugins-bad
 Version:	0.10.4
-Release:	3
+Release:	4
 License:	LPL
 Group:		Libraries
 Source0:	http://gstreamer.freedesktop.org/src/gst-plugins-bad/%{gstname}-%{version}.tar.bz2
@@ -257,7 +257,6 @@ GStreamera.
 Summary:	GStreamer mpeg2enc plugin
 Summary(pl):	Wtyczka mpeg2enc do GStreamera
 Group:		Libraries
-Requires(post,postun):	%{_bindir}/gst-register-0.8
 
 %description -n gstreamer-mjpegtools
 GStreamer mpeg2enc plugin (based on mjpegtools libraries).
