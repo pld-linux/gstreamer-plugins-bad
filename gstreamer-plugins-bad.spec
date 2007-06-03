@@ -79,11 +79,14 @@ BuildRequires:	libmusicbrainz-devel >= 2.1.0
 %{?with_spc:BuildRequires:	libopenspc-devel >= 0.3.99}
 # for modplug and libSoundTouch
 BuildRequires:	libstdc++-devel
-%{?with_mjpegtools:BuildRequires:	mjpegtools-devel >= 1.8.0-0.2}
 %{?with_mjpegtools:BuildRequires:	mjpegtools-devel < 1.9.0}
+%{?with_mjpegtools:BuildRequires:	mjpegtools-devel >= 1.8.0-0.2}
 %{?with_neon:BuildRequires:	neon-devel >= 0.26}
 BuildRequires:	soundtouch-devel >= 1.3.1
-%{?with_swfdec:BuildRequires:	swfdec-devel >= 0.3.6}
+%if %{with swfdec}
+BuildRequires:	swfdec-devel < 0.4.0
+BuildRequires:	swfdec-devel >= 0.3.6
+%endif
 %{?with_wavpack:BuildRequires:	wavpack-devel >= 4.40.0}
 BuildRequires:	xorg-lib-libX11-devel
 %{?with_xvid:BuildRequires:	xvid-devel >= 1.0.0}
@@ -110,9 +113,7 @@ rzeczywistym, do odtwarzania filmów i czegokolwiek innego związego z
 mediami. Architektura bazująca na wtyczkach pozwala na łatwe dodawanie
 nowych typów danych lub możliwości obróbki.
 
-##
-## Plugins
-##
+## ## Plugins ##
 
 %package -n gstreamer-aac
 Summary:	GStreamer plugin for AAC audio encoding and decoding
