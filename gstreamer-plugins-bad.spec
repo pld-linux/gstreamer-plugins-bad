@@ -17,7 +17,7 @@
 %bcond_without	musepack	# don't build musepack plugin
 %bcond_without	neon		# don't build neonhttpsrc plugin
 %bcond_without	sdl		# don't build sdl plugin
-%bcond_without	swfdec		# don't build swfdec plugin
+%bcond_with	swfdec		# swfdec plugin
 %bcond_without	spc		# don't build spc plugin
 %bcond_without	wavpack		# don't build wavpack plugin
 %bcond_without	xvid		# don't build XviD plugin
@@ -31,19 +31,17 @@
 Summary:	Bad GStreamer Streaming-media framework plugins
 Summary(pl.UTF-8):	Złe wtyczki do środowiska obróbki strumieni GStreamer
 Name:		gstreamer-plugins-bad
-Version:	0.10.4
-Release:	7
+Version:	0.10.5
+Release:	1
 License:	LPL
 Group:		Libraries
 Source0:	http://gstreamer.freedesktop.org/src/gst-plugins-bad/%{gstname}-%{version}.tar.bz2
-# Source0-md5:	2e57395cdf72733477fb328f1fa3f053
+# Source0-md5:	395f3ed705928e77e5620cccf11a8cff
 Patch0:		%{name}-bashish.patch
 Patch1:		%{name}-libdts.patch
 Patch2:		%{name}-divx4linux.patch
 Patch3:		%{name}-soundtouch.patch
-Patch4:		%{name}-amrwb.patch
-Patch5:		%{name}-faad.patch
-Patch6:		%{name}-link.patch
+Patch4:		%{name}-link.patch
 URL:		http://gstreamer.freedesktop.org/
 BuildRequires:	autoconf >= 2.59-9
 BuildRequires:	automake >= 1.6
@@ -79,15 +77,16 @@ BuildRequires:	libmusicbrainz-devel >= 2.1.0
 %{?with_spc:BuildRequires:	libopenspc-devel >= 0.3.99}
 # for modplug and libSoundTouch
 BuildRequires:	libstdc++-devel
+BuildRequires:	libx264-devel
 %{?with_mjpegtools:BuildRequires:	mjpegtools-devel < 1.9.0}
 %{?with_mjpegtools:BuildRequires:	mjpegtools-devel >= 1.8.0-0.2}
 %{?with_neon:BuildRequires:	neon-devel >= 0.26}
+BuildRequires:	libsndfile-devel
 BuildRequires:	soundtouch-devel >= 1.3.1
 %if %{with swfdec}
 BuildRequires:	swfdec-devel < 0.4.0
 BuildRequires:	swfdec-devel >= 0.3.6
 %endif
-%{?with_wavpack:BuildRequires:	wavpack-devel >= 4.40.0}
 BuildRequires:	xorg-lib-libX11-devel
 %{?with_xvid:BuildRequires:	xvid-devel >= 1.0.0}
 Requires:	gstreamer >= %{gst_req_ver}
@@ -112,6 +111,15 @@ tej biblioteki mogą robić wszystko od przetwarzania dźwięku w czasie
 rzeczywistym, do odtwarzania filmów i czegokolwiek innego związego z
 mediami. Architektura bazująca na wtyczkach pozwala na łatwe dodawanie
 nowych typów danych lub możliwości obróbki.
+
+%package devel
+Summary:        Header files and develpment documentation for gstreamer plugins
+Group:          Development/Libraries
+Requires:       %{name} = %{epoch}:%{version}-%{release}
+
+%description devel
+Header files and develpment documentation for gstreamer plugins.
+
 
 ## ## Plugins ##
 
@@ -326,6 +334,18 @@ GStreamer soundtouch source plugin - audio pitch controller.
 %description -n gstreamer-soundtouch -l pl.UTF-8
 Wtyczka soundtouch do GStreamera, sterująca wysokością dźwięku.
 
+%package -n gstreamer-sndfile
+Summary:	GStreamer sndfile plugin
+Summary(pl.UTF-8):	Wtyczka sndfile do GStreamera
+Group:		Libraries
+Requires:	gstreamer >= %{gst_req_ver}
+
+%description -n gstreamer-sndfile
+GStreamer sndfile source plugin.
+
+%description -n gstreamer-sndfile -l pl.UTF-8
+Wtyczka sndfile do GStreamera.
+
 %package -n gstreamer-spc
 Summary:	GStreamer SPC plugin
 Summary(pl.UTF-8):	Wtyczka SPC dla GStreamera
@@ -382,18 +402,6 @@ GStreamer DirectFB output plugin.
 %description -n gstreamer-videosink-directfb -l pl.UTF-8
 Wtyczka wyjścia obrazu DirectFB do GStreamera.
 
-%package -n gstreamer-wavpack
-Summary:	GStreamer plugin for Wavpack lossless audio format
-Summary(pl.UTF-8):	Wtyczka do GStreamera obsługująca bezstratny format dźwięku Wavpack
-Group:		Libraries
-Requires:	gstreamer >= %{gst_req_ver}
-
-%description -n gstreamer-wavpack
-Plugin for lossless Wavpack audio format.
-
-%description -n gstreamer-wavpack -l pl.UTF-8
-Wtyczka obsługująca bezstratny format dźwięku Wavpack.
-
 %package -n gstreamer-xvid
 Summary:	GStreamer xvid decoder plugin
 Summary(pl.UTF-8):	Wtyczka do GStreamera dekodująca przy użyciu biblioteki xvid
@@ -406,6 +414,18 @@ GStreamer xvid decoder plugin.
 %description -n gstreamer-xvid -l pl.UTF-8
 Wtyczka do GStreamera dekodująca przy użyciu biblioteki xvid.
 
+%package -n gstreamer-x264
+Summary:	GStreamer x264 decoder plugin
+Summary(pl.UTF-8):	Wtyczka do GStreamera dekodująca przy użyciu biblioteki x264
+Group:		Libraries
+Requires:	gstreamer-plugins-base >= %{gst_req_ver}
+
+%description -n gstreamer-x264
+GStreamer x264 decoder plugin.
+
+%description -n gstreamer-x264 -l pl.UTF-8
+Wtyczka do GStreamera dekodująca przy użyciu biblioteki x264.
+
 %prep
 %setup -q -n %{gstname}-%{version}
 %patch0 -p1
@@ -413,8 +433,6 @@ Wtyczka do GStreamera dekodująca przy użyciu biblioteki xvid.
 %patch2 -p1
 %patch3 -p1
 %patch4 -p1
-%patch5 -p1
-%patch6 -p1
 
 %build
 %{__libtoolize}
@@ -438,7 +456,6 @@ Wtyczka do GStreamera dekodująca przy użyciu biblioteki xvid.
 	%{!?with_sdl:--disable-sdltest} \
 	%{!?with_spc:--disable-spc} \
 	%{!?with_swfdec:--disable-swfdec} \
-	%{!?with_wavpack:--disable-wavpack} \
 	%{!?with_xvid:--disable-xvid} \
 	--disable-static \
 	--enable-gtk-doc \
@@ -460,30 +477,51 @@ rm -f $RPM_BUILD_ROOT%{gstlibdir}/*.la
 %clean
 rm -rf $RPM_BUILD_ROOT
 
+%post -p /sbin/ldconfig
+%postun -p /sbin/ldconfig
+
 %files -f %{gstname}-%{gst_major_ver}.lang
 %defattr(644,root,root,755)
 %doc AUTHORS ChangeLog NEWS README RELEASE
+%attr(755,root,root) %{gstlibdir}/libgstapp.so
+%attr(755,root,root) %{gstlibdir}/libgstbayer.so
 %attr(755,root,root) %{gstlibdir}/libgstbz2.so
 %attr(755,root,root) %{gstlibdir}/libgstcdxaparse.so
 %attr(755,root,root) %{gstlibdir}/libgstdeinterlace.so
 %attr(755,root,root) %{gstlibdir}/libgstdvbsrc.so
+%attr(755,root,root) %{gstlibdir}/libgstequalizer.so
 %attr(755,root,root) %{gstlibdir}/libgstfilter.so
 %attr(755,root,root) %{gstlibdir}/libgstfreeze.so
 %attr(755,root,root) %{gstlibdir}/libgsth264parse.so
+%attr(755,root,root) %{gstlibdir}/libgstinterleave.so
 %attr(755,root,root) %{gstlibdir}/libgstmodplug.so
+%attr(755,root,root) %{gstlibdir}/libgstmpegvideoparse.so
+%attr(755,root,root) %{gstlibdir}/libgstmve.so
 %attr(755,root,root) %{gstlibdir}/libgstmultifile.so
+%attr(755,root,root) %{gstlibdir}/libgstnassink.so
 %attr(755,root,root) %{gstlibdir}/libgstnsf.so
 %attr(755,root,root) %{gstlibdir}/libgstnuvdemux.so
-%attr(755,root,root) %{gstlibdir}/libgstqtdemux.so
+%attr(755,root,root) %{gstlibdir}/libgstreal.so
 %attr(755,root,root) %{gstlibdir}/libgstreplaygain.so
 %attr(755,root,root) %{gstlibdir}/libgstrfbsrc.so
+%attr(755,root,root) %{gstlibdir}/libgstrtpmanager.so
 %attr(755,root,root) %{gstlibdir}/libgstspectrum.so
+%attr(755,root,root) %{gstlibdir}/libgstswitch.so
 %attr(755,root,root) %{gstlibdir}/libgsttta.so
-%attr(755,root,root) %{gstlibdir}/libgstvideocrop.so
 %attr(755,root,root) %{gstlibdir}/libgstvideoparse.so
+%attr(755,root,root) %{gstlibdir}/libgstvideosignal.so
+%attr(755,root,root) %{gstlibdir}/libgstvmnc.so
 %attr(755,root,root) %{gstlibdir}/libgstxingheader.so
 %attr(755,root,root) %{gstlibdir}/libgsty4menc.so
 %{_gtkdocdir}/gst-plugins-bad-plugins-*
+
+%attr(755,root,root) %{_libdir}/libgstap*.so.*
+
+%files devel
+%defattr(644,root,root,755)
+%{_includedir}/gstreamer-*/gst/app
+%attr(755,root,root) %{_libdir}/libgstap*.so
+%{_libdir}/libgstap*.la
 
 ##
 ## Plugins
@@ -583,6 +621,10 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %attr(755,root,root) %{gstlibdir}/libgstpitch.so
 
+%files -n gstreamer-sndfile
+%defattr(644,root,root,755)
+%attr(755,root,root) %{gstlibdir}/libgstsndfile.so
+
 %if %{with spc}
 %files -n gstreamer-spc
 %defattr(644,root,root,755)
@@ -598,7 +640,7 @@ rm -rf $RPM_BUILD_ROOT
 %if %{with sdl}
 %files -n gstreamer-videosink-sdl
 %defattr(644,root,root,755)
-%attr(755,root,root) %{gstlibdir}/libgstsdlvideosink.so
+%attr(755,root,root) %{gstlibdir}/libgstsdl.so
 %endif
 
 %if %{with directfb}
@@ -607,14 +649,12 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{gstlibdir}/libgstdfbvideosink.so
 %endif
 
-%if %{with wavpack}
-%files -n gstreamer-wavpack
-%defattr(644,root,root,755)
-%attr(755,root,root) %{gstlibdir}/libgstwavpack.so
-%endif
-
 %if %{with xvid}
 %files -n gstreamer-xvid
 %defattr(644,root,root,755)
 %attr(755,root,root) %{gstlibdir}/libgstxvid.so
 %endif
+
+%files -n gstreamer-x264
+%defattr(644,root,root,755)
+%attr(755,root,root) %{gstlibdir}/libgstx264.so
