@@ -113,15 +113,18 @@ mediami. Architektura bazująca na wtyczkach pozwala na łatwe dodawanie
 nowych typów danych lub możliwości obróbki.
 
 %package devel
-Summary:        Header files and develpment documentation for gstreamer plugins
+Summary:        Header files and API documentation for gstapp library
+Summary(pl.UTF-8):	Pliki nagłówkowe i dokumentacja API biblioteki gstapp
 Group:          Development/Libraries
-Requires:       %{name} = %{epoch}:%{version}-%{release}
+Requires:       %{name} = %{version}-%{release}
 
 %description devel
-Header files and develpment documentation for gstreamer plugins.
+Header files and API documentation for gstapp library.
 
+%description devel -l pl.UTF-8
+Pliki nagłówkowe i dokumentacja API biblioteki gstapp.
 
-## ## Plugins ##
+## Plugins ##
 
 %package -n gstreamer-aac
 Summary:	GStreamer plugin for AAC audio encoding and decoding
@@ -483,6 +486,7 @@ rm -rf $RPM_BUILD_ROOT
 %files -f %{gstname}-%{gst_major_ver}.lang
 %defattr(644,root,root,755)
 %doc AUTHORS ChangeLog NEWS README RELEASE
+%attr(755,root,root) %{_libdir}/libgstapp-*.so.*.*.*
 %attr(755,root,root) %{gstlibdir}/libgstapp.so
 %attr(755,root,root) %{gstlibdir}/libgstbayer.so
 %attr(755,root,root) %{gstlibdir}/libgstbz2.so
@@ -517,13 +521,11 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{gstlibdir}/libgsty4menc.so
 %{_gtkdocdir}/gst-plugins-bad-plugins-*
 
-%attr(755,root,root) %{_libdir}/libgstap*.so.*
-
 %files devel
 %defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/libgstapp-*.so
+%{_libdir}/libgstapp-*.la
 %{_includedir}/gstreamer-*/gst/app
-%attr(755,root,root) %{_libdir}/libgstap*.so
-%{_libdir}/libgstap*.la
 
 ##
 ## Plugins
