@@ -1,10 +1,7 @@
 # TODO:
 # - new plugins:
 #   - ivorbisdec (BR: tremor-devel, CVS versions only, http://www.xiph.org/vorbis/)
-#   - mythtvsrc (BR: gmyth-0.1 >= 0.1.0.3)
 #   - theoraexpdec (BR: libtheora-exp, http://people.xiph.org/~tterribe/doc/libtheora-exp/)
-#   - timidity (BR: libtimidity)
-#   - wildmidi (BR: -lWildMidi)
 # - system libmodplug?
 #
 # Conditional build:
@@ -46,6 +43,7 @@ Patch2:		%{name}-divx4linux.patch
 Patch3:		%{name}-soundtouch.patch
 Patch4:		%{name}-link.patch
 Patch5:		%{name}-vcd.patch
+Patch6:		%{name}-gmyth.patch
 URL:		http://gstreamer.freedesktop.org/
 BuildRequires:	autoconf >= 2.59-9
 BuildRequires:	automake >= 1.6
@@ -70,6 +68,7 @@ BuildRequires:	bzip2-devel
 %{?with_divx4linux:BuildRequires:	divx4linux-devel >= 1:5.05.20030428}
 BuildRequires:	faac-devel
 %{?with_faad:BuildRequires:	faad2-devel >= 2.0-2}
+BuildRequires:	gmyth-devel >= 0.3
 %{?with_jack:BuildRequires:	jack-audio-connection-kit-devel >= 0.99.10}
 %{?with_ladspa:BuildRequires:	ladspa-devel >= 1.12}
 %{?with_cdaudio:BuildRequires:	libcdaudio-devel}
@@ -81,6 +80,7 @@ BuildRequires:	libmusicbrainz-devel >= 2.1.0
 %{?with_spc:BuildRequires:	libopenspc-devel >= 0.3.99}
 # for modplug and libSoundTouch
 BuildRequires:	libstdc++-devel
+BuildRequires:	libtimidity-devel
 BuildRequires:	libx264-devel
 %{?with_mjpegtools:BuildRequires:	mjpegtools-devel < 1.9.0}
 %{?with_mjpegtools:BuildRequires:	mjpegtools-devel >= 1.8.0-0.2}
@@ -91,6 +91,7 @@ BuildRequires:	soundtouch-devel >= 1.3.1
 BuildRequires:	swfdec-devel < 0.4.0
 BuildRequires:	swfdec-devel >= 0.3.6
 %endif
+BuildRequires:	wildmidi-devel
 BuildRequires:	xorg-lib-libX11-devel
 %{?with_xvid:BuildRequires:	xvid-devel >= 1.0.0}
 Requires:	gstreamer >= %{gst_req_ver}
@@ -306,6 +307,18 @@ GStreamer musepack plugin.
 %description -n gstreamer-musepack -l pl.UTF-8
 Wtyczka musepack do GStreamera.
 
+%package -n gstreamer-mythtv
+Summary:	GStreamer MythTV plugin
+Summary(pl.UTF-8):	Wtyczka MythTV do GStreamera
+Group:		Libraries
+Requires:	gstreamer >= %{gst_req_ver}
+
+%description -n gstreamer-mythtv
+GStreamer MythTV plugin.
+
+%description -n gstreamer-mythtv -l pl.UTF-8
+Wtyczka MythTV do GStreamera.
+
 %package -n gstreamer-musicbrainz
 Summary:	GStreamer musicbrainz plugin
 Summary(pl.UTF-8):	Wtyczka musicbrainz do GStreamera
@@ -381,6 +394,18 @@ Plugin for rendering Flash animations using swfdec library.
 %description -n gstreamer-swfdec -l pl.UTF-8
 Wtyczka renderująca animacje flash w oparciu o bibliotekę swfdec.
 
+%package -n gstreamer-timidity
+Summary:	timidity plugin for GStreamer
+Summary(pl.UTF-8):	Wtyczka timidity do GStreamera
+Group:		Libraries
+Requires:	gstreamer >= %{gst_req_ver}
+
+%description -n gstreamer-timidity
+timidity plugin for GStreamer.
+
+%description -n gstreamer-timidity -l pl.UTF-8
+Wtyczka timidity do GStreamera.
+
 %package -n gstreamer-videosink-sdl
 Summary:	GStreamer plugin for outputing to SDL
 Summary(pl.UTF-8):	Wtyczka wyjścia SDL do GStreamera
@@ -409,6 +434,18 @@ GStreamer DirectFB output plugin.
 
 %description -n gstreamer-videosink-directfb -l pl.UTF-8
 Wtyczka wyjścia obrazu DirectFB do GStreamera.
+
+%package -n gstreamer-wildmidi
+Summary:	wildmidi plugin for GStreamer
+Summary(pl.UTF-8):	Wtyczka wildmidi do GStreamera
+Group:		Libraries
+Requires:	gstreamer >= %{gst_req_ver}
+
+%description -n gstreamer-wildmidi
+wildmidi plugin for GStreamer.
+
+%description -n gstreamer-wildmidi -l pl.UTF-8
+Wtyczka wildmidi do GStreamera.
 
 %package -n gstreamer-xvid
 Summary:	GStreamer xvid decoder plugin
@@ -442,6 +479,7 @@ Wtyczka do GStreamera dekodująca przy użyciu biblioteki x264.
 %patch3 -p1
 %patch4 -p1
 %patch5 -p1
+%patch6 -p1
 
 %build
 %{__libtoolize}
@@ -625,6 +663,10 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %attr(755,root,root) %{gstlibdir}/libgsttrm.so
 
+%files -n gstreamer-mythtv
+%defattr(644,root,root,755)
+%attr(755,root,root) %{gstlibdir}/libgstmythtvsrc.so
+
 %if %{with neon}
 %files -n gstreamer-neon
 %defattr(644,root,root,755)
@@ -650,6 +692,14 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %attr(755,root,root) %{gstlibdir}/libgstswfdec.so
 %endif
+
+%files -n gstreamer-timidity
+%defattr(644,root,root,755)
+%attr(755,root,root) %{gstlibdir}/libgsttimidity.so
+
+%files -n gstreamer-wildmidi
+%defattr(644,root,root,755)
+%attr(755,root,root) %{gstlibdir}/libgstwildmidi.so
 
 %if %{with sdl}
 %files -n gstreamer-videosink-sdl
