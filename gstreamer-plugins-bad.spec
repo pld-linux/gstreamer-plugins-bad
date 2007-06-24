@@ -96,6 +96,7 @@ BuildRequires:	xorg-lib-libX11-devel
 Requires:	gstreamer >= %{gst_req_ver}
 Requires:	gstreamer-plugins-base >= %{gst_req_ver}
 Obsoletes:	gstreamer-quicktime
+Obsoletes:	gstreamer-vcd
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		gstlibdir 	%{_libdir}/gstreamer-%{gst_major_ver}
