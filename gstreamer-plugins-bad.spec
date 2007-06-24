@@ -1,7 +1,10 @@
 # TODO:
-# new plugins:
-# - ivorbis (BR: tremor-devel, CVS versions only, http://www.xiph.org/vorbis/)
-# - theoradec (BR: libtheora-exp, http://people.xiph.org/~tterribe/doc/libtheora-exp/)
+# - new plugins:
+#   - ivorbisdec (BR: tremor-devel, CVS versions only, http://www.xiph.org/vorbis/)
+#   - mythtvsrc (BR: gmyth-0.1 >= 0.1.0.3)
+#   - theoraexpdec (BR: libtheora-exp, http://people.xiph.org/~tterribe/doc/libtheora-exp/)
+#   - timidity (BR: libtimidity)
+#   - wildmidi (BR: -lWildMidi)
 # - system libmodplug?
 #
 # Conditional build:
@@ -42,6 +45,7 @@ Patch1:		%{name}-libdts.patch
 Patch2:		%{name}-divx4linux.patch
 Patch3:		%{name}-soundtouch.patch
 Patch4:		%{name}-link.patch
+Patch5:		%{name}-vcd.patch
 URL:		http://gstreamer.freedesktop.org/
 BuildRequires:	autoconf >= 2.59-9
 BuildRequires:	automake >= 1.6
@@ -436,6 +440,7 @@ Wtyczka do GStreamera dekodująca przy użyciu biblioteki x264.
 %patch2 -p1
 %patch3 -p1
 %patch4 -p1
+%patch5 -p1
 
 %build
 %{__libtoolize}
@@ -444,6 +449,7 @@ Wtyczka do GStreamera dekodująca przy użyciu biblioteki x264.
 %{__autoheader}
 %{__automake}
 %configure \
+	%{!?with_amr:--disable-amrwb} \
 	%{!?with_cdaudio:--disable-cdaudio} \
 	%{!?with_divx4linux:--disable-divx} \
 	%{!?with_dts:--disable-dts} \
@@ -487,11 +493,13 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %doc AUTHORS ChangeLog NEWS README RELEASE
 %attr(755,root,root) %{_libdir}/libgstapp-*.so.*.*.*
+# R: libgstapp-*
 %attr(755,root,root) %{gstlibdir}/libgstapp.so
 %attr(755,root,root) %{gstlibdir}/libgstbayer.so
 %attr(755,root,root) %{gstlibdir}/libgstbz2.so
 %attr(755,root,root) %{gstlibdir}/libgstcdxaparse.so
 %attr(755,root,root) %{gstlibdir}/libgstdeinterlace.so
+# R: gst-plugins-bad locales
 %attr(755,root,root) %{gstlibdir}/libgstdvbsrc.so
 %attr(755,root,root) %{gstlibdir}/libgstequalizer.so
 %attr(755,root,root) %{gstlibdir}/libgstfilter.so
@@ -514,6 +522,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{gstlibdir}/libgstspectrum.so
 %attr(755,root,root) %{gstlibdir}/libgstswitch.so
 %attr(755,root,root) %{gstlibdir}/libgsttta.so
+%attr(755,root,root) %{gstlibdir}/libgstvcdsrc.so
 %attr(755,root,root) %{gstlibdir}/libgstvideoparse.so
 %attr(755,root,root) %{gstlibdir}/libgstvideosignal.so
 %attr(755,root,root) %{gstlibdir}/libgstvmnc.so
