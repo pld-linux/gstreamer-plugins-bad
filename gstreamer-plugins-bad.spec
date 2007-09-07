@@ -32,7 +32,7 @@ Summary:	Bad GStreamer Streaming-media framework plugins
 Summary(pl.UTF-8):	Złe wtyczki do środowiska obróbki strumieni GStreamer
 Name:		gstreamer-plugins-bad
 Version:	0.10.5
-Release:	3
+Release:	4
 License:	LPL
 Group:		Libraries
 Source0:	http://gstreamer.freedesktop.org/src/gst-plugins-bad/%{gstname}-%{version}.tar.bz2
@@ -44,6 +44,7 @@ Patch3:		%{name}-soundtouch.patch
 Patch4:		%{name}-link.patch
 Patch5:		%{name}-vcd.patch
 Patch6:		%{name}-gmyth.patch
+Patch7:		%{name}-neon27.patch
 URL:		http://gstreamer.freedesktop.org/
 BuildRequires:	autoconf >= 2.59-9
 BuildRequires:	automake >= 1.6
@@ -86,6 +87,7 @@ BuildRequires:	libx264-devel
 %{?with_mjpegtools:BuildRequires:	mjpegtools-devel >= 1.8.0-0.2}
 %{?with_neon:BuildRequires:	neon-devel >= 0.26}
 BuildRequires:	libsndfile-devel
+BuildRequires:	nas-devel
 BuildRequires:	soundtouch-devel >= 1.3.1
 %if %{with swfdec}
 BuildRequires:	swfdec-devel < 0.4.0
@@ -480,6 +482,7 @@ Wtyczka do GStreamera dekodująca przy użyciu biblioteki x264.
 %patch4 -p1
 %patch5 -p1
 %patch6 -p1
+%patch7 -p1
 
 %build
 %{__libtoolize}
