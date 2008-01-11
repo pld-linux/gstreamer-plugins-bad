@@ -185,6 +185,19 @@ GStreamer ALSA plugin for S/PDIF output.
 %description -n gstreamer-audiosink-alsaspdif -l pl.UTF-8
 Wtyczka ALSA GStreamera do wyjścia S/PDIF.
 
+%package -n gstreamer-audiosink-nas
+Summary:	GStreamer NAS audio output plugin
+Summary(pl.UTF-8):	Wtyczka wyjścia dźwięku NAS dla GStreamera
+Group:		Libraries
+Requires:	gstreamer-plugins-base >= %{gst_req_ver}
+Provides:	gstreamer-audiosink = %{version}
+
+%description -n gstreamer-audiosink-nas
+GStreamer NAS audio output plugin.
+
+%description -n gstreamer-audiosink-nas -l pl.UTF-8
+Wtyczka wyjścia dźwięku NAS dla GStreamera.
+
 %package -n gstreamer-cdaudio
 Summary:	GStreamer plugin for CD audio input using libcdaudio
 Summary(pl.UTF-8):	Wtyczka do GStreamera odtwarzająca płyty CD-Audio przy użyciu libcdaudio
@@ -528,13 +541,14 @@ rm -f $RPM_BUILD_ROOT%{gstlibdir}/*.la
 %clean
 rm -rf $RPM_BUILD_ROOT
 
-%post -p /sbin/ldconfig
-%postun -p /sbin/ldconfig
+%post	-p /sbin/ldconfig
+%postun	-p /sbin/ldconfig
 
 %files -f %{gstname}-%{gst_major_ver}.lang
 %defattr(644,root,root,755)
 %doc AUTHORS ChangeLog NEWS README RELEASE
 %attr(755,root,root) %{_libdir}/libgstapp-*.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libgstapp-*.so.0
 # R: libgstapp-*
 %attr(755,root,root) %{gstlibdir}/libgstapp.so
 %attr(755,root,root) %{gstlibdir}/libgstbayer.so
@@ -552,7 +566,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{gstlibdir}/libgstmpegvideoparse.so
 %attr(755,root,root) %{gstlibdir}/libgstmve.so
 %attr(755,root,root) %{gstlibdir}/libgstmultifile.so
-%attr(755,root,root) %{gstlibdir}/libgstnassink.so
 %attr(755,root,root) %{gstlibdir}/libgstnsf.so
 %attr(755,root,root) %{gstlibdir}/libgstnuvdemux.so
 %ifarch %{ix86} %{x8664}
@@ -602,6 +615,10 @@ rm -rf $RPM_BUILD_ROOT
 %files -n gstreamer-audiosink-alsaspdif
 %defattr(644,root,root,755)
 %attr(755,root,root) %{gstlibdir}/libgstalsaspdif.so
+
+%files -n gstreamer-audiosink-nas
+%defattr(644,root,root,755)
+%attr(755,root,root) %{gstlibdir}/libgstnassink.so
 
 %if %{with cdaudio}
 %files -n gstreamer-cdaudio
