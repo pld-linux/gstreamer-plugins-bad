@@ -17,6 +17,7 @@
 %bcond_without	musepack	# don't build musepack plugin
 %bcond_without	neon		# don't build neonhttpsrc plugin
 %bcond_without	sdl		# don't build sdl plugin
+%bcond_with	soup		# libsoup 2.4 http source
 %bcond_with	swfdec		# swfdec plugin
 %bcond_without	spc		# don't build spc plugin
 %bcond_without	wavpack		# don't build wavpack plugin
@@ -26,25 +27,23 @@
 #
 %define		gstname		gst-plugins-bad
 %define		gst_major_ver	0.10
-%define		gst_req_ver	0.10.13
+%define		gst_req_ver	0.10.14
 #
 Summary:	Bad GStreamer Streaming-media framework plugins
 Summary(pl.UTF-8):	Złe wtyczki do środowiska obróbki strumieni GStreamer
 Name:		gstreamer-plugins-bad
-Version:	0.10.5
-Release:	5
+Version:	0.10.6
+Release:	1
 License:	LPL
 Group:		Libraries
 Source0:	http://gstreamer.freedesktop.org/src/gst-plugins-bad/%{gstname}-%{version}.tar.bz2
-# Source0-md5:	395f3ed705928e77e5620cccf11a8cff
+# Source0-md5:	fb47838aa0ccef52683cea5d89364053
 Patch0:		%{name}-bashish.patch
 Patch1:		%{name}-libdts.patch
 Patch2:		%{name}-divx4linux.patch
-Patch3:		%{name}-soundtouch.patch
-Patch4:		%{name}-link.patch
-Patch5:		%{name}-vcd.patch
-Patch6:		%{name}-gmyth.patch
-Patch7:		%{name}-neon27.patch
+Patch3:		%{name}-neon27.patch
+Patch4:		%{name}-timidity.patch
+Patch5:		%{name}-nas.patch
 URL:		http://gstreamer.freedesktop.org/
 BuildRequires:	autoconf >= 2.59-9
 BuildRequires:	automake >= 1.6
@@ -69,7 +68,7 @@ BuildRequires:	bzip2-devel
 %{?with_divx4linux:BuildRequires:	divx4linux-devel >= 1:5.05.20030428}
 BuildRequires:	faac-devel
 %{?with_faad:BuildRequires:	faad2-devel >= 2.0-2}
-BuildRequires:	gmyth-devel >= 0.3
+BuildRequires:	gmyth-devel >= 0.7
 %{?with_jack:BuildRequires:	jack-audio-connection-kit-devel >= 0.99.10}
 %{?with_ladspa:BuildRequires:	ladspa-devel >= 1.12}
 %{?with_cdaudio:BuildRequires:	libcdaudio-devel}
@@ -79,6 +78,7 @@ BuildRequires:	gmyth-devel >= 0.3
 %{?with_musepack:BuildRequires:	libmpcdec-devel >= 1.2}
 BuildRequires:	libmusicbrainz-devel >= 2.1.0
 %{?with_spc:BuildRequires:	libopenspc-devel >= 0.3.99}
+%{?with_soup:BuildRequires:	libsoup-devel >= 2.3.0.1}
 # for modplug and libSoundTouch
 BuildRequires:	libstdc++-devel
 BuildRequires:	libtimidity-devel
@@ -494,8 +494,6 @@ Wtyczka do GStreamera dekodująca przy użyciu biblioteki x264.
 %patch3 -p1
 %patch4 -p1
 %patch5 -p1
-%patch6 -p1
-%patch7 -p1
 
 %build
 %{__libtoolize}
@@ -519,8 +517,10 @@ Wtyczka do GStreamera dekodująca przy użyciu biblioteki x264.
 	%{!?with_sdl:--disable-sdl} \
 	%{!?with_sdl:--disable-sdltest} \
 	%{!?with_spc:--disable-spc} \
+	%{!?with_soup:--disable-soup} \
 	%{!?with_swfdec:--disable-swfdec} \
 	%{!?with_xvid:--disable-xvid} \
+	--disable-dc1394 \
 	--disable-static \
 	--enable-gtk-doc \
 	--with-html-dir=%{_gtkdocdir}
@@ -556,32 +556,39 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{gstlibdir}/libgstcdxaparse.so
 %attr(755,root,root) %{gstlibdir}/libgstdeinterlace.so
 # R: gst-plugins-bad locales
-%attr(755,root,root) %{gstlibdir}/libgstdvbsrc.so
-%attr(755,root,root) %{gstlibdir}/libgstequalizer.so
+%attr(755,root,root) %{gstlibdir}/libgstdvb.so
+%attr(755,root,root) %{gstlibdir}/libgstdvdspu.so
+%attr(755,root,root) %{gstlibdir}/libgstfbdevsink.so
+%attr(755,root,root) %{gstlibdir}/libgstfestival.so
 %attr(755,root,root) %{gstlibdir}/libgstfilter.so
+%attr(755,root,root) %{gstlibdir}/libgstflvdemux.so
 %attr(755,root,root) %{gstlibdir}/libgstfreeze.so
 %attr(755,root,root) %{gstlibdir}/libgsth264parse.so
 %attr(755,root,root) %{gstlibdir}/libgstinterleave.so
+%attr(755,root,root) %{gstlibdir}/libgstmetadata.so
 %attr(755,root,root) %{gstlibdir}/libgstmodplug.so
+%attr(755,root,root) %{gstlibdir}/libgstmpeg4videoparse.so
+%attr(755,root,root) %{gstlibdir}/libgstmpegtsparse.so
 %attr(755,root,root) %{gstlibdir}/libgstmpegvideoparse.so
 %attr(755,root,root) %{gstlibdir}/libgstmve.so
-%attr(755,root,root) %{gstlibdir}/libgstmultifile.so
 %attr(755,root,root) %{gstlibdir}/libgstnsf.so
 %attr(755,root,root) %{gstlibdir}/libgstnuvdemux.so
+%attr(755,root,root) %{gstlibdir}/libgstrawparse.so
 %ifarch %{ix86} %{x8664}
 %attr(755,root,root) %{gstlibdir}/libgstreal.so
 %endif
 %attr(755,root,root) %{gstlibdir}/libgstreplaygain.so
 %attr(755,root,root) %{gstlibdir}/libgstrfbsrc.so
 %attr(755,root,root) %{gstlibdir}/libgstrtpmanager.so
-%attr(755,root,root) %{gstlibdir}/libgstspectrum.so
-%attr(755,root,root) %{gstlibdir}/libgstswitch.so
+%attr(755,root,root) %{gstlibdir}/libgstsdpelem.so
+%attr(755,root,root) %{gstlibdir}/libgstselector.so
+%{?with_soup:%attr(755,root,root) %{gstlibdir}/libgstsouphttpsrc.so}
+%attr(755,root,root) %{gstlibdir}/libgstspeexresample.so
+%attr(755,root,root) %{gstlibdir}/libgststereo.so
 %attr(755,root,root) %{gstlibdir}/libgsttta.so
 %attr(755,root,root) %{gstlibdir}/libgstvcdsrc.so
-%attr(755,root,root) %{gstlibdir}/libgstvideoparse.so
 %attr(755,root,root) %{gstlibdir}/libgstvideosignal.so
 %attr(755,root,root) %{gstlibdir}/libgstvmnc.so
-%attr(755,root,root) %{gstlibdir}/libgstxingheader.so
 %attr(755,root,root) %{gstlibdir}/libgsty4menc.so
 %{_gtkdocdir}/gst-plugins-bad-plugins-*
 
@@ -647,7 +654,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files -n gstreamer-imagesink-gl
 %defattr(644,root,root,755)
-%attr(755,root,root) %{gstlibdir}/libgstglimagesink.so
+#%attr(755,root,root) %{gstlibdir}/libgstglimagesink.so
 
 %if %{with jack}
 %files -n gstreamer-jack
@@ -695,7 +702,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files -n gstreamer-soundtouch
 %defattr(644,root,root,755)
-%attr(755,root,root) %{gstlibdir}/libgstpitch.so
+%attr(755,root,root) %{gstlibdir}/libgstsoundtouch.so
 
 %files -n gstreamer-sndfile
 %defattr(644,root,root,755)
