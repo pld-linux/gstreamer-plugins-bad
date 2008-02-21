@@ -33,7 +33,7 @@ Summary:	Bad GStreamer Streaming-media framework plugins
 Summary(pl.UTF-8):	Złe wtyczki do środowiska obróbki strumieni GStreamer
 Name:		gstreamer-plugins-bad
 Version:	0.10.6
-Release:	1
+Release:	2
 License:	LPL
 Group:		Libraries
 Source0:	http://gstreamer.freedesktop.org/src/gst-plugins-bad/%{gstname}-%{version}.tar.bz2
@@ -247,19 +247,6 @@ Output plugin for GStreamer to convert to GSM lossy audio format.
 %description -n gstreamer-gsm -l pl.UTF-8
 Wtyczka wyjścia dźwięku GSteamera konwertująca do stratnego formatu
 GSM.
-
-%package -n gstreamer-imagesink-gl
-Summary:	GStreamer plugin for outputing to OpenGL
-Summary(pl.UTF-8):	Wtyczka wyjścia OpenGL do GStreamera
-Group:		Libraries
-Requires:	gstreamer >= %{gst_req_ver}
-Provides:	gstreamer-imagesink = %{version}
-
-%description -n gstreamer-imagesink-gl
-GStreamer plugin for outputing to OpenGL.
-
-%description -n gstreamer-imagesink-gl -l pl.UTF-8
-Wtyczka wyjścia OpenGL do GStreamera.
 
 %package -n gstreamer-jack
 Summary:	GStreamer plugin for the JACK Sound Server
@@ -651,10 +638,6 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %attr(755,root,root) %{gstlibdir}/libgstgsm.so
 %endif
-
-%files -n gstreamer-imagesink-gl
-%defattr(644,root,root,755)
-#%attr(755,root,root) %{gstlibdir}/libgstglimagesink.so
 
 %if %{with jack}
 %files -n gstreamer-jack
