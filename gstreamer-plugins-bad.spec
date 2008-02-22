@@ -44,6 +44,7 @@ Patch2:		%{name}-divx4linux.patch
 Patch3:		%{name}-neon27.patch
 Patch4:		%{name}-timidity.patch
 Patch5:		%{name}-nas.patch
+Patch6:		%{name}-dc1394.patch
 URL:		http://gstreamer.freedesktop.org/
 BuildRequires:	autoconf >= 2.59-9
 BuildRequires:	automake >= 1.6
@@ -72,6 +73,7 @@ BuildRequires:	gmyth-devel >= 0.7
 %{?with_jack:BuildRequires:	jack-audio-connection-kit-devel >= 0.99.10}
 %{?with_ladspa:BuildRequires:	ladspa-devel >= 1.12}
 %{?with_cdaudio:BuildRequires:	libcdaudio-devel}
+BuildRequires:	libdc1394-devel >= 2.0.0
 %{?with_dts:BuildRequires:	libdts-devel}
 %{?with_gsm:BuildRequires:	libgsm-devel}
 %{?with_mms:BuildRequires:	libmms-devel >= 0.2}
@@ -210,6 +212,18 @@ Plugin for playing audio tracks using libcdaudio under GStreamer.
 %description -n gstreamer-cdaudio -l pl.UTF-8
 Wtyczka do odtwarzania ścieżek dźwiękowych pod GStreamerem za pomocą
 libcdaudio.
+
+%package -n gstreamer-dc1394
+Summary:	GStreamer 1394 IIDC (Firewire digital cameras) video source plugin
+Summary(pl.UTF-8):	Wtyczka źródła obrazu 1394 IIDC (z kamer cyfrowych Firewire) do GStreamera
+Group:		Libraries
+Requires:	gstreamer >= %{gst_req_ver}
+
+%description -n gstreamer-dc1394
+GStreamer 1394 IIDC (Firewire digital cameras) video source plugin.
+
+%description -n gstreamer-dc1394 -l pl.UTF-8
+Wtyczka źródła obrazu 1394 IIDC (z kamer cyfrowych Firewire) do GStreamera.
 
 %package -n gstreamer-divx
 Summary:	GStreamer divx plugin
@@ -481,6 +495,7 @@ Wtyczka do GStreamera dekodująca przy użyciu biblioteki x264.
 %patch3 -p1
 %patch4 -p1
 %patch5 -p1
+%patch6 -p1
 
 %build
 %{__libtoolize}
@@ -507,7 +522,6 @@ Wtyczka do GStreamera dekodująca przy użyciu biblioteki x264.
 	%{!?with_soup:--disable-soup} \
 	%{!?with_swfdec:--disable-swfdec} \
 	%{!?with_xvid:--disable-xvid} \
-	--disable-dc1394 \
 	--disable-static \
 	--enable-gtk-doc \
 	--with-html-dir=%{_gtkdocdir}
@@ -619,6 +633,10 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %attr(755,root,root) %{gstlibdir}/libgstcdaudio.so
 %endif
+
+%files -n gstreamer-dc1394
+%defattr(644,root,root,755)
+%attr(755,root,root) %{gstlibdir}/libgstdc1394.so
 
 %if %{with divx4linux}
 %files -n gstreamer-divx
