@@ -1,0 +1,229 @@
+--- gst-plugins-bad-0.10.6/ext/dc1394/gstdc1394.c.orig	2008-02-07 13:05:44.000000000 +0100
++++ gst-plugins-bad-0.10.6/ext/dc1394/gstdc1394.c	2008-02-21 23:04:01.488757978 +0100
+@@ -468,9 +468,13 @@ gst_dc1394_change_state (GstElement * el
+       if (src->camera && !gst_dc1394_change_camera_transmission (src, FALSE)) {
+ 
+         if (src->camera) {
+-          dc1394_free_camera (src->camera);
++          dc1394_camera_free (src->camera);
+         }
+         src->camera = NULL;
++	if (src->dc1394) {
++	  dc1394_free (src->dc1394);
++	}
++	src->dc1394 = NULL;
+ 
+         if (src->caps) {
+           gst_caps_unref (src->caps);
+@@ -484,9 +488,13 @@ gst_dc1394_change_state (GstElement * el
+     case GST_STATE_CHANGE_READY_TO_NULL:
+       GST_LOG_OBJECT (src, "State change ready to null");
+       if (src->camera) {
+-        dc1394_free_camera (src->camera);
++        dc1394_camera_free (src->camera);
+       }
+       src->camera = NULL;
++      if (src->dc1394) {
++	dc1394_free (src->dc1394);
++      }
++      src->dc1394 = NULL;
+ 
+       if (src->caps) {
+         gst_caps_unref (src->caps);
+@@ -836,11 +844,10 @@ gst_dc1394_get_all_dc1394_caps ()
+ GstCaps *
+ gst_dc1394_get_cam_caps (GstDc1394 * src)
+ {
+-
++  dc1394_t *dc1394 = NULL;
+   dc1394camera_t *camera = NULL;
+-  dc1394camera_t **cameras = NULL;
++  dc1394camera_list_t *cameras = NULL;
+   dc1394error_t camerr;
+-  guint numCameras;
+   gint i, j;
+   dc1394video_modes_t modes;
+   dc1394framerates_t framerates;
+@@ -848,42 +855,29 @@ gst_dc1394_get_cam_caps (GstDc1394 * src
+ 
+   gcaps = gst_caps_new_empty ();
+ 
+-  camerr = dc1394_find_cameras (&cameras, &numCameras);
++  dc1394 = dc1394_new();
++  if(dc1394 == NULL)
++    goto error;
++
++  camerr = dc1394_camera_enumerate (dc1394, &cameras);
+ 
+   if (camerr != DC1394_SUCCESS) {
+-    if (camerr == DC1394_NO_CAMERA) {
+-      GST_ELEMENT_ERROR (src, RESOURCE, NOT_FOUND, ("There were no cameras"),
+-          ("There were no cameras"));
+-    } else {
+       GST_ELEMENT_ERROR (src, RESOURCE, NOT_FOUND,
+           ("Can't find cameras error : %d", camerr),
+           ("Can't find cameras error : %d", camerr));
+-    }
+     goto error;
+   }
+ 
+-  if (src->camnum > (numCameras - 1)) {
++  if (src->camnum > (cameras->num - 1)) {
+     GST_ELEMENT_ERROR (src, RESOURCE, FAILED, ("Invalid camera number"),
+         ("Invalid camera number %d", src->camnum));
+-
+-    for (i = 0; i < numCameras; i++) {
+-      if (i != src->camnum) {
+-        dc1394_free_camera (cameras[i]);
+-      }
+-    }
+     goto error;
+   }
+ 
+-  camera = cameras[src->camnum];
+-
+-  // free the other cameras
+-  for (i = 0; i < numCameras; i++) {
+-    if (i != src->camnum) {
+-      dc1394_free_camera (cameras[i]);
+-    }
+-  }
++  camera = dc1394_camera_new_unit(dc1394, cameras->ids[src->camnum].guid, cameras->ids[src->camnum].unit);
+ 
+-  free (cameras);
++  dc1394_camera_free_list(cameras);
++  cameras = NULL;
+ 
+   camerr = dc1394_video_get_supported_modes (camera, &modes);
+   if (camerr != DC1394_SUCCESS) {
+@@ -972,9 +966,11 @@ gst_dc1394_get_cam_caps (GstDc1394 * src
+   }
+ 
+   if (camera) {
+-    dc1394_free_camera (camera);
++    dc1394_camera_free (camera);
+   }
+ 
++  dc1394_free(dc1394);
++
+   return gcaps;
+ 
+ error:
+@@ -983,10 +979,14 @@ error:
+     gst_caps_unref (gcaps);
+   }
+ 
+-  if (camera) {
+-    dc1394_free_camera (camera);
+-    camera = NULL;
+-  }
++  if (camera)
++    dc1394_camera_free (camera);
++
++  if (cameras)
++    dc1394_camera_free_list (cameras);
++
++  if (dc1394)
++    dc1394_free(dc1394);
+ 
+   return NULL;
+ }
+@@ -1023,24 +1023,23 @@ gst_dc1394_framerate_frac_to_const (gint
+ static gboolean
+ gst_dc1394_open_cam_with_best_caps (GstDc1394 * src)
+ {
+-  dc1394camera_t **cameras = NULL;
+-  guint numCameras;
+-  gint i;
++  dc1394camera_list_t *cameras = NULL;
+   gint err;
+   int framerateconst;
+ 
+   GST_LOG_OBJECT (src, "Opening the camera!!!");
+ 
++  src->dc1394 = dc1394_new();
+ 
+-  if (dc1394_find_cameras (&cameras, &numCameras) != DC1394_SUCCESS) {
++  if (dc1394_camera_enumerate (src->dc1394, &cameras) != DC1394_SUCCESS) {
+     GST_ELEMENT_ERROR (src, RESOURCE, FAILED, ("Can't find cameras"),
+         ("Can't find cameras"));
+     goto error;
+   }
+ 
+-  GST_LOG_OBJECT (src, "Found  %d  cameras", numCameras);
++  GST_LOG_OBJECT (src, "Found  %d  cameras", cameras->num);
+ 
+-  if (src->camnum > (numCameras - 1)) {
++  if (src->camnum > (cameras->num)) {
+     GST_ELEMENT_ERROR (src, RESOURCE, FAILED, ("Invalid camera number"),
+         ("Invalid camera number"));
+     goto error;
+@@ -1048,15 +1047,10 @@ gst_dc1394_open_cam_with_best_caps (GstD
+ 
+   GST_LOG_OBJECT (src, "Opening camera : %d", src->camnum);
+ 
+-  src->camera = cameras[src->camnum];
++  src->camera = dc1394_camera_new_unit(src->dc1394, cameras->ids[src->camnum].guid, cameras->ids[src->camnum].unit);
+ 
+-  // free the other cameras
+-  for (i = 0; i < numCameras; i++) {
+-    if (i != src->camnum)
+-      dc1394_free_camera (cameras[i]);
+-  }
+-
+-  free (cameras);
++  dc1394_camera_free_list (cameras);
++  cameras = NULL;
+ 
+   // figure out mode
+   framerateconst = gst_dc1394_framerate_frac_to_const (src->rate_numerator,
+@@ -1121,7 +1115,7 @@ gst_dc1394_open_cam_with_best_caps (GstD
+           "Trying to cleanup the iso_channels_and_bandwidth and retrying");
+ 
+       // try to cleanup the bandwidth and retry 
+-      err = dc1394_cleanup_iso_channels_and_bandwidth (src->camera);
++      err = dc1394_iso_release_all (src->camera);
+       if (err != DC1394_SUCCESS) {
+         GST_ELEMENT_ERROR (src, RESOURCE, FAILED,
+             ("Could not cleanup bandwidth"), ("Could not cleanup bandwidth"));
+@@ -1152,10 +1146,18 @@ gst_dc1394_open_cam_with_best_caps (GstD
+ error:
+ 
+   if (src->camera) {
+-    dc1394_free_camera (src->camera);
++    dc1394_camera_free (src->camera);
+     src->camera = NULL;
+   }
+ 
++  if (cameras)
++    dc1394_camera_free_list(cameras);
++
++  if (src->dc1394) {
++    dc1394_free(src->dc1394);
++    src->dc1394 = NULL;
++  }
++
+   return FALSE;;
+ 
+ }
+--- gst-plugins-bad-0.10.6/ext/dc1394/gstdc1394.h.orig	2007-06-29 15:03:27.000000000 +0200
++++ gst-plugins-bad-0.10.6/ext/dc1394/gstdc1394.h	2008-02-21 22:50:03.805021102 +0100
+@@ -63,6 +63,7 @@ struct _GstDc1394 {
+   gint camnum; 
+   gint bufsize; 
+ 
++  dc1394_t * dc1394;
+   dc1394camera_t * camera; 
+ 
+   GstCaps *caps;
+--- gst-plugins-bad-0.10.6/configure.ac.orig	2008-02-21 23:13:49.062241000 +0100
++++ gst-plugins-bad-0.10.6/configure.ac	2008-02-22 00:54:27.874374174 +0100
+@@ -358,7 +358,7 @@
+ dnl *** dc1394  ***
+ translit(dnm, m, l) AM_CONDITIONAL(USE_DC1394, true)
+ AG_GST_CHECK_FEATURE(DC1394, [libdc1394], dc1394, [
+-   PKG_CHECK_MODULES(LIBDC1394, libdc1394-2 == 2.0.0-rc5, HAVE_DC1394="yes", [
++   PKG_CHECK_MODULES(LIBDC1394, libdc1394-2 > 2.0.0-rc5, HAVE_DC1394="yes", [
+         HAVE_DC1394="no"
+ 	AC_MSG_RESULT(no)
+    ])
