@@ -383,6 +383,19 @@ GStreamer sndfile source plugin.
 %description -n gstreamer-sndfile -l pl.UTF-8
 Wtyczka sndfile do GStreamera.
 
+%package -n gstreamer-soup
+Summary:	GStreamer Soup plugin
+Summary(pl.UTF-8):	Wtyczka biblioteki Soup dla GStreamera
+Group:		Libraries
+Requires:	gstreamer-plugins-base >= %{gst_req_ver}
+
+%description -n gstreamer-soup
+GStreamer Plugin for downloading files with Soup library.
+
+%description -n gstreamer-soup -l pl.UTF-8
+Wtyczka GStreamera umożliwiająca ściąganie plików za pomocą biblioteki
+Soup.
+
 %package -n gstreamer-spc
 Summary:	GStreamer SPC plugin
 Summary(pl.UTF-8):	Wtyczka SPC dla GStreamera
@@ -583,7 +596,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{gstlibdir}/libgstrtpmanager.so
 %attr(755,root,root) %{gstlibdir}/libgstsdpelem.so
 %attr(755,root,root) %{gstlibdir}/libgstselector.so
-%{?with_soup:%attr(755,root,root) %{gstlibdir}/libgstsouphttpsrc.so}
 %attr(755,root,root) %{gstlibdir}/libgstspeexresample.so
 %attr(755,root,root) %{gstlibdir}/libgststereo.so
 %attr(755,root,root) %{gstlibdir}/libgsttta.so
@@ -708,6 +720,12 @@ rm -rf $RPM_BUILD_ROOT
 %files -n gstreamer-sndfile
 %defattr(644,root,root,755)
 %attr(755,root,root) %{gstlibdir}/libgstsndfile.so
+
+%if %{with soup}
+%files -n gstreamer-soup
+%defattr(644,root,root,755)
+%attr(755,root,root) %{gstlibdir}/libgstsouphttpsrc.so
+%endif
 
 %if %{with spc}
 %files -n gstreamer-spc
