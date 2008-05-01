@@ -17,7 +17,7 @@
 %bcond_without	musepack	# don't build musepack plugin
 %bcond_without	neon		# don't build neonhttpsrc plugin
 %bcond_without	sdl		# don't build sdl plugin
-%bcond_with	soup		# libsoup 2.4 http source
+%bcond_without	soup		# don't build libsoup 2.4 http source plugin
 %bcond_with	swfdec		# swfdec plugin
 %bcond_without	spc		# don't build spc plugin
 %bcond_without	wavpack		# don't build wavpack plugin
@@ -33,7 +33,7 @@ Summary:	Bad GStreamer Streaming-media framework plugins
 Summary(pl.UTF-8):	Złe wtyczki do środowiska obróbki strumieni GStreamer
 Name:		gstreamer-plugins-bad
 Version:	0.10.6
-Release:	2
+Release:	3
 License:	LPL
 Group:		Libraries
 Source0:	http://gstreamer.freedesktop.org/src/gst-plugins-bad/%{gstname}-%{version}.tar.bz2
@@ -80,7 +80,7 @@ BuildRequires:	libdc1394-devel >= 2.0.0
 %{?with_musepack:BuildRequires:	libmpcdec-devel >= 1.2}
 BuildRequires:	libmusicbrainz-devel >= 2.1.0
 %{?with_spc:BuildRequires:	libopenspc-devel >= 0.3.99}
-%{?with_soup:BuildRequires:	libsoup-devel >= 2.3.0.1}
+%{?with_soup:BuildRequires:	libsoup-devel >= 2.4.0}
 # for modplug and libSoundTouch
 BuildRequires:	libstdc++-devel
 BuildRequires:	libtimidity-devel
