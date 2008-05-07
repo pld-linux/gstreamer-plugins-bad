@@ -17,7 +17,6 @@
 %bcond_without	musepack	# don't build musepack plugin
 %bcond_without	neon		# don't build neonhttpsrc plugin
 %bcond_without	sdl		# don't build sdl plugin
-%bcond_without	soup		# don't build libsoup 2.4 http source plugin
 %bcond_with	swfdec		# swfdec plugin
 %bcond_without	spc		# don't build spc plugin
 %bcond_without	wavpack		# don't build wavpack plugin
@@ -32,19 +31,17 @@
 Summary:	Bad GStreamer Streaming-media framework plugins
 Summary(pl.UTF-8):	Złe wtyczki do środowiska obróbki strumieni GStreamer
 Name:		gstreamer-plugins-bad
-Version:	0.10.6
-Release:	4
+Version:	0.10.7
+Release:	1
 License:	LPL
 Group:		Libraries
 Source0:	http://gstreamer.freedesktop.org/src/gst-plugins-bad/%{gstname}-%{version}.tar.bz2
-# Source0-md5:	fb47838aa0ccef52683cea5d89364053
+# Source0-md5:	9a511c9e9a0510ca4e212ce1d67e2cba
 Patch0:		%{name}-bashish.patch
 Patch1:		%{name}-libdts.patch
 Patch2:		%{name}-divx4linux.patch
-Patch3:		%{name}-neon27.patch
 Patch4:		%{name}-timidity.patch
 Patch5:		%{name}-nas.patch
-Patch6:		%{name}-dc1394.patch
 URL:		http://gstreamer.freedesktop.org/
 BuildRequires:	autoconf >= 2.59-9
 BuildRequires:	automake >= 1.6
@@ -80,7 +77,6 @@ BuildRequires:	libdc1394-devel >= 2.0.0
 %{?with_musepack:BuildRequires:	libmpcdec-devel >= 1.2}
 BuildRequires:	libmusicbrainz-devel >= 2.1.0
 %{?with_spc:BuildRequires:	libopenspc-devel >= 0.3.99}
-%{?with_soup:BuildRequires:	libsoup-devel >= 2.4.0}
 # for modplug and libSoundTouch
 BuildRequires:	libstdc++-devel
 BuildRequires:	libtimidity-devel
@@ -383,19 +379,6 @@ GStreamer sndfile source plugin.
 %description -n gstreamer-sndfile -l pl.UTF-8
 Wtyczka sndfile do GStreamera.
 
-%package -n gstreamer-soup
-Summary:	GStreamer Soup plugin
-Summary(pl.UTF-8):	Wtyczka biblioteki Soup dla GStreamera
-Group:		Libraries
-Requires:	gstreamer-plugins-base >= %{gst_req_ver}
-
-%description -n gstreamer-soup
-GStreamer Plugin for downloading files with Soup library.
-
-%description -n gstreamer-soup -l pl.UTF-8
-Wtyczka GStreamera umożliwiająca ściąganie plików za pomocą biblioteki
-Soup.
-
 %package -n gstreamer-spc
 Summary:	GStreamer SPC plugin
 Summary(pl.UTF-8):	Wtyczka SPC dla GStreamera
@@ -505,10 +488,8 @@ Wtyczka do GStreamera dekodująca przy użyciu biblioteki x264.
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
-%patch3 -p1
 %patch4 -p1
 %patch5 -p1
-%patch6 -p1
 
 %build
 %{__libtoolize}
@@ -532,7 +513,6 @@ Wtyczka do GStreamera dekodująca przy użyciu biblioteki x264.
 	%{!?with_sdl:--disable-sdl} \
 	%{!?with_sdl:--disable-sdltest} \
 	%{!?with_spc:--disable-spc} \
-	%{!?with_soup:--disable-soup} \
 	%{!?with_swfdec:--disable-swfdec} \
 	%{!?with_xvid:--disable-xvid} \
 	--disable-static \
@@ -720,12 +700,6 @@ rm -rf $RPM_BUILD_ROOT
 %files -n gstreamer-sndfile
 %defattr(644,root,root,755)
 %attr(755,root,root) %{gstlibdir}/libgstsndfile.so
-
-%if %{with soup}
-%files -n gstreamer-soup
-%defattr(644,root,root,755)
-%attr(755,root,root) %{gstlibdir}/libgstsouphttpsrc.so
-%endif
 
 %if %{with spc}
 %files -n gstreamer-spc

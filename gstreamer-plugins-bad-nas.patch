@@ -1,10 +1,12 @@
---- gst-plugins-bad-0.10.6/configure.ac~	2008-02-21 16:58:30.000000000 +0100
-+++ gst-plugins-bad-0.10.6/configure.ac	2008-02-21 17:09:37.048926286 +0100
-@@ -733,13 +733,13 @@
+--- gst-plugins-bad-0.10.7/configure.ac~	2008-05-07 22:58:40.000000000 +0200
++++ gst-plugins-bad-0.10.7/configure.ac	2008-05-07 23:02:25.105184893 +0200
+@@ -827,14 +827,14 @@
  translit(dnm, m, l) AM_CONDITIONAL(USE_NAS, true)
  AG_GST_CHECK_FEATURE(NAS, [nas plug-in], nassink, [
    HAVE_NAS="no"
+-  AG_GST_CHECK_X
 -  if test "x$HAVE_X" = "xyes"; then
++#  AG_GST_CHECK_X
 +#  if test "x$HAVE_X" = "xyes"; then
      save_cppflags=$CFLAGS
      CPPFLAGS="$CPPFLAGS $X_CFLAGS"
