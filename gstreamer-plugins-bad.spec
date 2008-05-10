@@ -1,11 +1,13 @@
 # TODO:
 # - new plugins:
+#   - mplex (waiting for mjpegtools 1.9.0)
 #   - ivorbisdec (BR: tremor-devel, CVS versions only, http://www.xiph.org/vorbis/)
 #   - theoraexpdec (BR: libtheora-exp, http://people.xiph.org/~tterribe/doc/libtheora-exp/)
 # - system libmodplug?
 #
 # Conditional build:
 %bcond_without	cdaudio		# don't build cdaudio plugin
+%bcond_without	dirac		# don't build Dirac plugin
 %bcond_without	directfb	# don't build directfb videosink plugin
 %bcond_without	dts		# don't build DTS plugin
 %bcond_without	faad		# don't build faad plugin
@@ -16,6 +18,7 @@
 %bcond_without	mms		# don't build mms plugin
 %bcond_without	musepack	# don't build musepack plugin
 %bcond_without	neon		# don't build neonhttpsrc plugin
+%bcond_without	ofa		# don't build OFA plugin
 %bcond_without	sdl		# don't build sdl plugin
 %bcond_with	swfdec		# swfdec plugin
 %bcond_without	spc		# don't build spc plugin
@@ -63,6 +66,7 @@ BuildRequires:	OpenGL-devel
 BuildRequires:	alsa-lib-devel >= 0.9.1
 %{?with_amr:BuildRequires:	amrwb-devel}
 BuildRequires:	bzip2-devel
+%{?with_dirac:BuildRequires:	dirac-devel >= 0.9}
 %{?with_divx4linux:BuildRequires:	divx4linux-devel >= 1:5.05.20030428}
 BuildRequires:	faac-devel
 %{?with_faad:BuildRequires:	faad2-devel >= 2.0-2}
@@ -76,6 +80,7 @@ BuildRequires:	libdc1394-devel >= 2.0.0
 %{?with_mms:BuildRequires:	libmms-devel >= 0.2}
 %{?with_musepack:BuildRequires:	libmpcdec-devel >= 1.2}
 BuildRequires:	libmusicbrainz-devel >= 2.1.0
+%{?with_ofa:BuildRequires:	libofa-devel >= 0.9.3}
 %{?with_spc:BuildRequires:	libopenspc-devel >= 0.3.99}
 # for modplug and libSoundTouch
 BuildRequires:	libstdc++-devel
@@ -119,10 +124,10 @@ mediami. Architektura bazująca na wtyczkach pozwala na łatwe dodawanie
 nowych typów danych lub możliwości obróbki.
 
 %package devel
-Summary:        Header files and API documentation for gstapp library
+Summary:	Header files and API documentation for gstapp library
 Summary(pl.UTF-8):	Pliki nagłówkowe i dokumentacja API biblioteki gstapp
-Group:          Development/Libraries
-Requires:       %{name} = %{version}-%{release}
+Group:		Development/Libraries
+Requires:	%{name} = %{version}-%{release}
 
 %description devel
 Header files and API documentation for gstapp library.
@@ -189,6 +194,7 @@ Summary(pl.UTF-8):	Wtyczka wyjścia dźwięku NAS dla GStreamera
 Group:		Libraries
 Requires:	gstreamer-plugins-base >= %{gst_req_ver}
 Provides:	gstreamer-audiosink = %{version}
+Obsoletes:	gstreamer-nas
 
 %description -n gstreamer-audiosink-nas
 GStreamer NAS audio output plugin.
@@ -220,6 +226,19 @@ GStreamer 1394 IIDC (Firewire digital cameras) video source plugin.
 
 %description -n gstreamer-dc1394 -l pl.UTF-8
 Wtyczka źródła obrazu 1394 IIDC (z kamer cyfrowych Firewire) do GStreamera.
+
+%package -n gstreamer-dirac
+Summary:	GStreamer Dirac plugin
+Summary(pl.UTF-8):	Wtyczka Dirac do GStreamera
+Group:		Libraries
+Requires:	gstreamer >= %{gst_req_ver}
+Requires:	dirac >= 0.9
+
+%description -n gstreamer-dirac
+GStreamer Dirac video decoder/encoder plugin.
+
+%description -n gstreamer-dirac -l pl.UTF-8
+Wtyczka dekodująca i kodująca obraz Dirac do GStreamera.
 
 %package -n gstreamer-divx
 Summary:	GStreamer divx plugin
@@ -355,6 +374,37 @@ GStreamer neon HTTP source plugin.
 %description -n gstreamer-neon -l pl.UTF-8
 Wtyczka źródła HTTP neon do GStreamera.
 
+%package -n gstreamer-ofa
+Summary:	GStreamer OFA fingerprint plugin
+Summary(pl.UTF-8):	Wtyczka odcisków OFA do GStreamera
+Group:		Libraries
+Requires:	gstreamer >= %{gst_req_ver}
+Requires:	libofa >= 0.9.3
+
+%description -n gstreamer-ofa
+GStreamer OFA plugin to calculate MusicIP fingerprints from audio
+files.
+
+%description -n gstreamer-ofa -l pl.UTF-8
+Wtyczka OFA do GStreamera służąca do obliczania odcisków MusicIP
+plików dźwiękowych.
+
+%package -n gstreamer-oss4
+Summary:	GStreamer OSS 4 audio sink, source and mixer plugin
+Summary(pl.UTF-8):	Wtyczka wyjścia, wejścia i miksera dźwięku OSS 4 do GStreamera
+Group:		Libraries
+# for locales (when added to POTFILES)
+#Requires:	%{name} = %{version}-%{release}
+Requires:	gstreamer-plugins-base >= %{gst_req_ver}
+Provides:	gstreamer-audiosink = %{version}
+
+%description -n gstreamer-oss4
+GStreamer OSS (Open Sound System) 4 audio input/output/mixer plugin.
+
+%description -n gstreamer-oss4 -l pl.UTF-8
+Wtyczka wejścia/wyjścia/miksera dźwięku OSS (Open Sound System) 4 do
+GStreamera.
+
 %package -n gstreamer-soundtouch
 Summary:	GStreamer soundtouch plugin
 Summary(pl.UTF-8):	Wtyczka soundtouch do GStreamera
@@ -371,6 +421,8 @@ Wtyczka soundtouch do GStreamera, sterująca wysokością dźwięku.
 Summary:	GStreamer sndfile plugin
 Summary(pl.UTF-8):	Wtyczka sndfile do GStreamera
 Group:		Libraries
+# for locales
+Requires:	%{name} = %{version}-%{release}
 Requires:	gstreamer >= %{gst_req_ver}
 
 %description -n gstreamer-sndfile
@@ -501,6 +553,7 @@ Wtyczka do GStreamera dekodująca przy użyciu biblioteki x264.
 	%{!?with_amr:--disable-amrwb} \
 	%{!?with_cdaudio:--disable-cdaudio} \
 	%{!?with_divx4linux:--disable-divx} \
+	%{!?with_dirac:--disable-dirac} \
 	%{!?with_dts:--disable-dts} \
 	%{!?with_faad:--disable-faad} \
 	%{!?with_gsm:--disable-gsm} \
@@ -510,6 +563,7 @@ Wtyczka do GStreamera dekodująca przy użyciu biblioteki x264.
 	%{!?with_mjpegtools:--disable-mpeg2enc} \
 	%{!?with_musepack:--disable-musepack} \
 	%{!?with_neon:--disable-neon} \
+	%{!?with_ofa:--disable-ofa} \
 	%{!?with_sdl:--disable-sdl} \
 	%{!?with_sdl:--disable-sdltest} \
 	%{!?with_spc:--disable-spc} \
@@ -578,6 +632,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{gstlibdir}/libgstselector.so
 %attr(755,root,root) %{gstlibdir}/libgstspeexresample.so
 %attr(755,root,root) %{gstlibdir}/libgststereo.so
+%attr(755,root,root) %{gstlibdir}/libgstsubenc.so
 %attr(755,root,root) %{gstlibdir}/libgsttta.so
 %attr(755,root,root) %{gstlibdir}/libgstvcdsrc.so
 %attr(755,root,root) %{gstlibdir}/libgstvideosignal.so
@@ -629,6 +684,12 @@ rm -rf $RPM_BUILD_ROOT
 %files -n gstreamer-dc1394
 %defattr(644,root,root,755)
 %attr(755,root,root) %{gstlibdir}/libgstdc1394.so
+
+%if %{with dirac}
+%files -n gstreamer-dirac
+%defattr(644,root,root,755)
+%attr(755,root,root) %{gstlibdir}/libgstdirac.so
+%endif
 
 %if %{with divx4linux}
 %files -n gstreamer-divx
@@ -692,6 +753,16 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %attr(755,root,root) %{gstlibdir}/libgstneonhttpsrc.so
 %endif
+
+%if %{with ofa}
+%files -n gstreamer-ofa
+%defattr(644,root,root,755)
+%attr(755,root,root) %{gstlibdir}/libgstofa.so
+%endif
+
+%files -n gstreamer-oss4
+%defattr(644,root,root,755)
+%attr(755,root,root) %{gstlibdir}/libgstoss4audio.so
 
 %files -n gstreamer-soundtouch
 %defattr(644,root,root,755)
