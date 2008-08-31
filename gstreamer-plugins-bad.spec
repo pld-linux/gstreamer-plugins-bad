@@ -2,7 +2,7 @@
 # - new plugins:
 #   - mplex (waiting for mjpegtools 1.9.0)
 #   - ivorbisdec (BR: tremor-devel, CVS versions only, http://www.xiph.org/vorbis/)
-#   - theoraexpdec (BR: libtheora-exp, http://people.xiph.org/~tterribe/doc/libtheora-exp/)
+#   - theoraexpdec (BR: libtheora-exp >= 1.0beta3, but currently disabled)
 # - system libmodplug?
 #
 # Conditional build:
@@ -34,12 +34,12 @@
 Summary:	Bad GStreamer Streaming-media framework plugins
 Summary(pl.UTF-8):	Złe wtyczki do środowiska obróbki strumieni GStreamer
 Name:		gstreamer-plugins-bad
-Version:	0.10.7
-Release:	2
-License:	LPL
+Version:	0.10.8
+Release:	1
+License:	LGPL v2+
 Group:		Libraries
 Source0:	http://gstreamer.freedesktop.org/src/gst-plugins-bad/%{gstname}-%{version}.tar.bz2
-# Source0-md5:	9a511c9e9a0510ca4e212ce1d67e2cba
+# Source0-md5:	ddc8f92dab0081f131650ad6c95908b8
 Patch0:		%{name}-bashish.patch
 Patch1:		%{name}-libdts.patch
 Patch2:		%{name}-divx4linux.patch
@@ -76,6 +76,7 @@ BuildRequires:	gmyth-devel >= 0.7
 %{?with_cdaudio:BuildRequires:	libcdaudio-devel}
 BuildRequires:	libdc1394-devel >= 2.0.0
 %{?with_dts:BuildRequires:	libdts-devel}
+BuildRequires:	libdvdnav-devel >= 0.1.7
 %{?with_gsm:BuildRequires:	libgsm-devel}
 %{?with_mms:BuildRequires:	libmms-devel >= 0.2}
 %{?with_musepack:BuildRequires:	libmpcdec-devel >= 1.2}
@@ -405,6 +406,18 @@ GStreamer OSS (Open Sound System) 4 audio input/output/mixer plugin.
 Wtyczka wejścia/wyjścia/miksera dźwięku OSS (Open Sound System) 4 do
 GStreamera.
 
+%package -n gstreamer-resindvd
+Summary:	GStreamer Resin DVD playback plugin
+Summary(pl.UTF-8):	Wtyczka odtwarzania Resin DVD do GStreamera
+Group:		Libraries
+Requires:	gstreamer >= %{gst_req_ver}
+
+%description -n gstreamer-resindvd
+GStreamer Resin DVD playback plugin.
+
+%description -n gstreamer-resindvd -l pl.UTF-8
+Wtyczka odtwarzania Resin DVD do GStreamera.
+
 %package -n gstreamer-soundtouch
 Summary:	GStreamer soundtouch plugin
 Summary(pl.UTF-8):	Wtyczka soundtouch do GStreamera
@@ -570,6 +583,7 @@ Wtyczka do GStreamera dekodująca przy użyciu biblioteki x264.
 	%{!?with_swfdec:--disable-swfdec} \
 	%{!?with_xvid:--disable-xvid} \
 	--disable-static \
+	--enable-experimental \
 	--enable-gtk-doc \
 	--with-html-dir=%{_gtkdocdir}
 
@@ -603,6 +617,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{gstlibdir}/libgstbz2.so
 %attr(755,root,root) %{gstlibdir}/libgstcdxaparse.so
 %attr(755,root,root) %{gstlibdir}/libgstdeinterlace.so
+%attr(755,root,root) %{gstlibdir}/libgstdeinterlace2.so
 # R: gst-plugins-bad locales
 %attr(755,root,root) %{gstlibdir}/libgstdvb.so
 %attr(755,root,root) %{gstlibdir}/libgstdvdspu.so
@@ -612,7 +627,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{gstlibdir}/libgstflvdemux.so
 %attr(755,root,root) %{gstlibdir}/libgstfreeze.so
 %attr(755,root,root) %{gstlibdir}/libgsth264parse.so
-%attr(755,root,root) %{gstlibdir}/libgstinterleave.so
 %attr(755,root,root) %{gstlibdir}/libgstmetadata.so
 %attr(755,root,root) %{gstlibdir}/libgstmodplug.so
 %attr(755,root,root) %{gstlibdir}/libgstmpeg4videoparse.so
@@ -625,7 +639,6 @@ rm -rf $RPM_BUILD_ROOT
 %ifarch %{ix86} %{x8664}
 %attr(755,root,root) %{gstlibdir}/libgstreal.so
 %endif
-%attr(755,root,root) %{gstlibdir}/libgstreplaygain.so
 %attr(755,root,root) %{gstlibdir}/libgstrfbsrc.so
 %attr(755,root,root) %{gstlibdir}/libgstrtpmanager.so
 %attr(755,root,root) %{gstlibdir}/libgstsdpelem.so
@@ -763,6 +776,10 @@ rm -rf $RPM_BUILD_ROOT
 %files -n gstreamer-oss4
 %defattr(644,root,root,755)
 %attr(755,root,root) %{gstlibdir}/libgstoss4audio.so
+
+%files -n gstreamer-resindvd
+%defattr(644,root,root,755)
+%attr(755,root,root) %{gstlibdir}/libresindvd.so
 
 %files -n gstreamer-soundtouch
 %defattr(644,root,root,755)
