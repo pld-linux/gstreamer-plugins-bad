@@ -34,17 +34,18 @@
 Summary:	Bad GStreamer Streaming-media framework plugins
 Summary(pl.UTF-8):	Złe wtyczki do środowiska obróbki strumieni GStreamer
 Name:		gstreamer-plugins-bad
-Version:	0.10.8
-Release:	3
+Version:	0.10.9
+Release:	1
 License:	LGPL v2+
 Group:		Libraries
 Source0:	http://gstreamer.freedesktop.org/src/gst-plugins-bad/%{gstname}-%{version}.tar.bz2
-# Source0-md5:	ddc8f92dab0081f131650ad6c95908b8
+# Source0-md5:	ff555a86e74a9249e56b43405c8df3e4
 Patch0:		%{name}-bashish.patch
 Patch1:		%{name}-libdts.patch
 Patch2:		%{name}-divx4linux.patch
 Patch4:		%{name}-timidity.patch
 Patch5:		%{name}-nas.patch
+Patch6:		%{name}-x264.patch
 URL:		http://gstreamer.freedesktop.org/
 BuildRequires:	autoconf >= 2.59-9
 BuildRequires:	automake >= 1.6
@@ -86,7 +87,7 @@ BuildRequires:	libmusicbrainz-devel >= 2.1.0
 # for modplug and libSoundTouch
 BuildRequires:	libstdc++-devel
 BuildRequires:	libtimidity-devel
-BuildRequires:	libx264-devel
+BuildRequires:	libx264-devel >= 0.1.2
 %{?with_mjpegtools:BuildRequires:	mjpegtools-devel < 1.9.0}
 %{?with_mjpegtools:BuildRequires:	mjpegtools-devel >= 1.8.0-0.2}
 %{?with_neon:BuildRequires:	neon-devel >= 0.26}
@@ -555,6 +556,7 @@ Wtyczka do GStreamera dekodująca przy użyciu biblioteki x264.
 %patch2 -p1
 %patch4 -p1
 %patch5 -p1
+%patch6 -p1
 
 %build
 %{__libtoolize}
@@ -611,11 +613,14 @@ rm -rf $RPM_BUILD_ROOT
 %doc AUTHORS ChangeLog NEWS README RELEASE
 %attr(755,root,root) %{_libdir}/libgstapp-*.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libgstapp-*.so.0
+%attr(755,root,root) %{gstlibdir}/libgstaiffparse.so
+%attr(755,root,root) %{gstlibdir}/libgstapexsink.so
 # R: libgstapp-*
 %attr(755,root,root) %{gstlibdir}/libgstapp.so
 %attr(755,root,root) %{gstlibdir}/libgstbayer.so
 %attr(755,root,root) %{gstlibdir}/libgstbz2.so
 %attr(755,root,root) %{gstlibdir}/libgstcdxaparse.so
+%attr(755,root,root) %{gstlibdir}/libgstdccp.so
 %attr(755,root,root) %{gstlibdir}/libgstdeinterlace.so
 %attr(755,root,root) %{gstlibdir}/libgstdeinterlace2.so
 # R: gst-plugins-bad locales
@@ -624,29 +629,34 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{gstlibdir}/libgstfbdevsink.so
 %attr(755,root,root) %{gstlibdir}/libgstfestival.so
 %attr(755,root,root) %{gstlibdir}/libgstfilter.so
-%attr(755,root,root) %{gstlibdir}/libgstflvdemux.so
+%attr(755,root,root) %{gstlibdir}/libgstflv.so
 %attr(755,root,root) %{gstlibdir}/libgstfreeze.so
 %attr(755,root,root) %{gstlibdir}/libgsth264parse.so
+%attr(755,root,root) %{gstlibdir}/libgstjp2k.so
 %attr(755,root,root) %{gstlibdir}/libgstmetadata.so
 %attr(755,root,root) %{gstlibdir}/libgstmodplug.so
 %attr(755,root,root) %{gstlibdir}/libgstmpeg4videoparse.so
-%attr(755,root,root) %{gstlibdir}/libgstmpegtsparse.so
+%attr(755,root,root) %{gstlibdir}/libgstmpegdemux.so
+%attr(755,root,root) %{gstlibdir}/libgstmpegtsmux.so
 %attr(755,root,root) %{gstlibdir}/libgstmpegvideoparse.so
 %attr(755,root,root) %{gstlibdir}/libgstmve.so
 %attr(755,root,root) %{gstlibdir}/libgstnsf.so
 %attr(755,root,root) %{gstlibdir}/libgstnuvdemux.so
+%attr(755,root,root) %{gstlibdir}/libgstpcapparse.so
 %attr(755,root,root) %{gstlibdir}/libgstrawparse.so
 %ifarch %{ix86} %{x8664}
 %attr(755,root,root) %{gstlibdir}/libgstreal.so
 %endif
 %attr(755,root,root) %{gstlibdir}/libgstrfbsrc.so
 %attr(755,root,root) %{gstlibdir}/libgstrtpmanager.so
+%attr(755,root,root) %{gstlibdir}/libgstscaletempoplugin.so
 %attr(755,root,root) %{gstlibdir}/libgstsdpelem.so
 %attr(755,root,root) %{gstlibdir}/libgstselector.so
 %attr(755,root,root) %{gstlibdir}/libgstspeexresample.so
 %attr(755,root,root) %{gstlibdir}/libgststereo.so
 %attr(755,root,root) %{gstlibdir}/libgstsubenc.so
 %attr(755,root,root) %{gstlibdir}/libgsttta.so
+%attr(755,root,root) %{gstlibdir}/libgsttwolame.so
 %attr(755,root,root) %{gstlibdir}/libgstvcdsrc.so
 %attr(755,root,root) %{gstlibdir}/libgstvideosignal.so
 %attr(755,root,root) %{gstlibdir}/libgstvmnc.so
