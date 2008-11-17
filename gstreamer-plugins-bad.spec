@@ -73,6 +73,7 @@ BuildRequires:	faac-devel
 %{?with_faad:BuildRequires:	faad2-devel >= 2.0-2}
 BuildRequires:	gmyth-devel >= 0.7
 %{?with_jack:BuildRequires:	jack-audio-connection-kit-devel >= 0.99.10}
+BuildRequires:	jasper-devel
 %{?with_ladspa:BuildRequires:	ladspa-devel >= 1.12}
 %{?with_cdaudio:BuildRequires:	libcdaudio-devel}
 BuildRequires:	libdc1394-devel >= 2.0.0
@@ -98,6 +99,7 @@ BuildRequires:	soundtouch-devel >= 1.3.1
 BuildRequires:	swfdec-devel < 0.4.0
 BuildRequires:	swfdec-devel >= 0.3.6
 %endif
+BuildRequires:	twolame-devel
 BuildRequires:	wildmidi-devel
 BuildRequires:	xorg-lib-libX11-devel
 %{?with_xvid:BuildRequires:	xvid-devel >= 1.0.0}
