@@ -43,6 +43,7 @@ Source0:	http://gstreamer.freedesktop.org/src/gst-plugins-bad/%{gstname}-%{versi
 Patch0:		%{name}-bashish.patch
 Patch1:		%{name}-libdts.patch
 Patch2:		%{name}-divx4linux.patch
+Patch3:		%{name}-celt.patch
 Patch4:		%{name}-timidity.patch
 Patch5:		%{name}-nas.patch
 Patch6:		%{name}-x264.patch
@@ -67,6 +68,7 @@ BuildRequires:	OpenGL-devel
 BuildRequires:	alsa-lib-devel >= 0.9.1
 %{?with_amr:BuildRequires:	amrwb-devel}
 BuildRequires:	bzip2-devel
+BuildRequires:	celt-devel >= 0.5.0
 %{?with_dirac:BuildRequires:	dirac-devel >= 0.9}
 %{?with_divx4linux:BuildRequires:	divx4linux-devel >= 1:5.05.20030428}
 BuildRequires:	faac-devel
@@ -218,6 +220,18 @@ Plugin for playing audio tracks using libcdaudio under GStreamer.
 %description -n gstreamer-cdaudio -l pl.UTF-8
 Wtyczka do odtwarzania ścieżek dźwiękowych pod GStreamerem za pomocą
 libcdaudio.
+
+%package -n gstreamer-celt
+Summary:	GStreamer Celt audio codec plugin
+Summary(pl.UTF-8):	Wtyczka kodeka dźwięku Celt do GStreamera
+Group:		Libraries
+Requires:	gstreamer >= %{gst_req_ver}
+
+%description -n gstreamer-celt
+GStreamer Celt audio encoder and decoder plugin.
+
+%description -n gstreamer-celt -l pl.UTF-8
+Wtyczka GStreamera kodująca i dekodująca dźwięk w formacie Celt.
 
 %package -n gstreamer-dc1394
 Summary:	GStreamer 1394 IIDC (Firewire digital cameras) video source plugin
@@ -556,6 +570,7 @@ Wtyczka do GStreamera dekodująca przy użyciu biblioteki x264.
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
+%patch3 -p1
 %patch4 -p1
 %patch5 -p1
 %patch6 -p1
@@ -705,6 +720,10 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %attr(755,root,root) %{gstlibdir}/libgstcdaudio.so
 %endif
+
+%files -n gstreamer-celt
+%defattr(644,root,root,755)
+%attr(755,root,root) %{gstlibdir}/libgstcelt.so
 
 %files -n gstreamer-dc1394
 %defattr(644,root,root,755)
