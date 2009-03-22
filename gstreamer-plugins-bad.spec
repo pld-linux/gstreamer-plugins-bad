@@ -1,8 +1,6 @@
 # TODO:
 # - new plugins:
-#   - mplex (waiting for mjpegtools 1.9.0)
 #   - ivorbisdec (BR: tremor-devel, CVS versions only, http://www.xiph.org/vorbis/)
-#   - theoraexpdec (BR: libtheora-exp >= 1.0beta3, but currently disabled)
 # - system libmodplug?
 #
 # Conditional build:
@@ -36,12 +34,12 @@
 Summary:	Bad GStreamer Streaming-media framework plugins
 Summary(pl.UTF-8):	Złe wtyczki do środowiska obróbki strumieni GStreamer
 Name:		gstreamer-plugins-bad
-Version:	0.10.10
-Release:	2
+Version:	0.10.11
+Release:	1
 License:	LGPL v2+
 Group:		Libraries
 Source0:	http://gstreamer.freedesktop.org/src/gst-plugins-bad/%{gstname}-%{version}.tar.bz2
-# Source0-md5:	cd13758801f6054006ff1a4755e72484
+# Source0-md5:	75a3359ece6a1c11a9e5463d79e274e8
 Patch0:		%{name}-bashish.patch
 Patch1:		%{name}-libdts.patch
 Patch2:		%{name}-divx4linux.patch
@@ -56,6 +54,7 @@ BuildRequires:	gstreamer-devel >= %{gst_req_ver}
 BuildRequires:	gstreamer-plugins-base-devel >= %{gst_req_ver}
 BuildRequires:	gtk-doc >= 1.6
 BuildRequires:	liboil-devel >= 0.3.6
+BuildRequires:	libtheora-devel >= 1.0
 BuildRequires:	libtool >= 1.4
 BuildRequires:	pkgconfig >= 1:0.9.0
 BuildRequires:	python-PyXML
@@ -92,8 +91,7 @@ BuildRequires:	libmusicbrainz-devel >= 2.1.0
 BuildRequires:	libstdc++-devel
 BuildRequires:	libtimidity-devel
 BuildRequires:	libx264-devel >= 0.1.2
-%{?with_mjpegtools:BuildRequires:	mjpegtools-devel < 1.9.0}
-%{?with_mjpegtools:BuildRequires:	mjpegtools-devel >= 1.8.0-0.2}
+%{?with_mjpegtools:BuildRequires:	mjpegtools-devel >= 1.9.0}
 %{?with_neon:BuildRequires:	neon-devel >= 0.26}
 BuildRequires:	libsndfile-devel
 BuildRequires:	nas-devel
@@ -628,27 +626,32 @@ rm -rf $RPM_BUILD_ROOT
 %files -f %{gstname}-%{gst_major_ver}.lang
 %defattr(644,root,root,755)
 %doc AUTHORS ChangeLog NEWS README RELEASE
+%{_libdir}/libgstphotography-%{gst_major_ver}.so.*.*.*
+%{_libdir}/libgstphotography-%{gst_major_ver}.so.0
 %attr(755,root,root) %{gstlibdir}/libgstaacparse.so
+%attr(755,root,root) %{gstlibdir}/libgstautoconvert.so
 %attr(755,root,root) %{gstlibdir}/libgstaiffparse.so
 %attr(755,root,root) %{gstlibdir}/libgstamrparse.so
 %attr(755,root,root) %{gstlibdir}/libgstapexsink.so
 %attr(755,root,root) %{gstlibdir}/libgstbayer.so
 %attr(755,root,root) %{gstlibdir}/libgstbz2.so
+%attr(755,root,root) %{gstlibdir}/libgstcamerabin.so
 %attr(755,root,root) %{gstlibdir}/libgstcdxaparse.so
 %attr(755,root,root) %{gstlibdir}/libgstdccp.so
 %attr(755,root,root) %{gstlibdir}/libgstdeinterlace.so
 %attr(755,root,root) %{gstlibdir}/libgstdeinterlace2.so
+%attr(755,root,root) %{gstlibdir}/libgstdtmf.so
 # R: gst-plugins-bad locales
 %attr(755,root,root) %{gstlibdir}/libgstdvb.so
 %attr(755,root,root) %{gstlibdir}/libgstdvdspu.so
 %attr(755,root,root) %{gstlibdir}/libgstfbdevsink.so
 %attr(755,root,root) %{gstlibdir}/libgstfestival.so
-%attr(755,root,root) %{gstlibdir}/libgstfilter.so
 %attr(755,root,root) %{gstlibdir}/libgstflv.so
 %attr(755,root,root) %{gstlibdir}/libgstfreeze.so
 %attr(755,root,root) %{gstlibdir}/libgsth264parse.so
 %attr(755,root,root) %{gstlibdir}/libgstjp2k.so
 %attr(755,root,root) %{gstlibdir}/libgstlegacyresample.so
+%attr(755,root,root) %{gstlibdir}/libgstliveadder.so
 %attr(755,root,root) %{gstlibdir}/libgstmetadata.so
 %attr(755,root,root) %{gstlibdir}/libgstmodplug.so
 %attr(755,root,root) %{gstlibdir}/libgstmpeg4videoparse.so
@@ -667,16 +670,19 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 %attr(755,root,root) %{gstlibdir}/libgstrfbsrc.so
 %attr(755,root,root) %{gstlibdir}/libgstrtpmanager.so
+%attr(755,root,root) %{gstlibdir}/libgstrtpmux.so
 %attr(755,root,root) %{gstlibdir}/libgstscaletempoplugin.so
 %attr(755,root,root) %{gstlibdir}/libgstsdpelem.so
 %attr(755,root,root) %{gstlibdir}/libgstselector.so
+%attr(755,root,root) %{gstlibdir}/libgstsiren.so
 %attr(755,root,root) %{gstlibdir}/libgststereo.so
 %attr(755,root,root) %{gstlibdir}/libgstsubenc.so
 %attr(755,root,root) %{gstlibdir}/libgsttta.so
-%attr(755,root,root) %{gstlibdir}/libgsttwolame.so
+%attr(755,root,root) %{gstlibdir}/libgstvalve.so
 %attr(755,root,root) %{gstlibdir}/libgstvcdsrc.so
 %attr(755,root,root) %{gstlibdir}/libgstvideosignal.so
 %attr(755,root,root) %{gstlibdir}/libgstvmnc.so
+%attr(755,root,root) %{gstlibdir}/libgstxdgmime.so
 %attr(755,root,root) %{gstlibdir}/libgsty4menc.so
 %{_gtkdocdir}/gst-plugins-bad-plugins-*
 
@@ -764,6 +770,7 @@ rm -rf $RPM_BUILD_ROOT
 %files -n gstreamer-mjpegtools
 %defattr(644,root,root,755)
 %attr(755,root,root) %{gstlibdir}/libgstmpeg2enc.so
+%attr(755,root,root) %{gstlibdir}/libgstmplex.so
 %endif
 
 %if %{with mms}
