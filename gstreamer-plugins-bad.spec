@@ -34,16 +34,15 @@
 Summary:	Bad GStreamer Streaming-media framework plugins
 Summary(pl.UTF-8):	Złe wtyczki do środowiska obróbki strumieni GStreamer
 Name:		gstreamer-plugins-bad
-Version:	0.10.11
+Version:	0.10.12
 Release:	1
 License:	LGPL v2+
 Group:		Libraries
 Source0:	http://gstreamer.freedesktop.org/src/gst-plugins-bad/%{gstname}-%{version}.tar.bz2
-# Source0-md5:	75a3359ece6a1c11a9e5463d79e274e8
+# Source0-md5:	63309cf0bb21f3efd4e43868c314f919
 Patch0:		%{name}-bashish.patch
 Patch1:		%{name}-libdts.patch
 Patch2:		%{name}-divx4linux.patch
-Patch3:		%{name}-celt.patch
 Patch4:		%{name}-timidity.patch
 Patch5:		%{name}-nas.patch
 URL:		http://gstreamer.freedesktop.org/
@@ -569,7 +568,6 @@ Wtyczka do GStreamera dekodująca przy użyciu biblioteki x264.
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
-%patch3 -p1
 %patch4 -p1
 %patch5 -p1
 
@@ -628,6 +626,7 @@ rm -rf $RPM_BUILD_ROOT
 %doc AUTHORS ChangeLog NEWS README RELEASE
 %{_libdir}/libgstphotography-%{gst_major_ver}.so.*.*.*
 %{_libdir}/libgstphotography-%{gst_major_ver}.so.0
+%{_datadir}/gstreamer-%{gst_major_ver}/presets
 %attr(755,root,root) %{gstlibdir}/libgstaacparse.so
 %attr(755,root,root) %{gstlibdir}/libgstautoconvert.so
 %attr(755,root,root) %{gstlibdir}/libgstaiffparse.so
@@ -638,15 +637,13 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{gstlibdir}/libgstcamerabin.so
 %attr(755,root,root) %{gstlibdir}/libgstcdxaparse.so
 %attr(755,root,root) %{gstlibdir}/libgstdccp.so
-%attr(755,root,root) %{gstlibdir}/libgstdeinterlace.so
-%attr(755,root,root) %{gstlibdir}/libgstdeinterlace2.so
 %attr(755,root,root) %{gstlibdir}/libgstdtmf.so
+%attr(755,root,root) %{gstlibdir}/libgstdebugutilsbad.so
 # R: gst-plugins-bad locales
 %attr(755,root,root) %{gstlibdir}/libgstdvb.so
 %attr(755,root,root) %{gstlibdir}/libgstdvdspu.so
 %attr(755,root,root) %{gstlibdir}/libgstfbdevsink.so
 %attr(755,root,root) %{gstlibdir}/libgstfestival.so
-%attr(755,root,root) %{gstlibdir}/libgstflv.so
 %attr(755,root,root) %{gstlibdir}/libgstfreeze.so
 %attr(755,root,root) %{gstlibdir}/libgsth264parse.so
 %attr(755,root,root) %{gstlibdir}/libgstjp2k.so
@@ -683,7 +680,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{gstlibdir}/libgstvideosignal.so
 %attr(755,root,root) %{gstlibdir}/libgstvmnc.so
 %attr(755,root,root) %{gstlibdir}/libgstxdgmime.so
-%attr(755,root,root) %{gstlibdir}/libgsty4menc.so
 %{_gtkdocdir}/gst-plugins-bad-plugins-*
 
 ##
