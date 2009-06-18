@@ -613,7 +613,6 @@ rm -rf $RPM_BUILD_ROOT
 %doc AUTHORS ChangeLog NEWS README RELEASE
 %{_libdir}/libgstphotography-%{gst_major_ver}.so.*.*.*
 %{_libdir}/libgstphotography-%{gst_major_ver}.so.0
-#%{_datadir}/gstreamer-%{gst_major_ver}/presets
 %attr(755,root,root) %{gstlibdir}/libgstaacparse.so
 %attr(755,root,root) %{gstlibdir}/libgstadpcmdec.so
 %attr(755,root,root) %{gstlibdir}/libgstautoconvert.so
