@@ -32,12 +32,12 @@
 Summary:	Bad GStreamer Streaming-media framework plugins
 Summary(pl.UTF-8):	Złe wtyczki do środowiska obróbki strumieni GStreamer
 Name:		gstreamer-plugins-bad
-Version:	0.10.13
-Release:	2
+Version:	0.10.14
+Release:	1
 License:	LGPL v2+
 Group:		Libraries
 Source0:	http://gstreamer.freedesktop.org/src/gst-plugins-bad/%{gstname}-%{version}.tar.bz2
-# Source0-md5:	bc77146c6af89b52f26ebfc8f06d0dfe
+# Source0-md5:	6be38b04fc76cdfef3a3b02b8434efa2
 Patch0:		%{name}-bashish.patch
 Patch1:		%{name}-libdts.patch
 Patch2:		%{name}-divx4linux.patch
@@ -109,6 +109,7 @@ Obsoletes:	gstreamer-vcd
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		gstlibdir 	%{_libdir}/gstreamer-%{gst_major_ver}
+%define		gstdatadir 	%{_datadir}/gstreamer-%{gst_major_ver}
 
 %description
 GStreamer is a streaming-media framework, based on graphs of filters
@@ -611,10 +612,17 @@ rm -rf $RPM_BUILD_ROOT
 %files -f %{gstname}-%{gst_major_ver}.lang
 %defattr(644,root,root,755)
 %doc AUTHORS ChangeLog NEWS README RELEASE
+%attr(755,root,root) %{_bindir}/gst-camera
+%attr(755,root,root) %{_bindir}/gst-camera-perf
+%{_libdir}/libgstbasevideo-%{gst_major_ver}.so.*.*.*
+%{_libdir}/libgstbasevideo-%{gst_major_ver}.so.0
 %{_libdir}/libgstphotography-%{gst_major_ver}.so.*.*.*
 %{_libdir}/libgstphotography-%{gst_major_ver}.so.0
+%{_libdir}/libgstsignalprocessor.so.*.*.*
+%{_libdir}/libgstsignalprocessor.so.0
 %attr(755,root,root) %{gstlibdir}/libgstaacparse.so
 %attr(755,root,root) %{gstlibdir}/libgstadpcmdec.so
+%attr(755,root,root) %{gstlibdir}/libgstasfmux.so
 %attr(755,root,root) %{gstlibdir}/libgstautoconvert.so
 %attr(755,root,root) %{gstlibdir}/libgstaiffparse.so
 %attr(755,root,root) %{gstlibdir}/libgstamrparse.so
@@ -632,6 +640,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{gstlibdir}/libgstfbdevsink.so
 %attr(755,root,root) %{gstlibdir}/libgstfestival.so
 %attr(755,root,root) %{gstlibdir}/libgstfreeze.so
+%attr(755,root,root) %{gstlibdir}/libgstfrei0r.so
 %attr(755,root,root) %{gstlibdir}/libgsth264parse.so
 %attr(755,root,root) %{gstlibdir}/libgsthdvparse.so
 %attr(755,root,root) %{gstlibdir}/libgstid3tag.so
@@ -655,7 +664,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{gstlibdir}/libgstreal.so
 %endif
 %attr(755,root,root) %{gstlibdir}/libgstrfbsrc.so
-%attr(755,root,root) %{gstlibdir}/libgstrtpmanager.so
 %attr(755,root,root) %{gstlibdir}/libgstrtpmux.so
 %attr(755,root,root) %{gstlibdir}/libgstscaletempoplugin.so
 %attr(755,root,root) %{gstlibdir}/libgstsdpelem.so
@@ -671,6 +679,8 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{gstlibdir}/libgstvmnc.so
 %attr(755,root,root) %{gstlibdir}/libgstxdgmime.so
 %{_gtkdocdir}/gst-plugins-bad-plugins-*
+%dir %{gstdatadir}/camera-apps
+%{gstdatadir}/camera-apps/*.glade
 
 ##
 ## Plugins
