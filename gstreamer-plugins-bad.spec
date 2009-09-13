@@ -22,6 +22,7 @@
 %bcond_without	xvid		# don't build XviD plugin
 %bcond_with	amr		# build amrwb plugin
 %bcond_with	divx4linux	# build divx4linux plugins
+%bcond_with	vdpau		# build with nvidia VDPAU
 #
 %define		gstname		gst-plugins-bad
 %define		gst_major_ver	0.10
@@ -50,6 +51,7 @@ BuildRequires:	glib2-devel >= 1:2.12.0
 BuildRequires:	gstreamer-devel >= %{gst_req_ver}
 BuildRequires:	gstreamer-plugins-base-devel >= %{gst_req_ver}
 BuildRequires:	gtk-doc >= 1.6
+BuildRequires:	libglade2-devel
 BuildRequires:	liboil-devel >= 0.3.6
 BuildRequires:	libtheora-devel >= 1.0
 BuildRequires:	libtool >= 1.4
@@ -78,6 +80,7 @@ BuildRequires:	jasper-devel
 BuildRequires:	libdc1394-devel >= 2.0.0
 %{?with_dts:BuildRequires:	libdts-devel}
 BuildRequires:	libdvdnav-devel >= 0.1.7
+BuildRequires:	libexif-devel >= 0.6.16
 %{?with_gsm:BuildRequires:	libgsm-devel}
 BuildRequires:	libmodplug-devel
 %{?with_mms:BuildRequires:	libmms-devel >= 0.2}
@@ -101,6 +104,7 @@ BuildRequires:	swfdec-devel >= 0.3.6
 BuildRequires:	twolame-devel
 BuildRequires:	wildmidi-devel
 BuildRequires:	xorg-lib-libX11-devel
+%{?with_vdpau:BuildRequires:	xorg-driver-video-nvidia-devel >= 180.22}
 %{?with_xvid:BuildRequires:	xvid-devel >= 1.0.0}
 Requires:	gstreamer >= %{gst_req_ver}
 Requires:	gstreamer-plugins-base >= %{gst_req_ver}
@@ -675,6 +679,9 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{gstlibdir}/libgsttta.so
 %attr(755,root,root) %{gstlibdir}/libgstvalve.so
 %attr(755,root,root) %{gstlibdir}/libgstvcdsrc.so
+%if %{with vdpau}
+%attr(755,root,root) %{gstlibdir}/libgstvdpau.so
+%endif
 %attr(755,root,root) %{gstlibdir}/libgstvideosignal.so
 %attr(755,root,root) %{gstlibdir}/libgstvmnc.so
 %attr(755,root,root) %{gstlibdir}/libgstxdgmime.so
