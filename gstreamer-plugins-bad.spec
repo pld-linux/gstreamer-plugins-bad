@@ -26,19 +26,19 @@
 #
 %define		gstname		gst-plugins-bad
 %define		gst_major_ver	0.10
-%define		gst_req_ver	0.10.21.1
+%define		gst_req_ver	0.10.25
 #
 %include	/usr/lib/rpm/macros.gstreamer
 #
 Summary:	Bad GStreamer Streaming-media framework plugins
 Summary(pl.UTF-8):	Złe wtyczki do środowiska obróbki strumieni GStreamer
 Name:		gstreamer-plugins-bad
-Version:	0.10.14
-Release:	1
+Version:	0.10.16
+Release:	0.1
 License:	LGPL v2+
 Group:		Libraries
 Source0:	http://gstreamer.freedesktop.org/src/gst-plugins-bad/%{gstname}-%{version}.tar.bz2
-# Source0-md5:	6be38b04fc76cdfef3a3b02b8434efa2
+# Source0-md5:	2288f7093a54891622ec1016bc939204
 Patch0:		%{name}-bashish.patch
 Patch1:		%{name}-libdts.patch
 Patch2:		%{name}-divx4linux.patch
@@ -56,8 +56,32 @@ BuildRequires:	liboil-devel >= 0.3.6
 BuildRequires:	libtheora-devel >= 1.0
 BuildRequires:	libtool >= 1.4
 BuildRequires:	pkgconfig >= 1:0.9.0
+BuildRequires:	python >= 2.1
 BuildRequires:	python-PyXML
 BuildRequires:	rpmbuild(macros) >= 1.98
+# gtk
+# glade
+# x11
+# gio
+# ASSRENDER
+# amrwb
+# COG
+# divx
+# EXIF...
+# IPTC...
+# XMP...
+# XMP_1_99_5...
+# -lvorbisidec...
+# KATE...
+# TIGER...
+# LRDF...
+# SLV2...
+# MIMIC...
+# librsvg
+# gme/gme.h...
+# swfdec
+# ZBAR...
+# 
 ##
 ## plugins
 ##
@@ -96,6 +120,7 @@ BuildRequires:	libx264-devel >= 0.1.2
 %{?with_neon:BuildRequires:	neon-devel >= 0.26}
 BuildRequires:	libsndfile-devel
 BuildRequires:	nas-devel
+BuildRequires:	schroedinger-devel
 BuildRequires:	soundtouch-devel >= 1.3.1
 %if %{with swfdec}
 BuildRequires:	swfdec-devel < 0.4.0
@@ -622,8 +647,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/libgstbasevideo-%{gst_major_ver}.so.0
 %{_libdir}/libgstphotography-%{gst_major_ver}.so.*.*.*
 %{_libdir}/libgstphotography-%{gst_major_ver}.so.0
-%{_libdir}/libgstsignalprocessor.so.*.*.*
-%{_libdir}/libgstsignalprocessor.so.0
+%{_libdir}/libgstsignalprocessor-0.10.so.*.*.*
+%{_libdir}/libgstsignalprocessor-0.10.so.0
 %attr(755,root,root) %{gstlibdir}/libgstaacparse.so
 %attr(755,root,root) %{gstlibdir}/libgstadpcmdec.so
 %attr(755,root,root) %{gstlibdir}/libgstasfmux.so
@@ -684,10 +709,28 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 %attr(755,root,root) %{gstlibdir}/libgstvideosignal.so
 %attr(755,root,root) %{gstlibdir}/libgstvmnc.so
-%attr(755,root,root) %{gstlibdir}/libgstxdgmime.so
+#%attr(755,root,root) %{gstlibdir}/libgstxdgmime.so
 %{_gtkdocdir}/gst-plugins-bad-plugins-*
 %dir %{gstdatadir}/camera-apps
 %{gstdatadir}/camera-apps/*.glade
+
+%files devel
+%defattr(644,root,root,755)
+%{_includedir}/gstreamer-0.10/gst/interfaces/photography-enumtypes.h
+%{_includedir}/gstreamer-0.10/gst/interfaces/photography.h
+%{_includedir}/gstreamer-0.10/gst/signalprocessor/gstsignalprocessor.h
+%{_includedir}/gstreamer-0.10/gst/video/gstbasevideocodec.h
+%{_includedir}/gstreamer-0.10/gst/video/gstbasevideodecoder.h
+%{_includedir}/gstreamer-0.10/gst/video/gstbasevideoencoder.h
+%{_includedir}/gstreamer-0.10/gst/video/gstbasevideoparse.h
+%{_includedir}/gstreamer-0.10/gst/video/gstbasevideoutils.h
+%{_libdir}/libgstbasevideo-0.10.la
+%{_libdir}/libgstbasevideo-0.10.so
+%{_libdir}/libgstphotography-0.10.la
+%{_libdir}/libgstphotography-0.10.so
+%{_libdir}/libgstsignalprocessor-0.10.la
+%{_libdir}/libgstsignalprocessor-0.10.so
+
 
 ##
 ## Plugins
