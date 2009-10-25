@@ -580,6 +580,18 @@ GStreamer xvid decoder plugin.
 %description -n gstreamer-xvid -l pl.UTF-8
 Wtyczka do GStreamera dekodująca przy użyciu biblioteki xvid.
 
+%package -n gstreamer-schroedinger
+Summary:	Schroedinger plugin for GStreamer
+Summary(pl.UTF-8):	Wtyczka Schroedinger do GStreamera
+Group:		Libraries
+Requires:	gstreamer >= %{gst_req_ver}
+
+%description -n gstreamer-schroedinger
+Schroedinger plugin for GStreamer.
+
+%description -n gstreamer-schroedinger -l pl.UTF-8
+Wtyczka Schroedinger do GStreamera.
+
 %prep
 %setup -q -n %{gstname}-%{version}
 %patch0 -p1
@@ -904,3 +916,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %attr(755,root,root) %{gstlibdir}/libgstxvid.so
 %endif
+
+%files -n gstreamer-schroedinger
+%defattr(644,root,root,755)
+%attr(755,root,root) %{gstlibdir}/libgstschro.so
