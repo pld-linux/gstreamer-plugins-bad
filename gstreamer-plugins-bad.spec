@@ -22,7 +22,7 @@
 %bcond_without	xvid		# don't build XviD plugin
 %bcond_with	amr		# build amrwb plugin
 %bcond_with	divx4linux	# build divx4linux plugins
-%bcond_with	vdpau		# build with nvidia VDPAU
+%bcond_without	vdpau		# build without VDPAU
 #
 %define		gstname		gst-plugins-bad
 %define		gst_major_ver	0.10
@@ -34,7 +34,7 @@ Summary:	Bad GStreamer Streaming-media framework plugins
 Summary(pl.UTF-8):	Złe wtyczki do środowiska obróbki strumieni GStreamer
 Name:		gstreamer-plugins-bad
 Version:	0.10.17
-Release:	0.1
+Release:	1
 License:	LGPL v2+
 Group:		Libraries
 Source0:	http://gstreamer.freedesktop.org/src/gst-plugins-bad/%{gstname}-%{version}.tar.bz2
@@ -47,55 +47,41 @@ Patch5:		%{name}-nas.patch
 URL:		http://gstreamer.freedesktop.org/
 BuildRequires:	autoconf >= 2.59-9
 BuildRequires:	automake >= 1.6
-BuildRequires:	glib2-devel >= 1:2.12.0
+BuildRequires:	glib2-devel >= 1:2.16.0
 BuildRequires:	gstreamer-devel >= %{gst_req_ver}
 BuildRequires:	gstreamer-plugins-base-devel >= %{gst_req_ver}
+BuildRequires:	gtk+2-devel >= 2:2.8.0
 BuildRequires:	gtk-doc >= 1.6
 BuildRequires:	libglade2-devel
-BuildRequires:	liboil-devel >= 0.3.6
+BuildRequires:	libglade2-devel >= 1:2.6.0
+BuildRequires:	liboil-devel >= 0.3.8
 BuildRequires:	libtheora-devel >= 1.0
 BuildRequires:	libtool >= 1.4
+BuildRequires:	xorg-lib-libX11-devel
 BuildRequires:	pkgconfig >= 1:0.9.0
 BuildRequires:	python >= 2.1
 BuildRequires:	python-PyXML
 BuildRequires:	rpmbuild(macros) >= 1.98
-# gtk
-# glade
-# x11
-# gio
-# ASSRENDER
-# amrwb
-# COG
-# divx
-# EXIF...
-# IPTC...
-# XMP...
-# XMP_1_99_5...
-# -lvorbisidec...
-# KATE...
-# TIGER...
-# LRDF...
-# SLV2...
-# MIMIC...
-# librsvg
-# gme/gme.h...
-# swfdec
-# ZBAR...
-# 
 ##
 ## plugins
 ##
+# http://code.google.com/p/libass/
+#BuildRequires:	libass-devel
 %{?with_directfb:BuildRequires:	DirectFB-devel >= 1:0.9.24}
 BuildRequires:	OpenGL-devel
 %{?with_sdl:BuildRequires:	SDL-devel >= 0.11}
 BuildRequires:	alsa-lib-devel >= 0.9.1
 %{?with_amr:BuildRequires:	amrwb-devel}
 BuildRequires:	bzip2-devel
+BuildRequires:	cairo-devel
 BuildRequires:	celt-devel >= 0.5.0
 %{?with_dirac:BuildRequires:	dirac-devel >= 0.9}
 %{?with_divx4linux:BuildRequires:	divx4linux-devel >= 1:5.05.20030428}
+BuildRequires:	exempi-devel >= 1.99.5
 BuildRequires:	faac-devel
 %{?with_faad:BuildRequires:	faad2-devel >= 2.0-2}
+# http://code.google.com/p/game-music-emu/
+#BuildRequires:	game-music-emu-devel >= 0.5.6
 BuildRequires:	gmyth-devel >= 0.7
 %{?with_jack:BuildRequires:	jack-audio-connection-kit-devel >= 0.99.10}
 BuildRequires:	jasper-devel
@@ -106,14 +92,28 @@ BuildRequires:	libdc1394-devel >= 2.0.0
 BuildRequires:	libdvdnav-devel >= 0.1.7
 BuildRequires:	libexif-devel >= 0.6.16
 %{?with_gsm:BuildRequires:	libgsm-devel}
+BuildRequires:	libiptcdata-devel >= 1.0.2
+# http://code.google.com/p/libkate/
+#BuildRequires:		libkate-devel
+BuildRequires:	liblrdf-devel
+#http://sourceforge.net/projects/farsight/
+#BuildRequires:	libmimic-devel
 BuildRequires:	libmodplug-devel
 %{?with_mms:BuildRequires:	libmms-devel >= 0.2}
 %{?with_musepack:BuildRequires:	libmpcdec-devel >= 1.2}
 BuildRequires:	libmusicbrainz-devel >= 2.1.0
 %{?with_ofa:BuildRequires:	libofa-devel >= 0.9.3}
+# http://code.entropywave.com/projects/orc/
+#BuildRequires:	orc
 %{?with_spc:BuildRequires:	libopenspc-devel >= 0.3.99}
+BuildRequires:	libpng-devel >= 2:1.2.0
+BuildRequires:	librsvg-devel >= 2.14
+# http://drobilla.net/software/slv2/
+#BuildRequires:	slv2-devel
 # for modplug and libSoundTouch
 BuildRequires:	libstdc++-devel
+# http://code.google.com/p/libtiger/
+#BuildRequires:		libtiger-devel
 BuildRequires:	libtimidity-devel
 BuildRequires:	libx264-devel >= 0.1.2
 %{?with_mjpegtools:BuildRequires:	mjpegtools-devel >= 1.9.0}
@@ -129,8 +129,10 @@ BuildRequires:	swfdec-devel >= 0.3.6
 BuildRequires:	twolame-devel
 BuildRequires:	wildmidi-devel
 BuildRequires:	xorg-lib-libX11-devel
-%{?with_vdpau:BuildRequires:	xorg-driver-video-nvidia-devel >= 180.22}
+%{?with_vdpau:BuildRequires:	libvdpau-devel}
 %{?with_xvid:BuildRequires:	xvid-devel >= 1.0.0}
+# http://zbar.sourceforge.net/
+#BuildRequires:	zbar-devel
 Requires:	gstreamer >= %{gst_req_ver}
 Requires:	gstreamer-plugins-base >= %{gst_req_ver}
 Obsoletes:	gstreamer-quicktime
@@ -665,7 +667,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{gstlibdir}/libgstadpcmdec.so
 %attr(755,root,root) %{gstlibdir}/libgstasfmux.so
 %attr(755,root,root) %{gstlibdir}/libgstautoconvert.so
-%attr(755,root,root) %{gstlibdir}/libgstaiffparse.so
+%attr(755,root,root) %{gstlibdir}/libgstaiff.so
 %attr(755,root,root) %{gstlibdir}/libgstamrparse.so
 %attr(755,root,root) %{gstlibdir}/libgstapexsink.so
 %attr(755,root,root) %{gstlibdir}/libgstbayer.so
@@ -692,6 +694,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{gstlibdir}/libgstmodplug.so
 %attr(755,root,root) %{gstlibdir}/libgstmpeg4videoparse.so
 %attr(755,root,root) %{gstlibdir}/libgstmpegdemux.so
+%attr(755,root,root) %{gstlibdir}/libgstmpegpsmux.so
 %attr(755,root,root) %{gstlibdir}/libgstmpegtsmux.so
 %attr(755,root,root) %{gstlibdir}/libgstmpegvideoparse.so
 %attr(755,root,root) %{gstlibdir}/libgstmve.so
@@ -699,12 +702,14 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{gstlibdir}/libgstnsf.so
 %attr(755,root,root) %{gstlibdir}/libgstnuvdemux.so
 %attr(755,root,root) %{gstlibdir}/libgstpcapparse.so
+%attr(755,root,root) %{gstlibdir}/libgstpnm.so
 %attr(755,root,root) %{gstlibdir}/libgstqtmux.so
 %attr(755,root,root) %{gstlibdir}/libgstrawparse.so
 %ifarch %{ix86} %{x8664}
 %attr(755,root,root) %{gstlibdir}/libgstreal.so
 %endif
 %attr(755,root,root) %{gstlibdir}/libgstrfbsrc.so
+%attr(755,root,root) %{gstlibdir}/libgstrsvg.so
 %attr(755,root,root) %{gstlibdir}/libgstrtpmux.so
 %attr(755,root,root) %{gstlibdir}/libgstscaletempoplugin.so
 %attr(755,root,root) %{gstlibdir}/libgstsdpelem.so
@@ -720,11 +725,12 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{gstlibdir}/libgstvdpau.so
 %endif
 %attr(755,root,root) %{gstlibdir}/libgstvideosignal.so
+%attr(755,root,root) %{gstlibdir}/libgstvideomeasure.so
 %attr(755,root,root) %{gstlibdir}/libgstvmnc.so
-#%attr(755,root,root) %{gstlibdir}/libgstxdgmime.so
 %{_gtkdocdir}/gst-plugins-bad-plugins-*
 %dir %{gstdatadir}/camera-apps
 %{gstdatadir}/camera-apps/*.glade
+
 
 %files devel
 %defattr(644,root,root,755)
