@@ -34,7 +34,7 @@ Summary:	Bad GStreamer Streaming-media framework plugins
 Summary(pl.UTF-8):	Złe wtyczki do środowiska obróbki strumieni GStreamer
 Name:		gstreamer-plugins-bad
 Version:	0.10.18
-Release:	1
+Release:	2
 License:	LGPL v2+
 Group:		Libraries
 Source0:	http://gstreamer.freedesktop.org/src/gst-plugins-bad/%{gstname}-%{version}.tar.bz2
@@ -58,16 +58,15 @@ BuildRequires:	libglade2-devel >= 1:2.6.0
 BuildRequires:	liboil-devel >= 0.3.8
 BuildRequires:	libtheora-devel >= 1.0
 BuildRequires:	libtool >= 1.4
-BuildRequires:	xorg-lib-libX11-devel
 BuildRequires:	pkgconfig >= 1:0.9.0
 BuildRequires:	python >= 2.1
 BuildRequires:	python-PyXML
 BuildRequires:	rpmbuild(macros) >= 1.98
+BuildRequires:	xorg-lib-libX11-devel
 ##
 ## plugins
 ##
 # http://code.google.com/p/libass/
-#BuildRequires:	libass-devel
 %{?with_directfb:BuildRequires:	DirectFB-devel >= 1:0.9.24}
 BuildRequires:	OpenGL-devel
 %{?with_sdl:BuildRequires:	SDL-devel >= 0.11}
@@ -81,6 +80,7 @@ BuildRequires:	celt-devel >= 0.5.0
 BuildRequires:	exempi-devel >= 1.99.5
 BuildRequires:	faac-devel
 %{?with_faad:BuildRequires:	faad2-devel >= 2.0-2}
+#BuildRequires:	libass-devel
 # http://code.google.com/p/game-music-emu/
 #BuildRequires:	game-music-emu-devel >= 0.5.6
 BuildRequires:	gmyth-devel >= 0.7
@@ -99,38 +99,38 @@ BuildRequires:	libiptcdata-devel >= 1.0.2
 BuildRequires:	liblrdf-devel
 #http://sourceforge.net/projects/farsight/
 #BuildRequires:	libmimic-devel
-BuildRequires:	libmodplug-devel
 %{?with_mms:BuildRequires:	libmms-devel >= 0.2}
+BuildRequires:	libmodplug-devel
 %{?with_musepack:BuildRequires:	libmpcdec-devel >= 1.2}
 BuildRequires:	libmusicbrainz-devel >= 2.1.0
 %{?with_ofa:BuildRequires:	libofa-devel >= 0.9.3}
 # http://code.entropywave.com/projects/orc/
-#BuildRequires:	orc
 %{?with_spc:BuildRequires:	libopenspc-devel >= 0.3.99}
 BuildRequires:	libpng-devel >= 2:1.2.0
 BuildRequires:	librsvg-devel >= 2.14
+#BuildRequires:	orc
 # http://drobilla.net/software/slv2/
 #BuildRequires:	slv2-devel
 # for modplug and libSoundTouch
 BuildRequires:	libstdc++-devel
 # http://code.google.com/p/libtiger/
+BuildRequires:	libsndfile-devel
 #BuildRequires:		libtiger-devel
 BuildRequires:	libtimidity-devel
 BuildRequires:	libx264-devel >= 0.1.2
 %{?with_mjpegtools:BuildRequires:	mjpegtools-devel >= 1.9.0}
-%{?with_neon:BuildRequires:	neon-devel >= 0.26}
-BuildRequires:	libsndfile-devel
 BuildRequires:	nas-devel
+%{?with_neon:BuildRequires:	neon-devel >= 0.26}
 BuildRequires:	schroedinger-devel
 BuildRequires:	soundtouch-devel >= 1.3.1
 %if %{with swfdec}
 BuildRequires:	swfdec-devel < 0.4.0
 BuildRequires:	swfdec-devel >= 0.3.6
 %endif
+%{?with_vdpau:BuildRequires:	libvdpau-devel}
 BuildRequires:	twolame-devel
 BuildRequires:	wildmidi-devel
 BuildRequires:	xorg-lib-libX11-devel
-%{?with_vdpau:BuildRequires:	libvdpau-devel}
 %{?with_xvid:BuildRequires:	xvid-devel >= 1.0.0}
 # http://zbar.sourceforge.net/
 #BuildRequires:	zbar-devel
@@ -273,14 +273,15 @@ Requires:	gstreamer >= %{gst_req_ver}
 GStreamer 1394 IIDC (Firewire digital cameras) video source plugin.
 
 %description -n gstreamer-dc1394 -l pl.UTF-8
-Wtyczka źródła obrazu 1394 IIDC (z kamer cyfrowych Firewire) do GStreamera.
+Wtyczka źródła obrazu 1394 IIDC (z kamer cyfrowych Firewire) do
+GStreamera.
 
 %package -n gstreamer-dirac
 Summary:	GStreamer Dirac plugin
 Summary(pl.UTF-8):	Wtyczka Dirac do GStreamera
 Group:		Libraries
-Requires:	gstreamer >= %{gst_req_ver}
 Requires:	dirac >= 0.9
+Requires:	gstreamer >= %{gst_req_ver}
 
 %description -n gstreamer-dirac
 GStreamer Dirac video decoder/encoder plugin.
@@ -658,13 +659,18 @@ rm -rf $RPM_BUILD_ROOT
 %doc AUTHORS ChangeLog NEWS README RELEASE
 %attr(755,root,root) %{_bindir}/gst-camera
 %attr(755,root,root) %{_bindir}/gst-camera-perf
-%{_libdir}/libgstbasevideo-%{gst_major_ver}.so.*.*.*
-%{_libdir}/libgstbasevideo-%{gst_major_ver}.so.0
-%{_libdir}/libgstphotography-%{gst_major_ver}.so.*.*.*
-%{_libdir}/libgstphotography-%{gst_major_ver}.so.0
-%{_libdir}/libgstsignalprocessor-0.10.so.*.*.*
-%{_libdir}/libgstsignalprocessor-0.10.so.0
+%attr(755,root,root) %{_libdir}/libgstbasevideo-%{gst_major_ver}.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libgstbasevideo-%{gst_major_ver}.so.0
+%attr(755,root,root) %{_libdir}/libgstphotography-%{gst_major_ver}.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libgstphotography-%{gst_major_ver}.so.0
+%attr(755,root,root) %{_libdir}/libgstsignalprocessor-0.10.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libgstsignalprocessor-0.10.so.0
+%if %{with vdpau}
+%attr(755,root,root) %{_libdir}/libgstvdp-%{gst_major_ver}.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libgstvdp-%{gst_major_ver}.so.0
+%endif
 %attr(755,root,root) %{gstlibdir}/libgstadpcmdec.so
+%attr(755,root,root) %{gstlibdir}/libgstadpcmenc.so
 %attr(755,root,root) %{gstlibdir}/libgstasfmux.so
 %attr(755,root,root) %{gstlibdir}/libgstaudioparsersbad.so
 %attr(755,root,root) %{gstlibdir}/libgstautoconvert.so
@@ -674,6 +680,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{gstlibdir}/libgstbz2.so
 %attr(755,root,root) %{gstlibdir}/libgstcamerabin.so
 %attr(755,root,root) %{gstlibdir}/libgstcdxaparse.so
+%attr(755,root,root) %{gstlibdir}/libgstdataurisrc.so
 %attr(755,root,root) %{gstlibdir}/libgstdccp.so
 %attr(755,root,root) %{gstlibdir}/libgstdtmf.so
 %attr(755,root,root) %{gstlibdir}/libgstdebugutilsbad.so
@@ -688,6 +695,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{gstlibdir}/libgsthdvparse.so
 %attr(755,root,root) %{gstlibdir}/libgstid3tag.so
 %attr(755,root,root) %{gstlibdir}/libgstjp2k.so
+%attr(755,root,root) %{gstlibdir}/libgstjpegformat.so
 %attr(755,root,root) %{gstlibdir}/libgstlegacyresample.so
 %attr(755,root,root) %{gstlibdir}/libgstliveadder.so
 %attr(755,root,root) %{gstlibdir}/libgstmetadata.so
@@ -730,7 +738,6 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{gstdatadir}/camera-apps
 %{gstdatadir}/camera-apps/gst-camera.ui
 
-
 %files devel
 %defattr(644,root,root,755)
 %{_includedir}/gstreamer-0.10/gst/interfaces/photography-enumtypes.h
@@ -741,13 +748,16 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/gstreamer-0.10/gst/video/gstbasevideoencoder.h
 %{_includedir}/gstreamer-0.10/gst/video/gstbasevideoparse.h
 %{_includedir}/gstreamer-0.10/gst/video/gstbasevideoutils.h
-%{_libdir}/libgstbasevideo-0.10.la
-%{_libdir}/libgstbasevideo-0.10.so
-%{_libdir}/libgstphotography-0.10.la
-%{_libdir}/libgstphotography-0.10.so
-%{_libdir}/libgstsignalprocessor-0.10.la
-%{_libdir}/libgstsignalprocessor-0.10.so
-
+%{_includedir}/gstreamer-0.10/gst/vdpau
+%{_libdir}/libgstbasevideo-%{gst_major_ver}.la
+%{_libdir}/libgstbasevideo-%{gst_major_ver}.so
+%{_libdir}/libgstphotography-%{gst_major_ver}.la
+%{_libdir}/libgstphotography-%{gst_major_ver}.so
+%{_libdir}/libgstsignalprocessor-%{gst_major_ver}.la
+%{_libdir}/libgstsignalprocessor-%{gst_major_ver}.so
+%{_libdir}/libgstvdp-%{gst_major_ver}.la
+%{_libdir}/libgstvdp-%{gst_major_ver}.so
+%{_pkgconfigdir}/gstreamer-plugins-bad-%{gst_major_ver}.pc
 
 ##
 ## Plugins
