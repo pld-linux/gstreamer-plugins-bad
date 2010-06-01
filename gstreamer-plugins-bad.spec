@@ -26,19 +26,19 @@
 #
 %define		gstname		gst-plugins-bad
 %define		gst_major_ver	0.10
-%define		gst_req_ver	0.10.25
+%define		gst_req_ver	0.10.29
 #
 %include	/usr/lib/rpm/macros.gstreamer
 #
 Summary:	Bad GStreamer Streaming-media framework plugins
 Summary(pl.UTF-8):	Złe wtyczki do środowiska obróbki strumieni GStreamer
 Name:		gstreamer-plugins-bad
-Version:	0.10.18
-Release:	4
+Version:	0.10.19
+Release:	1
 License:	LGPL v2+
 Group:		Libraries
 Source0:	http://gstreamer.freedesktop.org/src/gst-plugins-bad/%{gstname}-%{version}.tar.bz2
-# Source0-md5:	84838893b447e774d401a698ff812b32
+# Source0-md5:	368f72e2a1c7a6e8fe60394e4315259b
 Patch0:		%{name}-bashish.patch
 Patch1:		%{name}-libdts.patch
 Patch2:		%{name}-divx4linux.patch
@@ -66,7 +66,6 @@ BuildRequires:	xorg-lib-libX11-devel
 ##
 ## plugins
 ##
-# http://code.google.com/p/libass/
 %{?with_directfb:BuildRequires:	DirectFB-devel >= 1:0.9.24}
 BuildRequires:	OpenGL-devel
 %{?with_sdl:BuildRequires:	SDL-devel >= 0.11}
@@ -80,13 +79,15 @@ BuildRequires:	celt-devel >= 0.5.0
 BuildRequires:	exempi-devel >= 1.99.5
 BuildRequires:	faac-devel
 %{?with_faad:BuildRequires:	faad2-devel >= 2.0-2}
-#BuildRequires:	libass-devel
+BuildRequires:	flite-devel
 # http://code.google.com/p/game-music-emu/
 #BuildRequires:	game-music-emu-devel >= 0.5.6
 BuildRequires:	gmyth-devel >= 0.7
 %{?with_jack:BuildRequires:	jack-audio-connection-kit-devel >= 0.99.10}
 BuildRequires:	jasper-devel
 %{?with_ladspa:BuildRequires:	ladspa-devel >= 1.12}
+# http://code.google.com/p/libass/
+#BuildRequires:	libass-devel
 %{?with_cdaudio:BuildRequires:	libcdaudio-devel}
 BuildRequires:	libdc1394-devel >= 2.0.0
 %{?with_dts:BuildRequires:	libdts-devel}
@@ -117,6 +118,7 @@ BuildRequires:	libstdc++-devel
 BuildRequires:	libsndfile-devel
 #BuildRequires:		libtiger-devel
 BuildRequires:	libtimidity-devel
+BuildRequires:	libvpx-devel
 BuildRequires:	libx264-devel >= 0.1.2
 %{?with_mjpegtools:BuildRequires:	mjpegtools-devel >= 1.9.0}
 BuildRequires:	nas-devel
@@ -313,6 +315,18 @@ Plugin for DTS Coherent Acoustics support.
 %description -n gstreamer-dts -l pl.UTF-8
 Wtyczka do GStreamera obsługująca DTS Coherent Acoustics.
 
+%package -n gstreamer-flite
+Summary:	GStreamer Flite plugin
+Summary(pl.UTF-8):	Wtyczka Flite do GStreamera
+Group:		Libraries
+Requires:	gstreamer-plugins-base >= %{gst_req_ver}
+
+%description -n gstreamer-flite
+Plugin for Flite support.
+
+%description -n gstreamer-flite -l pl.UTF-8
+Wtyczka do GStreamera obsługująca Flite.
+
 %package -n gstreamer-gsm
 Summary:	GStreamer plugin for GSM lossy audio format
 Summary(pl.UTF-8):	Wtyczka do GStreamera obsługująca stratny format dźwięku GSM
@@ -438,22 +452,6 @@ files.
 Wtyczka OFA do GStreamera służąca do obliczania odcisków MusicIP
 plików dźwiękowych.
 
-%package -n gstreamer-oss4
-Summary:	GStreamer OSS 4 audio sink, source and mixer plugin
-Summary(pl.UTF-8):	Wtyczka wyjścia, wejścia i miksera dźwięku OSS 4 do GStreamera
-Group:		Libraries
-# for locales (when added to POTFILES)
-#Requires:	%{name} = %{version}-%{release}
-Requires:	gstreamer-plugins-base >= %{gst_req_ver}
-Provides:	gstreamer-audiosink = %{version}
-
-%description -n gstreamer-oss4
-GStreamer OSS (Open Sound System) 4 audio input/output/mixer plugin.
-
-%description -n gstreamer-oss4 -l pl.UTF-8
-Wtyczka wejścia/wyjścia/miksera dźwięku OSS (Open Sound System) 4 do
-GStreamera.
-
 %package -n gstreamer-resindvd
 Summary:	GStreamer Resin DVD playback plugin
 Summary(pl.UTF-8):	Wtyczka odtwarzania Resin DVD do GStreamera
@@ -560,6 +558,18 @@ GStreamer DirectFB output plugin.
 %description -n gstreamer-videosink-directfb -l pl.UTF-8
 Wtyczka wyjścia obrazu DirectFB do GStreamera.
 
+%package -n gstreamer-vp8
+Summary:	VP8 support for GStreamer
+Summary(pl.UTF-8):	Wsparcie VP8 dla GStreamera
+Group:		Libraries
+Requires:	gstreamer-plugins-base >= %{gst_req_ver}
+
+%description -n gstreamer-vp8
+VP8 support for GStreamer.
+
+%description -n gstreamer-vp8 -l pl.UTF-8
+Wsparcie VP8 dla GStreamera.
+
 %package -n gstreamer-wildmidi
 Summary:	wildmidi plugin for GStreamer
 Summary(pl.UTF-8):	Wtyczka wildmidi do GStreamera
@@ -657,8 +667,6 @@ rm -rf $RPM_BUILD_ROOT
 %files -f %{gstname}-%{gst_major_ver}.lang
 %defattr(644,root,root,755)
 %doc AUTHORS ChangeLog NEWS README RELEASE
-%attr(755,root,root) %{_bindir}/gst-camera
-%attr(755,root,root) %{_bindir}/gst-camera-perf
 %attr(755,root,root) %{_libdir}/libgstbasevideo-%{gst_major_ver}.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libgstbasevideo-%{gst_major_ver}.so.0
 %attr(755,root,root) %{_libdir}/libgstphotography-%{gst_major_ver}.so.*.*.*
@@ -680,6 +688,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{gstlibdir}/libgstbz2.so
 %attr(755,root,root) %{gstlibdir}/libgstcamerabin.so
 %attr(755,root,root) %{gstlibdir}/libgstcdxaparse.so
+%attr(755,root,root) %{gstlibdir}/libgstcog.so
 %attr(755,root,root) %{gstlibdir}/libgstdataurisrc.so
 %attr(755,root,root) %{gstlibdir}/libgstdccp.so
 %attr(755,root,root) %{gstlibdir}/libgstdtmf.so
@@ -694,6 +703,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{gstlibdir}/libgsth264parse.so
 %attr(755,root,root) %{gstlibdir}/libgsthdvparse.so
 %attr(755,root,root) %{gstlibdir}/libgstid3tag.so
+%attr(755,root,root) %{gstlibdir}/libgstinvtelecine.so
 %attr(755,root,root) %{gstlibdir}/libgstjp2k.so
 %attr(755,root,root) %{gstlibdir}/libgstjpegformat.so
 %attr(755,root,root) %{gstlibdir}/libgstlegacyresample.so
@@ -721,6 +731,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{gstlibdir}/libgstrtpmux.so
 %attr(755,root,root) %{gstlibdir}/libgstscaletempoplugin.so
 %attr(755,root,root) %{gstlibdir}/libgstsdpelem.so
+%attr(755,root,root) %{gstlibdir}/libgstsegmentclip.so
 %attr(755,root,root) %{gstlibdir}/libgstselector.so
 %attr(755,root,root) %{gstlibdir}/libgstsiren.so
 %attr(755,root,root) %{gstlibdir}/libgststereo.so
@@ -821,6 +832,10 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{gstlibdir}/libgstdtsdec.so
 %endif
 
+%files -n gstreamer-flite
+%defattr(644,root,root,755)
+%attr(755,root,root) %{gstlibdir}/libgstflite.so
+
 %if %{with gsm}
 %files -n gstreamer-gsm
 %defattr(644,root,root,755)
@@ -878,10 +893,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{gstlibdir}/libgstofa.so
 %endif
 
-%files -n gstreamer-oss4
-%defattr(644,root,root,755)
-%attr(755,root,root) %{gstlibdir}/libgstoss4audio.so
-
 %files -n gstreamer-resindvd
 %defattr(644,root,root,755)
 %attr(755,root,root) %{gstlibdir}/libresindvd.so
@@ -910,7 +921,11 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %attr(755,root,root) %{gstlibdir}/libgsttimidity.so
 
-%files -n gstreamer-wildmidi
+%files -n gstreamer-vp8
+%defattr(644,root,root,755)
+%attr(755,root,root) %{gstlibdir}/libgstvp8.so
+
+%%files -n gstreamer-wildmidi
 %defattr(644,root,root,755)
 %attr(755,root,root) %{gstlibdir}/libgstwildmidi.so
 
