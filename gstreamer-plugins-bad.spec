@@ -34,7 +34,7 @@ Summary:	Bad GStreamer Streaming-media framework plugins
 Summary(pl.UTF-8):	Złe wtyczki do środowiska obróbki strumieni GStreamer
 Name:		gstreamer-plugins-bad
 Version:	0.10.19
-Release:	1
+Release:	2
 License:	LGPL v2+
 Group:		Libraries
 Source0:	http://gstreamer.freedesktop.org/src/gst-plugins-bad/%{gstname}-%{version}.tar.bz2
@@ -58,6 +58,7 @@ BuildRequires:	libglade2-devel >= 1:2.6.0
 BuildRequires:	liboil-devel >= 0.3.8
 BuildRequires:	libtheora-devel >= 1.0
 BuildRequires:	libtool >= 1.4
+BuildRequires:	orc-devel >= 0.4
 BuildRequires:	pkgconfig >= 1:0.9.0
 BuildRequires:	python >= 2.1
 BuildRequires:	python-PyXML
