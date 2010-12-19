@@ -117,8 +117,7 @@ BuildRequires:	librsvg-devel >= 2.14
 # for modplug and libSoundTouch
 BuildRequires:	libstdc++-devel
 BuildRequires:	libsndfile-devel >= 1.0.16
-# http://code.google.com/p/libtiger/
-#BuildRequires:		libtiger-devel >= 0.3.2
+BuildRequires:	libtiger-devel >= 0.3.2
 BuildRequires:	libtimidity-devel
 BuildRequires:	libvpx-devel
 BuildRequires:	libx264-devel >= 0.1.2
@@ -377,7 +376,7 @@ Summary(pl.UTF-8):	Wtyczka obsługująca strumienie tekstowe Kate dla GStreamera
 Group:		Libraries
 Requires:	gstreamer-plugins-base >= %{gstpb_req_ver}
 Requires:	libkate >= 0.1.7
-#Requires:	libtiger >= 0.3.2
+Requires:	libtiger >= 0.3.2
 
 %description -n gstreamer-kate
 GStreamer plugin for Kate text streams.
