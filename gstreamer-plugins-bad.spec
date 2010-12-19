@@ -1,6 +1,7 @@
 # TODO:
 # - new plugins:
 #   - ivorbisdec (BR: tremor-devel, CVS versions only, http://www.xiph.org/vorbis/)
+#
 # Conditional build:
 %bcond_without	cdaudio		# don't build cdaudio plugin
 %bcond_without	dirac		# don't build Dirac plugin
@@ -188,18 +189,17 @@ GStreamer plugin for AAC audio encoding and decoding.
 %description -n gstreamer-aac -l pl.UTF-8
 Wtyczka do GStreamera do kodowania i dekodowania plików audio AAC.
 
-%package -n gstreamer-amrwb
-Summary:	GStreamer plugin for AMR-WB audio encoding and decoding
-Summary(pl.UTF-8):	Wtyczka GStreamera do kodowania i dekodowania dźwięku w formacie AMR-WB
+%package -n gstreamer-amrwbenc
+Summary:	GStreamer plugin for AMR-WB audio encoding
+Summary(pl.UTF-8):	Wtyczka GStreamera do kodowania dźwięku w formacie AMR-WB
 Group:		Libraries
 Requires:	gstreamer >= %{gst_req_ver}
 
-%description -n gstreamer-amrwb
-GStreamer plugin for AMR-WB audio encoding and decoding.
+%description -n gstreamer-amrwbenc
+GStreamer plugin for AMR-WB audio encoding.
 
-%description -n gstreamer-amrwb -l pl.UTF-8
-Wtyczka GStreamera do kodowania i dekodowania dźwięku w formacie
-AMR-WB.
+%description -n gstreamer-amrwbenc -l pl.UTF-8
+Wtyczka GStreamera do kodowania dźwięku w formacie AMR-WB.
 
 %package -n gstreamer-audio-effects-bad
 Summary:	Bad GStreamer audio effects plugins
@@ -641,6 +641,7 @@ Wtyczka Schroedinger do GStreamera.
 	%{!?with_spc:--disable-spc} \
 	%{!?with_swfdec:--disable-swfdec} \
 	%{!?with_xvid:--disable-xvid} \
+	--disable-silent-rules \
 	--disable-static \
 	--enable-experimental \
 	--enable-gtk-doc \
@@ -655,7 +656,7 @@ rm -rf $RPM_BUILD_ROOT
 	DESTDIR=$RPM_BUILD_ROOT
 
 # We don't need plugins' *.la files
-rm -f $RPM_BUILD_ROOT%{gstlibdir}/*.la
+%{__rm} $RPM_BUILD_ROOT%{gstlibdir}/*.la
 
 %find_lang %{gstname}-%{gst_major_ver}
 
@@ -788,9 +789,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %if %{with amr}
-%files -n gstreamer-amrwb
+%files -n gstreamer-amrwbenc
 %defattr(644,root,root,755)
-%attr(755,root,root) %{gstlibdir}/libgstamrwb.so
+%attr(755,root,root) %{gstlibdir}/libgstamrwbenc.so
 %endif
 
 %files -n gstreamer-audio-effects-bad
