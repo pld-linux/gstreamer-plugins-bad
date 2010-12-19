@@ -29,7 +29,6 @@
 %define		gst_major_ver	0.10
 %define		gst_req_ver	0.10.30
 %define		gstpb_req_ver	0.10.30
-
 %include	/usr/lib/rpm/macros.gstreamer
 Summary:	Bad GStreamer Streaming-media framework plugins
 Summary(pl.UTF-8):	Złe wtyczki do środowiska obróbki strumieni GStreamer
@@ -56,10 +55,6 @@ BuildRequires:	gstreamer-devel >= %{gst_req_ver}
 BuildRequires:	gstreamer-plugins-base-devel >= %{gstpb_req_ver}
 BuildRequires:	gtk+2-devel >= 2:2.14.0
 BuildRequires:	gtk-doc >= 1.6
-BuildRequires:	libglade2-devel
-BuildRequires:	libglade2-devel >= 1:2.6.0
-BuildRequires:	liboil-devel >= 0.3.8
-BuildRequires:	libtheora-devel >= 1.0
 BuildRequires:	libtool >= 1.4
 BuildRequires:	orc-devel >= 0.4.5
 BuildRequires:	pkgconfig >= 1:0.9.0
@@ -70,8 +65,7 @@ BuildRequires:	xorg-lib-libX11-devel
 ## plugins
 ##
 %{?with_directfb:BuildRequires:	DirectFB-devel >= 1:0.9.24}
-BuildRequires:	OpenGL-devel
-%{?with_sdl:BuildRequires:	SDL-devel >= 0.11}
+%{?with_sdl:BuildRequires:	SDL-devel}
 BuildRequires:	alsa-lib-devel >= 0.9.1
 %{?with_amr:BuildRequires:	amrwb-devel}
 BuildRequires:	bzip2-devel
@@ -84,6 +78,8 @@ BuildRequires:	faac-devel
 %{?with_faad:BuildRequires:	faad2-devel >= 2.0-2}
 BuildRequires:	flite-devel
 # http://code.google.com/p/game-music-emu/ (libgme)
+BuildRequires:	game-music-emu-devel >= 0.5.5
+# when becomes available...
 #BuildRequires:	game-music-emu-devel >= 0.5.6
 BuildRequires:	gmyth-devel >= 0.7
 %{?with_jack:BuildRequires:	jack-audio-connection-kit-devel >= 0.99.10}
@@ -116,6 +112,7 @@ BuildRequires:	librsvg-devel >= 2.14
 # for modplug and libSoundTouch
 BuildRequires:	libstdc++-devel
 BuildRequires:	libsndfile-devel >= 1.0.16
+BuildRequires:	libtheora-devel >= 1.0
 BuildRequires:	libtiger-devel >= 0.3.2
 BuildRequires:	libtimidity-devel
 BuildRequires:	libvpx-devel
@@ -329,6 +326,18 @@ Plugin for Flite support.
 
 %description -n gstreamer-flite -l pl.UTF-8
 Wtyczka do GStreamera obsługująca Flite.
+
+%package -n gstreamer-gme
+Summary:	GStreamer GME Audio Decoder plugin
+Summary(pl.UTF-8):	Wtyczka dekodująca GME do GStreamera
+Group:		Libraries
+Requires:	gstreamer >= %{gst_req_ver}
+
+%description -n gstreamer-gme
+GStreamer GME Audio Decoder plugin.
+
+%description -n gstreamer-gme -l pl.UTF-8
+Wtyczka dekodująca GME do GStreamera.
 
 %package -n gstreamer-gsettings
 Summary:	GStreamer GSettings plugin
@@ -880,6 +889,10 @@ rm -rf $RPM_BUILD_ROOT
 %files -n gstreamer-flite
 %defattr(644,root,root,755)
 %attr(755,root,root) %{gstlibdir}/libgstflite.so
+
+%files -n gstreamer-gme
+%defattr(644,root,root,755)
+%attr(755,root,root) %{gstlibdir}/libgstgme.so
 
 %files -n gstreamer-gsettings
 %defattr(644,root,root,755)
