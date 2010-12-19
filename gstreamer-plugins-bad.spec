@@ -24,14 +24,13 @@
 %bcond_with	amr		# build amrwb plugin
 %bcond_with	divx4linux	# build divx4linux plugins
 %bcond_without	vdpau		# build without VDPAU
-#
+
 %define		gstname		gst-plugins-bad
 %define		gst_major_ver	0.10
 %define		gst_req_ver	0.10.30
 %define		gstpb_req_ver	0.10.30
-#
+
 %include	/usr/lib/rpm/macros.gstreamer
-#
 Summary:	Bad GStreamer Streaming-media framework plugins
 Summary(pl.UTF-8):	Złe wtyczki do środowiska obróbki strumieni GStreamer
 Name:		gstreamer-plugins-bad
@@ -600,7 +599,7 @@ Group:		Libraries
 Requires:	gstreamer-plugins-base >= %{gstpb_req_ver}
 
 %description -n gstreamer-vp8
-VP8 support for GStreamer.
+On2 VP8 Encoder/Decoder.
 
 %description -n gstreamer-vp8 -l pl.UTF-8
 Wsparcie VP8 dla GStreamera.
