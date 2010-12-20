@@ -85,8 +85,7 @@ BuildRequires:	gmyth-devel >= 0.7
 %{?with_jack:BuildRequires:	jack-audio-connection-kit-devel >= 0.99.10}
 BuildRequires:	jasper-devel
 %{?with_ladspa:BuildRequires:	ladspa-devel >= 1.12}
-# http://code.google.com/p/libass/
-#BuildRequires:	libass-devel >= 0.9.4
+BuildRequires:	libass-devel >= 0.9.4
 %{?with_cdaudio:BuildRequires:	libcdaudio-devel}
 BuildRequires:	libdc1394-devel >= 2.0.0
 %{?with_dts:BuildRequires:	libdts-devel}
@@ -198,6 +197,19 @@ GStreamer plugin for AMR-WB audio encoding.
 
 %description -n gstreamer-amrwbenc -l pl.UTF-8
 Wtyczka GStreamera do kodowania dźwięku w formacie AMR-WB.
+
+%package -n gstreamer-ass
+Summary:	GStreamer plugin for ASS/SSA subtitles rendering
+Summary(pl.UTF-8):	Wtyczka do GStreamera do renderowania napisów ASS/SSA
+Group:		Libraries
+Requires:	gstreamer-plugins-base >= %{gstpb_req_ver}
+Requires:	libass >= 0.9.4
+
+%description -n gstreamer-ass
+GStreamer plugin for ASS/SSA subtitles rendering.
+
+%description -n gstreamer-aac -l pl.UTF-8
+Wtyczka do GStreamera do renderowania napisów ASS/SSA.
 
 %package -n gstreamer-audio-effects-bad
 Summary:	Bad GStreamer audio effects plugins
@@ -840,6 +852,10 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_datadir}/gstreamer-0.10/presets
 %{_datadir}/gstreamer-0.10/presets/GstAmrwbEnc.prs
 %endif
+
+%files -n gstreamer-ass
+%defattr(644,root,root,755)
+%attr(755,root,root) %{gstlibdir}/libgstassrender.so
 
 %files -n gstreamer-audio-effects-bad
 %defattr(644,root,root,755)
