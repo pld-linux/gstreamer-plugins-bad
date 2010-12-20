@@ -96,8 +96,7 @@ BuildRequires:	libexif-devel >= 0.6.16
 BuildRequires:	libiptcdata-devel >= 1.0.2
 BuildRequires:	libkate-devel >= 0.1.7
 BuildRequires:	liblrdf-devel
-#http://sourceforge.net/projects/farsight/
-#BuildRequires:	libmimic-devel >= 1.0
+BuildRequires:	libmimic-devel >= 1.0
 %{?with_mms:BuildRequires:	libmms-devel >= 0.4}
 BuildRequires:	libmodplug-devel
 %{?with_musepack:BuildRequires:	libmpcdec-devel >= 1.2}
@@ -417,10 +416,23 @@ Plugin which wraps LADSPA plugins for use by GStreamer applications.
 Wtyczka pozwalająca na używanie wtyczek LADSPA przez aplikacje
 GStreamera.
 
+%package -n gstreamer-mimic
+Summary:	GStreamer Mimic video decoding/encoding plugin
+Summary(pl.UTF-8):	Wtyczka kodująca/dekodująca obraz Mimic do GStreamera
+Group:		Libraries
+Requires:	gstreamer >= %{gst_req_ver}
+
+%description -n gstreamer-mimic
+GStreamer Mimic video decoding/encoding plugin.
+
+%description -n gstreamer-mimic -l pl.UTF-8
+Wtyczka kodująca/dekodująca obraz Mimic do GStreamera.
+
 %package -n gstreamer-mjpegtools
 Summary:	GStreamer mpeg2enc plugin
 Summary(pl.UTF-8):	Wtyczka mpeg2enc do GStreamera
 Group:		Libraries
+Requires:	gstreamer-plugins-base >= %{gstpb_req_ver}
 
 %description -n gstreamer-mjpegtools
 GStreamer mpeg2enc plugin (based on mjpegtools libraries).
@@ -848,9 +860,9 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %attr(755,root,root) %{gstlibdir}/libgstamrwbenc.so
 # dirs should belong to gstreamer or gstreamer-pb?
-%dir %{_datadir}/gstreamer-0.10
-%dir %{_datadir}/gstreamer-0.10/presets
-%{_datadir}/gstreamer-0.10/presets/GstAmrwbEnc.prs
+%dir %{gstdatadir}
+%dir %{gstdatadir}/presets
+%{gstdatadir}/presets/GstAmrwbEnc.prs
 %endif
 
 %files -n gstreamer-ass
@@ -937,6 +949,10 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %attr(755,root,root) %{gstlibdir}/libgstladspa.so
 %endif
+
+%files -n gstreamer-mimic
+%defattr(644,root,root,755)
+%attr(755,root,root) %{gstlibdir}/libgstmimic.so
 
 %if %{with mjpegtools}
 %files -n gstreamer-mjpegtools
