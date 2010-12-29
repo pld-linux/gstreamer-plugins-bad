@@ -105,8 +105,7 @@ BuildRequires:	libmusicbrainz-devel >= 2.1.0
 %{?with_spc:BuildRequires:	libopenspc-devel >= 0.3.99}
 BuildRequires:	libpng-devel >= 2:1.2.0
 BuildRequires:	librsvg-devel >= 2.14
-# http://drobilla.net/software/slv2/
-#BuildRequires:	slv2-devel >= 0.6.6
+BuildRequires:	slv2-devel >= 0.6.6
 # for modplug and libSoundTouch
 BuildRequires:	libstdc++-devel
 BuildRequires:	libsndfile-devel >= 1.0.16
@@ -414,6 +413,20 @@ Plugin which wraps LADSPA plugins for use by GStreamer applications.
 
 %description -n gstreamer-ladspa -l pl.UTF-8
 Wtyczka pozwalająca na używanie wtyczek LADSPA przez aplikacje
+GStreamera.
+
+%package -n gstreamer-lv2
+Summary:	GStreamer wrapper for LV2 plugins
+Summary(pl.UTF-8):	Wrapper do wtyczek LV2 dla GStreamera
+Group:		Libraries
+Requires:	gstreamer-plugins-base >= %{gstpb_req_ver}
+Requires:	slv2 >= 0.6.6
+
+%description -n gstreamer-lv2
+Plugin which wraps LV2 plugins for use by GStreamer applications.
+
+%description -n gstreamer-lv2 -l pl.UTF-8
+Wtyczka pozwalająca na używanie wtyczek LV2 przez aplikacje
 GStreamera.
 
 %package -n gstreamer-mimic
@@ -949,6 +962,11 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %attr(755,root,root) %{gstlibdir}/libgstladspa.so
 %endif
+
+%files -n gstreamer-lv2
+%defattr(644,root,root,755)
+%doc ext/lv2/README
+%attr(755,root,root) %{gstlibdir}/libgstlv2.so
 
 %files -n gstreamer-mimic
 %defattr(644,root,root,755)
