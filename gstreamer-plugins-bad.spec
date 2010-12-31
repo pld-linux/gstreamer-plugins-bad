@@ -105,7 +105,6 @@ BuildRequires:	libmusicbrainz-devel >= 2.1.0
 %{?with_spc:BuildRequires:	libopenspc-devel >= 0.3.99}
 BuildRequires:	libpng-devel >= 2:1.2.0
 BuildRequires:	librsvg-devel >= 2.14
-BuildRequires:	slv2-devel >= 0.6.6
 # for modplug and libSoundTouch
 BuildRequires:	libstdc++-devel
 BuildRequires:	libsndfile-devel >= 1.0.16
@@ -119,6 +118,7 @@ BuildRequires:	nas-devel
 %{?with_neon:BuildRequires:	neon-devel >= 0.27.0}
 BuildRequires:	openssl-devel >= 0.9.5
 BuildRequires:	schroedinger-devel >= 1.0.7
+BuildRequires:	slv2-devel >= 0.6.6
 BuildRequires:	soundtouch-devel >= 1.4
 %if %{with swfdec}
 BuildRequires:	swfdec-devel < 0.4.0
@@ -129,8 +129,7 @@ BuildRequires:	twolame-devel
 BuildRequires:	wildmidi-devel
 BuildRequires:	xorg-lib-libX11-devel
 %{?with_xvid:BuildRequires:	xvid-devel >= 1.0.0}
-# http://zbar.sourceforge.net/
-#BuildRequires:	zbar-devel >= 0.9
+BuildRequires:	zbar-devel >= 0.9
 Requires:	glib2 >= 1:2.20
 Requires:	gstreamer >= %{gst_req_ver}
 Requires:	gstreamer-plugins-base >= %{gstpb_req_ver}
@@ -542,6 +541,19 @@ GStreamer Resin DVD playback plugin.
 %description -n gstreamer-resindvd -l pl.UTF-8
 Wtyczka odtwarzania Resin DVD do GStreamera.
 
+%package -n gstreamer-schroedinger
+Summary:	Schroedinger plugin for GStreamer
+Summary(pl.UTF-8):	Wtyczka Schroedinger do GStreamera
+Group:		Libraries
+Requires:	gstreamer >= %{gst_req_ver}
+Requires:	schroedinger >= 1.0.7
+
+%description -n gstreamer-schroedinger
+Schroedinger plugin for GStreamer.
+
+%description -n gstreamer-schroedinger -l pl.UTF-8
+Wtyczka Schroedinger do GStreamera.
+
 %package -n gstreamer-soundtouch
 Summary:	GStreamer soundtouch plugin
 Summary(pl.UTF-8):	Wtyczka soundtouch do GStreamera
@@ -639,16 +651,16 @@ GStreamer DirectFB output plugin.
 Wtyczka wyjścia obrazu DirectFB do GStreamera.
 
 %package -n gstreamer-vp8
-Summary:	VP8 support for GStreamer
-Summary(pl.UTF-8):	Wsparcie VP8 dla GStreamera
+Summary:	GStreamer VP8 encoding and decoding plugin
+Summary(pl.UTF-8):	Wtyczka kodująca i dekodująca VP8 dla GStreamera
 Group:		Libraries
 Requires:	gstreamer-plugins-base >= %{gstpb_req_ver}
 
 %description -n gstreamer-vp8
-On2 VP8 Encoder/Decoder.
+GStreamer VP8 encoding and decoding plugin.
 
 %description -n gstreamer-vp8 -l pl.UTF-8
-Wsparcie VP8 dla GStreamera.
+Wtyczka kodująca i dekodująca VP8 dla GStreamera.
 
 %package -n gstreamer-wildmidi
 Summary:	wildmidi plugin for GStreamer
@@ -674,18 +686,18 @@ GStreamer xvid decoder plugin.
 %description -n gstreamer-xvid -l pl.UTF-8
 Wtyczka do GStreamera dekodująca przy użyciu biblioteki xvid.
 
-%package -n gstreamer-schroedinger
-Summary:	Schroedinger plugin for GStreamer
-Summary(pl.UTF-8):	Wtyczka Schroedinger do GStreamera
+%package -n gstreamer-zbar
+Summary:	GStreamer ZBar barcode scanner plugin
+Summary(pl.UTF-8):	Wtyczka do GStreamera skanująca kody kreskowe
 Group:		Libraries
-Requires:	gstreamer >= %{gst_req_ver}
-Requires:	schroedinger >= 1.0.7
+Requires:	gstreamer-plugins-base >= %{gstpb_req_ver}
+Requires:	zbar >= 0.9
 
-%description -n gstreamer-schroedinger
-Schroedinger plugin for GStreamer.
+%description -n gstreamer-zbar
+GStreamer ZBar barcode scanner plugin.
 
-%description -n gstreamer-schroedinger -l pl.UTF-8
-Wtyczka Schroedinger do GStreamera.
+%description -n gstreamer-zbar -l pl.UTF-8
+Wtyczka do GStreamera skanująca kody kreskowe.
 
 %prep
 %setup -q -n %{gstname}-%{version}
@@ -1015,6 +1027,10 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %attr(755,root,root) %{gstlibdir}/libresindvd.so
 
+%files -n gstreamer-schroedinger
+%defattr(644,root,root,755)
+%attr(755,root,root) %{gstlibdir}/libgstschro.so
+
 %files -n gstreamer-soundtouch
 %defattr(644,root,root,755)
 %attr(755,root,root) %{gstlibdir}/libgstsoundtouch.so
@@ -1043,10 +1059,6 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %attr(755,root,root) %{gstlibdir}/libgstvp8.so
 
-%%files -n gstreamer-wildmidi
-%defattr(644,root,root,755)
-%attr(755,root,root) %{gstlibdir}/libgstwildmidi.so
-
 %if %{with sdl}
 %files -n gstreamer-videosink-sdl
 %defattr(644,root,root,755)
@@ -1059,12 +1071,16 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{gstlibdir}/libgstdfbvideosink.so
 %endif
 
+%%files -n gstreamer-wildmidi
+%defattr(644,root,root,755)
+%attr(755,root,root) %{gstlibdir}/libgstwildmidi.so
+
 %if %{with xvid}
 %files -n gstreamer-xvid
 %defattr(644,root,root,755)
 %attr(755,root,root) %{gstlibdir}/libgstxvid.so
 %endif
 
-%files -n gstreamer-schroedinger
+%files -n gstreamer-zbar
 %defattr(644,root,root,755)
-%attr(755,root,root) %{gstlibdir}/libgstschro.so
+%attr(755,root,root) %{gstlibdir}/libgstzbar.so
