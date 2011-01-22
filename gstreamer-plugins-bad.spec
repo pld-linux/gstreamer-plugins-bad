@@ -9,7 +9,6 @@
 %bcond_without	dts		# don't build DTS plugin
 %bcond_without	faad		# don't build faad plugin
 %bcond_without	gsm		# don't build gsm plugin
-%bcond_without	jack		# don't build JACK audio plugin
 %bcond_without	ladspa		# don't build ladspa plugin
 %bcond_without	mjpegtools	# don't build mpeg2enc plugin
 %bcond_without	mms		# don't build mms plugin
@@ -27,18 +26,18 @@
 
 %define		gstname		gst-plugins-bad
 %define		gst_major_ver	0.10
-%define		gst_req_ver	0.10.30
-%define		gstpb_req_ver	0.10.30
+%define		gst_req_ver	0.10.32
+%define		gstpb_req_ver	0.10.32
 %include	/usr/lib/rpm/macros.gstreamer
 Summary:	Bad GStreamer Streaming-media framework plugins
 Summary(pl.UTF-8):	Złe wtyczki do środowiska obróbki strumieni GStreamer
 Name:		gstreamer-plugins-bad
-Version:	0.10.20
-Release:	5
+Version:	0.10.21
+Release:	1
 License:	LGPL v2+
 Group:		Libraries
 Source0:	http://gstreamer.freedesktop.org/src/gst-plugins-bad/%{gstname}-%{version}.tar.bz2
-# Source0-md5:	7c84766f6d24f41ba90c3f6141012ab8
+# Source0-md5:	f501336ab1d18d2565f47c36ce653a82
 Patch0:		%{name}-bashish.patch
 Patch1:		%{name}-libdts.patch
 Patch2:		%{name}-divx4linux.patch
@@ -49,14 +48,14 @@ BuildRequires:	autoconf >= 2.60
 BuildRequires:	automake >= 1:1.10
 BuildRequires:	docbook-dtd412-xml
 BuildRequires:	gettext-devel >= 0.17
-# 2.20 for all, gio-2.26 for gsettings
+# 2.22 for all, gio-2.26 for gsettings
 BuildRequires:	glib2-devel >= 1:2.26
 BuildRequires:	gstreamer-devel >= %{gst_req_ver}
 BuildRequires:	gstreamer-plugins-base-devel >= %{gstpb_req_ver}
 BuildRequires:	gtk+2-devel >= 2:2.14.0
 BuildRequires:	gtk-doc >= 1.6
 BuildRequires:	libtool >= 1.4
-BuildRequires:	orc-devel >= 0.4.5
+BuildRequires:	orc-devel >= 0.4.7
 BuildRequires:	pkgconfig >= 1:0.9.0
 BuildRequires:	python >= 2.1
 BuildRequires:	rpmbuild(macros) >= 1.98
@@ -77,12 +76,10 @@ BuildRequires:	exempi-devel >= 1.99.5
 BuildRequires:	faac-devel
 %{?with_faad:BuildRequires:	faad2-devel >= 2.0-2}
 BuildRequires:	flite-devel
-# http://code.google.com/p/game-music-emu/ (libgme)
 BuildRequires:	game-music-emu-devel >= 0.5.5
 # when becomes available...
 #BuildRequires:	game-music-emu-devel >= 0.5.6
 BuildRequires:	gmyth-devel >= 0.7
-%{?with_jack:BuildRequires:	jack-audio-connection-kit-devel >= 0.99.10}
 BuildRequires:	jasper-devel
 %{?with_ladspa:BuildRequires:	ladspa-devel >= 1.12}
 BuildRequires:	libass-devel >= 0.9.4
@@ -116,6 +113,8 @@ BuildRequires:	libx264-devel >= 0.1.2
 %{?with_mjpegtools:BuildRequires:	mjpegtools-devel >= 1.9.0}
 BuildRequires:	nas-devel
 %{?with_neon:BuildRequires:	neon-devel >= 0.27.0}
+# TODO
+#BuildRequires:	opencv-devel >= 2.0.0
 BuildRequires:	openssl-devel >= 0.9.5
 BuildRequires:	schroedinger-devel >= 1.0.7
 BuildRequires:	slv2-devel >= 0.6.6
@@ -130,10 +129,10 @@ BuildRequires:	wildmidi-devel
 BuildRequires:	xorg-lib-libX11-devel
 %{?with_xvid:BuildRequires:	xvid-devel >= 1.0.0}
 BuildRequires:	zbar-devel >= 0.9
-Requires:	glib2 >= 1:2.20
+Requires:	glib2 >= 1:2.22
 Requires:	gstreamer >= %{gst_req_ver}
 Requires:	gstreamer-plugins-base >= %{gstpb_req_ver}
-Requires:	orc >= 0.4.5
+Requires:	orc >= 0.4.7
 Obsoletes:	gstreamer-quicktime
 Obsoletes:	gstreamer-vcd
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -220,19 +219,6 @@ Bad GStreamer audio effects plugins.
 
 %description -n gstreamer-audio-effects-bad -l pl.UTF-8
 Złe wtyczki efektów dźwiękowych do GStreamera.
-
-%package -n gstreamer-audiosink-alsaspdif
-Summary:	GStreamer ALSA plugin for S/PDIF output
-Summary(pl.UTF-8):	Wtyczka ALSA GStreamera do wyjścia S/PDIF
-Group:		Libraries
-Requires:	gstreamer-plugins-base >= %{gstpb_req_ver}
-Provides:	gstreamer-audiosink = %{version}
-
-%description -n gstreamer-audiosink-alsaspdif
-GStreamer ALSA plugin for S/PDIF output.
-
-%description -n gstreamer-audiosink-alsaspdif -l pl.UTF-8
-Wtyczka ALSA GStreamera do wyjścia S/PDIF.
 
 %package -n gstreamer-audiosink-nas
 Summary:	GStreamer NAS audio output plugin
@@ -373,19 +359,6 @@ Output plugin for GStreamer to convert to GSM lossy audio format.
 %description -n gstreamer-gsm -l pl.UTF-8
 Wtyczka wyjścia dźwięku GSteamera konwertująca do stratnego formatu
 GSM.
-
-%package -n gstreamer-jack
-Summary:	GStreamer plugin for the JACK Sound Server
-Summary(pl.UTF-8):	Wtyczka serwera dźwięku JACK dla GStreamera
-Group:		Libraries
-Requires:	gstreamer-plugins-base >= %{gstpb_req_ver}
-Provides:	gstreamer-audiosink = %{version}
-
-%description -n gstreamer-jack
-Plugin for the JACK professional sound server.
-
-%description -n gstreamer-jack -l pl.UTF-8
-Wtyczka dla profesjonalnego serwera dźwięku JACK.
 
 %package -n gstreamer-kate
 Summary:	GStreamer plugin for Kate text streams
@@ -721,7 +694,6 @@ Wtyczka do GStreamera skanująca kody kreskowe.
 	%{!?with_dts:--disable-dts} \
 	%{!?with_faad:--disable-faad} \
 	%{!?with_gsm:--disable-gsm} \
-	%{!?with_jack:--disable-jack} \
 	%{!?with_ladspa:--disable-ladspa} \
 	%{!?with_mms:--disable-libmms} \
 	%{!?with_mjpegtools:--disable-mpeg2enc} \
@@ -761,6 +733,8 @@ rm -rf $RPM_BUILD_ROOT
 %files -f %{gstname}-%{gst_major_ver}.lang
 %defattr(644,root,root,755)
 %doc AUTHORS ChangeLog NEWS README RELEASE
+%attr(755,root,root) %{_libdir}/libgstbasecamerabinsrc-%{gst_major_ver}.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libgstbasecamerabinsrc-%{gst_major_ver}.so.0
 %attr(755,root,root) %{_libdir}/libgstbasevideo-%{gst_major_ver}.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libgstbasevideo-%{gst_major_ver}.so.0
 %attr(755,root,root) %{_libdir}/libgstphotography-%{gst_major_ver}.so.*.*.*
@@ -781,15 +755,17 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{gstlibdir}/libgstbayer.so
 %attr(755,root,root) %{gstlibdir}/libgstbz2.so
 %attr(755,root,root) %{gstlibdir}/libgstcamerabin.so
+%attr(755,root,root) %{gstlibdir}/libgstcamerabin2.so
 %attr(755,root,root) %{gstlibdir}/libgstcoloreffects.so
+%attr(755,root,root) %{gstlibdir}/libgstcolorspace.so
 %attr(755,root,root) %{gstlibdir}/libgstcdxaparse.so
 %attr(755,root,root) %{gstlibdir}/libgstcog.so
 %attr(755,root,root) %{gstlibdir}/libgstdataurisrc.so
 %attr(755,root,root) %{gstlibdir}/libgstdccp.so
 %attr(755,root,root) %{gstlibdir}/libgstdtmf.so
 %attr(755,root,root) %{gstlibdir}/libgstdebugutilsbad.so
-# R: gst-plugins-bad locales
 %attr(755,root,root) %{gstlibdir}/libgstdvb.so
+%attr(755,root,root) %{gstlibdir}/libgstdvbsuboverlay.so
 %attr(755,root,root) %{gstlibdir}/libgstdvdspu.so
 %attr(755,root,root) %{gstlibdir}/libgstfbdevsink.so
 %attr(755,root,root) %{gstlibdir}/libgstfestival.so
@@ -800,13 +776,14 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{gstlibdir}/libgsth264parse.so
 %attr(755,root,root) %{gstlibdir}/libgsthdvparse.so
 %attr(755,root,root) %{gstlibdir}/libgstid3tag.so
+%attr(755,root,root) %{gstlibdir}/libgstinterlace.so
 %attr(755,root,root) %{gstlibdir}/libgstinvtelecine.so
 %attr(755,root,root) %{gstlibdir}/libgstivfparse.so
 %attr(755,root,root) %{gstlibdir}/libgstjp2k.so
+%attr(755,root,root) %{gstlibdir}/libgstjp2kdecimator.so
 %attr(755,root,root) %{gstlibdir}/libgstjpegformat.so
 %attr(755,root,root) %{gstlibdir}/libgstlegacyresample.so
 %attr(755,root,root) %{gstlibdir}/libgstliveadder.so
-%attr(755,root,root) %{gstlibdir}/libgstmetadata.so
 %attr(755,root,root) %{gstlibdir}/libgstmodplug.so
 %attr(755,root,root) %{gstlibdir}/libgstmpeg4videoparse.so
 %attr(755,root,root) %{gstlibdir}/libgstmpegdemux.so
@@ -831,13 +808,11 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{gstlibdir}/libgstscaletempoplugin.so
 %attr(755,root,root) %{gstlibdir}/libgstsdpelem.so
 %attr(755,root,root) %{gstlibdir}/libgstsegmentclip.so
-%attr(755,root,root) %{gstlibdir}/libgstselector.so
 %attr(755,root,root) %{gstlibdir}/libgstshm.so
 %attr(755,root,root) %{gstlibdir}/libgstsiren.so
 %attr(755,root,root) %{gstlibdir}/libgststereo.so
 %attr(755,root,root) %{gstlibdir}/libgstsubenc.so
 %attr(755,root,root) %{gstlibdir}/libgsttta.so
-%attr(755,root,root) %{gstlibdir}/libgstvalve.so
 %attr(755,root,root) %{gstlibdir}/libgstvcdsrc.so
 %if %{with vdpau}
 %attr(755,root,root) %{gstlibdir}/libgstvdpau.so
@@ -846,10 +821,20 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{gstlibdir}/libgstvideosignal.so
 %attr(755,root,root) %{gstlibdir}/libgstvideomeasure.so
 %attr(755,root,root) %{gstlibdir}/libgstvmnc.so
-%{_gtkdocdir}/gst-plugins-bad-plugins-*
+%attr(755,root,root) %{gstlibdir}/libgsty4mdec.so
+%{_gtkdocdir}/gst-plugins-bad-plugins-0.10
 
 %files devel
 %defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/libgstbasecamerabinsrc-%{gst_major_ver}.so
+%attr(755,root,root) %{_libdir}/libgstbasevideo-%{gst_major_ver}.so
+%attr(755,root,root) %{_libdir}/libgstphotography-%{gst_major_ver}.so
+%attr(755,root,root) %{_libdir}/libgstsignalprocessor-%{gst_major_ver}.so
+%{_libdir}/libgstbasecamerabinsrc-%{gst_major_ver}.la
+%{_libdir}/libgstbasevideo-%{gst_major_ver}.la
+%{_libdir}/libgstphotography-%{gst_major_ver}.la
+%{_libdir}/libgstsignalprocessor-%{gst_major_ver}.la
+%{_includedir}/gstreamer-0.10/gst/basecamerabinsrc
 %{_includedir}/gstreamer-0.10/gst/interfaces/photography-enumtypes.h
 %{_includedir}/gstreamer-0.10/gst/interfaces/photography.h
 %{_includedir}/gstreamer-0.10/gst/signalprocessor
@@ -858,15 +843,11 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/gstreamer-0.10/gst/video/gstbasevideoencoder.h
 %{_includedir}/gstreamer-0.10/gst/video/gstbasevideoparse.h
 %{_includedir}/gstreamer-0.10/gst/video/gstbasevideoutils.h
-%{_includedir}/gstreamer-0.10/gst/vdpau
-%{_libdir}/libgstbasevideo-%{gst_major_ver}.la
-%{_libdir}/libgstbasevideo-%{gst_major_ver}.so
-%{_libdir}/libgstphotography-%{gst_major_ver}.la
-%{_libdir}/libgstphotography-%{gst_major_ver}.so
-%{_libdir}/libgstsignalprocessor-%{gst_major_ver}.la
-%{_libdir}/libgstsignalprocessor-%{gst_major_ver}.so
+%if %{with vdpau}
+%attr(755,root,root) %{_libdir}/libgstvdp-%{gst_major_ver}.so
 %{_libdir}/libgstvdp-%{gst_major_ver}.la
-%{_libdir}/libgstvdp-%{gst_major_ver}.so
+%{_includedir}/gstreamer-0.10/gst/vdpau
+%endif
 %{_pkgconfigdir}/gstreamer-plugins-bad-%{gst_major_ver}.pc
 
 ##
@@ -897,10 +878,6 @@ rm -rf $RPM_BUILD_ROOT
 %files -n gstreamer-audio-effects-bad
 %defattr(644,root,root,755)
 %attr(755,root,root) %{gstlibdir}/libgstspeed.so
-
-%files -n gstreamer-audiosink-alsaspdif
-%defattr(644,root,root,755)
-%attr(755,root,root) %{gstlibdir}/libgstalsaspdif.so
 
 %files -n gstreamer-audiosink-nas
 %defattr(644,root,root,755)
@@ -956,12 +933,6 @@ rm -rf $RPM_BUILD_ROOT
 %files -n gstreamer-gsm
 %defattr(644,root,root,755)
 %attr(755,root,root) %{gstlibdir}/libgstgsm.so
-%endif
-
-%if %{with jack}
-%files -n gstreamer-jack
-%defattr(644,root,root,755)
-%attr(755,root,root) %{gstlibdir}/libgstjack.so
 %endif
 
 %files -n gstreamer-kate
