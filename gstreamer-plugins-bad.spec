@@ -204,7 +204,7 @@ Requires:	libass >= 0.9.4
 %description -n gstreamer-ass
 GStreamer plugin for ASS/SSA subtitles rendering.
 
-%description -n gstreamer-aac -l pl.UTF-8
+%description -n gstreamer-ass -l pl.UTF-8
 Wtyczka do GStreamera do renderowania napisów ASS/SSA.
 
 %package -n gstreamer-audio-effects-bad
