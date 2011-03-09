@@ -15,6 +15,7 @@
 %bcond_without	musepack	# don't build musepack plugin
 %bcond_without	neon		# don't build neonhttpsrc plugin
 %bcond_without	ofa		# don't build OFA plugin
+%bcond_without	opencv		# don't build OpenCV plugin
 %bcond_without	sdl		# don't build sdl plugin
 %bcond_with	swfdec		# swfdec plugin
 %bcond_without	spc		# don't build spc plugin
@@ -44,6 +45,7 @@ Patch2:		%{name}-divx4linux.patch
 Patch4:		%{name}-timidity.patch
 Patch5:		%{name}-nas.patch
 Patch6:		%{name}-celt.patch
+Patch7:		%{name}-opencv.patch
 URL:		http://gstreamer.freedesktop.org/
 BuildRequires:	autoconf >= 2.60
 BuildRequires:	automake >= 1:1.10
@@ -111,12 +113,10 @@ BuildRequires:	libtiger-devel >= 0.3.2
 BuildRequires:	libtimidity-devel
 BuildRequires:	libvpx-devel
 BuildRequires:	libx264-devel >= 0.1.2
-BuildRequires:	lv2core-devel
 %{?with_mjpegtools:BuildRequires:	mjpegtools-devel >= 1.9.0}
 BuildRequires:	nas-devel
 %{?with_neon:BuildRequires:	neon-devel >= 0.27.0}
-# TODO
-#BuildRequires:	opencv-devel >= 2.0.0
+%{?with_opencv:BuildRequires:	opencv-devel >= 2.2.0}
 BuildRequires:	openssl-devel >= 0.9.5
 BuildRequires:	schroedinger-devel >= 1.0.7
 BuildRequires:	slv2-devel >= 0.6.6
@@ -504,6 +504,25 @@ files.
 Wtyczka OFA do GStreamera służąca do obliczania odcisków MusicIP
 plików dźwiękowych.
 
+%package -n gstreamer-opencv
+Summary:	GStreamer OpenCV plugin
+Summary(pl.UTF-8):	Wtyczka OpenCV do GStreamera
+Group:		Libraries
+Requires:	gstreamer >= %{gst_req_ver}
+Requires:	opencv >= 2.2.0
+
+%description -n gstreamer-opencv
+GStreamer OpenCV plugin. It contains the following elements:
+facedetect, faceblur, edgedetect, cvsobel, cvsmooth, cvlaplace,
+cverode, cvequalizehist, cvdilate, textwrite, templatematch,
+pyramidsegment.
+
+%description -n gstreamer-opencv -l pl.UTF-8
+Wtyczka OpenCV do GStreamera. Zawiera następujące elementy:
+facedetect, faceblur, edgedetect, cvsobel, cvsmooth, cvlaplace,
+cverode, cvequalizehist, cvdilate, textwrite, templatematch,
+pyramidsegment.
+
 %package -n gstreamer-resindvd
 Summary:	GStreamer Resin DVD playback plugin
 Summary(pl.UTF-8):	Wtyczka odtwarzania Resin DVD do GStreamera
@@ -682,6 +701,7 @@ Wtyczka do GStreamera skanująca kody kreskowe.
 %patch4 -p1
 %patch5 -p1
 %patch6 -p1
+%patch7 -p1
 
 %build
 %{__libtoolize}
@@ -995,6 +1015,12 @@ rm -rf $RPM_BUILD_ROOT
 %files -n gstreamer-ofa
 %defattr(644,root,root,755)
 %attr(755,root,root) %{gstlibdir}/libgstofa.so
+%endif
+
+%if %{with opencv}
+%files -n gstreamer-opencv
+%defattr(644,root,root,755)
+%attr(755,root,root) %{gstlibdir}/libgstopencv.so
 %endif
 
 %files -n gstreamer-resindvd
