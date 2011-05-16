@@ -1,6 +1,3 @@
-# TODO:
-# - new plugins:
-#   - ivorbisdec (BR: tremor-devel, CVS versions only, http://www.xiph.org/vorbis/)
 #
 # Conditional build:
 %bcond_without	cdaudio		# don't build cdaudio plugin
@@ -27,25 +24,23 @@
 
 %define		gstname		gst-plugins-bad
 %define		gst_major_ver	0.10
-%define		gst_req_ver	0.10.32
-%define		gstpb_req_ver	0.10.32
+%define		gst_req_ver	0.10.33
+%define		gstpb_req_ver	0.10.33
 %include	/usr/lib/rpm/macros.gstreamer
 Summary:	Bad GStreamer Streaming-media framework plugins
 Summary(pl.UTF-8):	Złe wtyczki do środowiska obróbki strumieni GStreamer
 Name:		gstreamer-plugins-bad
-Version:	0.10.21
-Release:	5
+Version:	0.10.22
+Release:	1
 License:	LGPL v2+
 Group:		Libraries
 Source0:	http://gstreamer.freedesktop.org/src/gst-plugins-bad/%{gstname}-%{version}.tar.bz2
-# Source0-md5:	f501336ab1d18d2565f47c36ce653a82
+# Source0-md5:	9a2acee1f386f71247003d0d7090fb1c
 Patch0:		%{name}-bashish.patch
 Patch1:		%{name}-libdts.patch
 Patch2:		%{name}-divx4linux.patch
 Patch4:		%{name}-timidity.patch
 Patch5:		%{name}-nas.patch
-Patch6:		%{name}-celt.patch
-Patch7:		%{name}-opencv.patch
 URL:		http://gstreamer.freedesktop.org/
 BuildRequires:	autoconf >= 2.60
 BuildRequires:	automake >= 1:1.10
@@ -58,7 +53,7 @@ BuildRequires:	gstreamer-plugins-base-devel >= %{gstpb_req_ver}
 BuildRequires:	gtk+2-devel >= 2:2.14.0
 BuildRequires:	gtk-doc >= 1.6
 BuildRequires:	libtool >= 1.4
-BuildRequires:	orc-devel >= 0.4.7
+BuildRequires:	orc-devel >= 0.4.11
 BuildRequires:	pkgconfig >= 1:0.9.0
 BuildRequires:	python >= 2.1
 BuildRequires:	rpmbuild(macros) >= 1.98
@@ -72,7 +67,8 @@ BuildRequires:	alsa-lib-devel >= 0.9.1
 %{?with_amr:BuildRequires:	amrwb-devel}
 BuildRequires:	bzip2-devel
 BuildRequires:	cairo-devel
-BuildRequires:	celt-devel >= 0.8.0
+BuildRequires:	celt-devel >= 0.11.0
+BuildRequires:	curl-devel >= 7.21.0
 %{?with_dirac:BuildRequires:	dirac-devel >= 0.10}
 %{?with_divx4linux:BuildRequires:	divx4linux-devel >= 1:5.05.20030428}
 BuildRequires:	exempi-devel >= 1.99.5
@@ -105,7 +101,8 @@ BuildRequires:	libmusicbrainz-devel >= 2.1.0
 %{?with_spc:BuildRequires:	libopenspc-devel >= 0.3.99}
 BuildRequires:	libpng-devel >= 2:1.2.0
 BuildRequires:	librsvg-devel >= 2.14
-# for modplug and libSoundTouch
+BuildRequires:	librtmp-devel
+# for decklink, modplug, soundtouch
 BuildRequires:	libstdc++-devel
 BuildRequires:	libsndfile-devel >= 1.0.16
 BuildRequires:	libtheora-devel >= 1.0
@@ -134,7 +131,7 @@ BuildRequires:	zbar-devel >= 0.9
 Requires:	glib2 >= 1:2.22
 Requires:	gstreamer >= %{gst_req_ver}
 Requires:	gstreamer-plugins-base >= %{gstpb_req_ver}
-Requires:	orc >= 0.4.7
+Requires:	orc >= 0.4.11
 Obsoletes:	gstreamer-quicktime
 Obsoletes:	gstreamer-vcd
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -254,13 +251,28 @@ Summary:	GStreamer Celt audio codec plugin
 Summary(pl.UTF-8):	Wtyczka kodeka dźwięku Celt do GStreamera
 Group:		Libraries
 Requires:	gstreamer >= %{gst_req_ver}
-Requires:	celt >= 0.8.0
+Requires:	celt >= 0.11.0
 
 %description -n gstreamer-celt
 GStreamer Celt audio encoder and decoder plugin.
 
 %description -n gstreamer-celt -l pl.UTF-8
 Wtyczka GStreamera kodująca i dekodująca dźwięk w formacie Celt.
+
+%package -n gstreamer-curl
+Summary:	GStreamer cURL network sink plugin
+Summary(pl.UTF-8):	Wtyczka wyjścia sieciowego cURL dla GStreamera
+Group:		Libraries
+Requires:	gstreamer >= %{gst_req_ver}
+Requires:	curl-libs >= 7.21.0
+
+%description -n gstreamer-curl
+GStreamer network sink plugin that uses libcurl as a client to upload
+data to a server (e.g. HTTP or FTP).
+
+%description -n gstreamer-curl -l pl.UTF-8
+Wtyczka wyjścia sieciowego GStreamera wykorzystująca libcurl jako
+klienta do wysyłania danych na serwer (np. HTTP lub FTP).
 
 %package -n gstreamer-dc1394
 Summary:	GStreamer 1394 IIDC (Firewire digital cameras) video source plugin
@@ -535,6 +547,23 @@ GStreamer Resin DVD playback plugin.
 %description -n gstreamer-resindvd -l pl.UTF-8
 Wtyczka odtwarzania Resin DVD do GStreamera.
 
+%package -n gstreamer-rtmp
+Summary:	RTMP stream input plugin for GStreamer
+Summary(pl.UTF-8):	Wtyczka strumieni wejściowych RTMP dla GStreamera
+Group:		Libraries
+Requires:	gstreamer >= %{gst_req_ver}
+Conflicts:	gstreamer-plugins-bad < 0.10.22
+
+%description -n gstreamer-rtmp
+GStreamer plugin that reads data from a local or remote location
+specified by an URI, using any protocol supported by the RTMP library,
+i.e. rtmp, rtmpt, rtmps, rtmpe, rtmpfp, rtmpte and rtmpts.
+
+%description -n gstreamer-rtmp -l pl.UTF-8
+Wtyczka GStreamera czytająca dane z lokalnego lub zdalnego miejsca
+określonego URI przy użyciu dowolnego protokołu obsługiwanego przez
+bibliotekę RTMP: rtmp, rtmpt, rtmps, rtmpe, rtmpfp, rtmpte lub rtmpts.
+
 %package -n gstreamer-schroedinger
 Summary:	Schroedinger plugin for GStreamer
 Summary(pl.UTF-8):	Wtyczka Schroedinger do GStreamera
@@ -700,8 +729,6 @@ Wtyczka do GStreamera skanująca kody kreskowe.
 %patch2 -p1
 %patch4 -p1
 %patch5 -p1
-%patch6 -p1
-%patch7 -p1
 
 %build
 %{__libtoolize}
@@ -771,7 +798,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{gstlibdir}/libgstadpcmdec.so
 %attr(755,root,root) %{gstlibdir}/libgstadpcmenc.so
 %attr(755,root,root) %{gstlibdir}/libgstasfmux.so
-%attr(755,root,root) %{gstlibdir}/libgstaudioparsersbad.so
 %attr(755,root,root) %{gstlibdir}/libgstautoconvert.so
 %attr(755,root,root) %{gstlibdir}/libgstaiff.so
 %attr(755,root,root) %{gstlibdir}/libgstapexsink.so
@@ -787,11 +813,14 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{gstlibdir}/libgstdccp.so
 %attr(755,root,root) %{gstlibdir}/libgstdtmf.so
 %attr(755,root,root) %{gstlibdir}/libgstdebugutilsbad.so
+%attr(755,root,root) %{gstlibdir}/libgstdecklink.so
 %attr(755,root,root) %{gstlibdir}/libgstdvb.so
 %attr(755,root,root) %{gstlibdir}/libgstdvbsuboverlay.so
 %attr(755,root,root) %{gstlibdir}/libgstdvdspu.so
 %attr(755,root,root) %{gstlibdir}/libgstfbdevsink.so
 %attr(755,root,root) %{gstlibdir}/libgstfestival.so
+%attr(755,root,root) %{gstlibdir}/libgstfieldanalysis.so
+%attr(755,root,root) %{gstlibdir}/libgstfragmented.so
 %attr(755,root,root) %{gstlibdir}/libgstfreeze.so
 %attr(755,root,root) %{gstlibdir}/libgstfrei0r.so
 %attr(755,root,root) %{gstlibdir}/libgstgaudieffects.so
@@ -806,29 +835,32 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{gstlibdir}/libgstjp2kdecimator.so
 %attr(755,root,root) %{gstlibdir}/libgstjpegformat.so
 %attr(755,root,root) %{gstlibdir}/libgstlegacyresample.so
+%attr(755,root,root) %{gstlibdir}/libgstlinsys.so
 %attr(755,root,root) %{gstlibdir}/libgstliveadder.so
 %attr(755,root,root) %{gstlibdir}/libgstmodplug.so
 %attr(755,root,root) %{gstlibdir}/libgstmpeg4videoparse.so
 %attr(755,root,root) %{gstlibdir}/libgstmpegdemux.so
 %attr(755,root,root) %{gstlibdir}/libgstmpegpsmux.so
+%attr(755,root,root) %{gstlibdir}/libgstmpegtsdemux.so
 %attr(755,root,root) %{gstlibdir}/libgstmpegtsmux.so
 %attr(755,root,root) %{gstlibdir}/libgstmpegvideoparse.so
 %attr(755,root,root) %{gstlibdir}/libgstmve.so
 %attr(755,root,root) %{gstlibdir}/libgstmxf.so
 %attr(755,root,root) %{gstlibdir}/libgstnsf.so
 %attr(755,root,root) %{gstlibdir}/libgstnuvdemux.so
+%attr(755,root,root) %{gstlibdir}/libgstpatchdetect.so
 %attr(755,root,root) %{gstlibdir}/libgstpcapparse.so
 %attr(755,root,root) %{gstlibdir}/libgstpnm.so
-%attr(755,root,root) %{gstlibdir}/libgstqtmux.so
 %attr(755,root,root) %{gstlibdir}/libgstrawparse.so
 %ifarch %{ix86} %{x8664}
 %attr(755,root,root) %{gstlibdir}/libgstreal.so
 %endif
 %attr(755,root,root) %{gstlibdir}/libgstrfbsrc.so
 %attr(755,root,root) %{gstlibdir}/libgstrsvg.so
-%attr(755,root,root) %{gstlibdir}/libgstrtmp.so
 %attr(755,root,root) %{gstlibdir}/libgstrtpmux.so
+%attr(755,root,root) %{gstlibdir}/libgstrtpvp8.so
 %attr(755,root,root) %{gstlibdir}/libgstscaletempoplugin.so
+%attr(755,root,root) %{gstlibdir}/libgstsdi.so
 %attr(755,root,root) %{gstlibdir}/libgstsdpelem.so
 %attr(755,root,root) %{gstlibdir}/libgstsegmentclip.so
 %attr(755,root,root) %{gstlibdir}/libgstshm.so
@@ -840,6 +872,8 @@ rm -rf $RPM_BUILD_ROOT
 %if %{with vdpau}
 %attr(755,root,root) %{gstlibdir}/libgstvdpau.so
 %endif
+%attr(755,root,root) %{gstlibdir}/libgstvideofiltersbad.so
+%attr(755,root,root) %{gstlibdir}/libgstvideoparsersbad.so
 %attr(755,root,root) %{gstlibdir}/libgstvideomaxrate.so
 %attr(755,root,root) %{gstlibdir}/libgstvideosignal.so
 %attr(755,root,root) %{gstlibdir}/libgstvideomeasure.so
@@ -864,8 +898,6 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/gstreamer-0.10/gst/video/gstbasevideocodec.h
 %{_includedir}/gstreamer-0.10/gst/video/gstbasevideodecoder.h
 %{_includedir}/gstreamer-0.10/gst/video/gstbasevideoencoder.h
-%{_includedir}/gstreamer-0.10/gst/video/gstbasevideoparse.h
-%{_includedir}/gstreamer-0.10/gst/video/gstbasevideoutils.h
 %if %{with vdpau}
 %attr(755,root,root) %{_libdir}/libgstvdp-%{gst_major_ver}.so
 %{_libdir}/libgstvdp-%{gst_major_ver}.la
@@ -915,6 +947,10 @@ rm -rf $RPM_BUILD_ROOT
 %files -n gstreamer-celt
 %defattr(644,root,root,755)
 %attr(755,root,root) %{gstlibdir}/libgstcelt.so
+
+%files -n gstreamer-curl
+%defattr(644,root,root,755)
+%attr(755,root,root) %{gstlibdir}/libgstcurl.so
 
 %files -n gstreamer-dc1394
 %defattr(644,root,root,755)
@@ -1026,6 +1062,10 @@ rm -rf $RPM_BUILD_ROOT
 %files -n gstreamer-resindvd
 %defattr(644,root,root,755)
 %attr(755,root,root) %{gstlibdir}/libresindvd.so
+
+%files -n gstreamer-rtmp
+%defattr(644,root,root,755)
+%attr(755,root,root) %{gstlibdir}/libgstrtmp.so
 
 %files -n gstreamer-schroedinger
 %defattr(644,root,root,755)
