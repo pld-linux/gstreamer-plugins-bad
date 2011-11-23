@@ -1,0 +1,16 @@
+--- gst-plugins-bad-0.10.22/ext/modplug/gstmodplug.cc.orig	2011-01-07 16:30:28.000000000 +0100
++++ gst-plugins-bad-0.10.22/ext/modplug/gstmodplug.cc	2011-11-23 12:21:07.191585028 +0100
+@@ -461,10 +461,10 @@
+   GstStructure *structure;
+ 
+   structure = gst_caps_get_structure (caps, 0);
+-  if (gst_structure_fixate_field_nearest_int (structure, "rate", 44100))
+-    return;
+-  if (gst_structure_fixate_field_nearest_int (structure, "channels", 2))
++  if (!gst_structure_fixate_field_nearest_int (structure, "rate", 44100))
+     return;
++  else
++    gst_structure_fixate_field_nearest_int (structure, "channels", 2);
+ }
+ 
+ static gboolean
