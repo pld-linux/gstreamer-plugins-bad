@@ -1,0 +1,11 @@
+--- gst-plugins-bad-0.10.22/configure.ac~	2012-01-28 18:34:04.000000000 +0100
++++ gst-plugins-bad-0.10.22/configure.ac	2012-01-28 18:44:04.146216129 +0100
+@@ -1279,7 +1279,7 @@
+   dnl a new version and the no-backward-compatibility define. (There doesn't
+   dnl seem to be a switch to suppress the warnings the cvcompat.h header
+   dnl causes.)
+-  PKG_CHECK_MODULES(OPENCV, opencv >= 2.0.0 opencv <= 2.2.0 , [
++  PKG_CHECK_MODULES(OPENCV, opencv >= 2.0.0 opencv < 2.4.0 , [
+     AC_PROG_CXX
+     AC_LANG_CPLUSPLUS
+     OLD_CPPFLAGS=$CPPFLAGS
