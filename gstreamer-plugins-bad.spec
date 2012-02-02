@@ -31,7 +31,7 @@ Summary:	Bad GStreamer Streaming-media framework plugins
 Summary(pl.UTF-8):	Złe wtyczki do środowiska obróbki strumieni GStreamer
 Name:		gstreamer-plugins-bad
 Version:	0.10.22
-Release:	5
+Release:	6
 License:	LGPL v2+
 Group:		Libraries
 Source0:	http://gstreamer.freedesktop.org/src/gst-plugins-bad/%{gstname}-%{version}.tar.bz2
@@ -575,6 +575,7 @@ Summary(pl.UTF-8):	Wtyczka Schroedinger do GStreamera
 Group:		Libraries
 Requires:	gstreamer >= %{gst_req_ver}
 Requires:	schroedinger >= 1.0.7
+Obsoletes:	gstreamer-schroedinger = 1.0.7
 
 %description -n gstreamer-schroedinger
 Schroedinger plugin for GStreamer.
