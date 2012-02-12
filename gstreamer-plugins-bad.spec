@@ -31,7 +31,7 @@ Summary:	Bad GStreamer Streaming-media framework plugins
 Summary(pl.UTF-8):	Złe wtyczki do środowiska obróbki strumieni GStreamer
 Name:		gstreamer-plugins-bad
 Version:	0.10.22
-Release:	8
+Release:	9
 License:	LGPL v2+
 Group:		Libraries
 Source0:	http://gstreamer.freedesktop.org/src/gst-plugins-bad/%{gstname}-%{version}.tar.bz2
@@ -43,6 +43,7 @@ Patch3:		%{name}-opencv.patch
 Patch4:		%{name}-timidity.patch
 Patch5:		%{name}-nas.patch
 Patch6:		%{name}-modplug_stereofix.patch
+Patch7:		%{name}-mjpegtools200.patch
 URL:		http://gstreamer.freedesktop.org/
 BuildRequires:	autoconf >= 2.60
 BuildRequires:	automake >= 1:1.10
@@ -133,6 +134,7 @@ BuildRequires:	wildmidi-devel
 BuildRequires:	xorg-lib-libX11-devel
 %{?with_xvid:BuildRequires:	xvid-devel >= 1.0.0}
 BuildRequires:	zbar-devel >= 0.9
+BuildConflicts:	mjpegtools-devel-2.0.0-1
 Requires:	glib2 >= 1:2.22
 Requires:	gstreamer >= %{gst_req_ver}
 Requires:	gstreamer-plugins-base >= %{gstpb_req_ver}
@@ -737,6 +739,7 @@ Wtyczka do GStreamera skanująca kody kreskowe.
 %patch4 -p1
 %patch5 -p1
 %patch6 -p1
+%patch7 -p1
 
 %build
 %{__libtoolize}
