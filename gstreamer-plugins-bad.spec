@@ -1,4 +1,4 @@
-# TODO: spandsp >= 0.0.6, libtimemmgr
+# TODO: libtimemmgr
 #
 # Conditional build:
 %bcond_without	cdaudio		# don't build cdaudio plugin
@@ -122,6 +122,7 @@ BuildRequires:	opus-devel >= 0.9.4
 BuildRequires:	schroedinger-devel >= 1.0.7
 BuildRequires:	slv2-devel >= 0.6.6
 BuildRequires:	soundtouch-devel >= 1.4
+BuildRequires:	spandsp-devel >= 0.0.6
 %if %{with swfdec}
 BuildRequires:	swfdec-devel < 0.4.0
 BuildRequires:	swfdec-devel >= 0.3.6
@@ -620,19 +621,6 @@ Schroedinger plugin for GStreamer.
 %description -n gstreamer-schroedinger -l pl.UTF-8
 Wtyczka Schroedinger do GStreamera.
 
-%package -n gstreamer-soundtouch
-Summary:	GStreamer soundtouch plugin
-Summary(pl.UTF-8):	Wtyczka soundtouch do GStreamera
-Group:		Libraries
-Requires:	gstreamer >= %{gst_req_ver}
-Requires:	soundtouch >= 1.4
-
-%description -n gstreamer-soundtouch
-GStreamer soundtouch source plugin - audio pitch controller.
-
-%description -n gstreamer-soundtouch -l pl.UTF-8
-Wtyczka soundtouch do GStreamera, sterująca wysokością dźwięku.
-
 %package -n gstreamer-sndfile
 Summary:	GStreamer sndfile plugin
 Summary(pl.UTF-8):	Wtyczka sndfile do GStreamera
@@ -647,6 +635,34 @@ GStreamer sndfile source plugin.
 
 %description -n gstreamer-sndfile -l pl.UTF-8
 Wtyczka sndfile do GStreamera.
+
+%package -n gstreamer-soundtouch
+Summary:	GStreamer soundtouch plugin
+Summary(pl.UTF-8):	Wtyczka soundtouch do GStreamera
+Group:		Libraries
+Requires:	gstreamer >= %{gst_req_ver}
+Requires:	soundtouch >= 1.4
+
+%description -n gstreamer-soundtouch
+GStreamer soundtouch source plugin - audio pitch controller.
+
+%description -n gstreamer-soundtouch -l pl.UTF-8
+Wtyczka soundtouch do GStreamera, sterująca wysokością dźwięku.
+
+%package -n gstreamer-spandsp
+Summary:	GStreamer SpanDSP plugin
+Summary(pl.UTF-8):	Wtyczka SpanDSP do GStreamera
+Group:		Libraries
+Requires:	gstreamer >= %{gst_req_ver}
+Requires:	spandsp >= 0.0.6
+
+%description -n gstreamer-spandsp
+GStreamer SpanDSP plugin - audio effect that allows packet loss
+concealment.
+
+%description -n gstreamer-spandsp -l pl.UTF-8
+Wtyczka SpanDSP do GStreamera - efekt dźwiękowy umożliwiający
+ukrywanie strat pakietów.
 
 %package -n gstreamer-spc
 Summary:	GStreamer SPC plugin
@@ -1165,13 +1181,17 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %attr(755,root,root) %{gstlibdir}/libgstschro.so
 
+%files -n gstreamer-sndfile
+%defattr(644,root,root,755)
+%attr(755,root,root) %{gstlibdir}/libgstsndfile.so
+
 %files -n gstreamer-soundtouch
 %defattr(644,root,root,755)
 %attr(755,root,root) %{gstlibdir}/libgstsoundtouch.so
 
-%files -n gstreamer-sndfile
+%files -n gstreamer-spandsp
 %defattr(644,root,root,755)
-%attr(755,root,root) %{gstlibdir}/libgstsndfile.so
+%attr(755,root,root) %{gstlibdir}/libgstspandsp.so
 
 %if %{with spc}
 %files -n gstreamer-spc
