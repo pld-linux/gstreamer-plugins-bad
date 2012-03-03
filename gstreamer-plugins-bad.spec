@@ -806,7 +806,6 @@ Wtyczka do GStreamera skanująca kody kreskowe.
 %{__autoheader}
 %{__automake}
 %configure \
-	%{!?with_amr:--disable-amrwb} \
 	%{!?with_cdaudio:--disable-cdaudio} \
 	%{!?with_divx4linux:--disable-divx} \
 	%{!?with_dirac:--disable-dirac} \
@@ -823,6 +822,7 @@ Wtyczka do GStreamera skanująca kody kreskowe.
 	%{!?with_sdl:--disable-sdltest} \
 	%{!?with_spc:--disable-spc} \
 	%{!?with_swfdec:--disable-swfdec} \
+	%{!?with_amr:--disable-voamrwbenc} \
 	%{!?with_xvid:--disable-xvid} \
 	--disable-silent-rules \
 	--disable-static \
