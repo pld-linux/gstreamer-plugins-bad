@@ -1,4 +1,3 @@
-# TODO: libtimemmgr
 #
 # Conditional build:
 %bcond_without	cdaudio		# don't build cdaudio plugin
