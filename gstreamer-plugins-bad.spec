@@ -122,7 +122,7 @@ BuildRequires:	opus-devel >= 0.9.4
 BuildRequires:	schroedinger-devel >= 1.0.7
 BuildRequires:	slv2-devel >= 0.6.6
 BuildRequires:	soundtouch-devel >= 1.4
-BuildRequires:	spandsp-devel >= 0.0.6
+BuildRequires:	spandsp-devel >= 1:0.0.6
 %if %{with swfdec}
 BuildRequires:	swfdec-devel < 0.4.0
 BuildRequires:	swfdec-devel >= 0.3.6
@@ -133,7 +133,7 @@ BuildRequires:	vo-aacenc-devel >= 0.1.0
 %{?with_amr:BuildRequires:	vo-amrwbenc-devel >= 0.1.0}
 BuildRequires:	wildmidi-devel
 BuildRequires:	xorg-lib-libX11-devel
-%{?with_xvid:BuildRequires:	xvid-devel >= 1.0.0}
+%{?with_xvid:BuildRequires:	xvid-devel >= 1.3.0}
 BuildRequires:	zbar-devel >= 0.9
 BuildRequires:	zvbi-devel >= 0.2
 Requires:	glib2 >= 1:2.24
@@ -993,7 +993,6 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/gstreamer-0.10/gst/video/gstbasevideocodec.h
 %{_includedir}/gstreamer-0.10/gst/video/gstbasevideodecoder.h
 %{_includedir}/gstreamer-0.10/gst/video/gstbasevideoencoder.h
-%{_includedir}/gstreamer-0.10/gst/video/gstbasevideoutils.h
 %{_includedir}/gstreamer-0.10/gst/video/gstbasevideoutils.h
 %{_includedir}/gstreamer-0.10/gst/video/gstsurfacebuffer.h
 %{_includedir}/gstreamer-0.10/gst/video/gstsurfaceconverter.h
