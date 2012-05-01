@@ -40,6 +40,7 @@ Patch0:		%{name}-libdts.patch
 Patch1:		%{name}-divx4linux.patch
 Patch2:		%{name}-timidity.patch
 Patch3:		%{name}-nas.patch
+Patch4:		glib2_32.patch
 URL:		http://gstreamer.freedesktop.org/
 BuildRequires:	autoconf >= 2.60
 BuildRequires:	automake >= 1:1.10
@@ -813,6 +814,7 @@ Wtyczka do GStreamera skanująca kody kreskowe.
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
+%patch4 -p1
 
 %build
 %{__libtoolize}
