@@ -62,7 +62,7 @@ BuildRequires:	xorg-lib-libX11-devel
 ## plugins
 ##
 %{?with_directfb:BuildRequires:	DirectFB-devel >= 1:0.9.24}
-BuildRequires:	OpenAL-devel
+BuildRequires:	OpenAL-devel >= 1.13.0
 %{?with_sdl:BuildRequires:	SDL-devel}
 BuildRequires:	alsa-lib-devel >= 0.9.1
 BuildRequires:	bzip2-devel
