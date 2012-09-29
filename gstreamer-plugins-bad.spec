@@ -12,7 +12,7 @@
 %bcond_without	musepack	# don't build musepack plugin
 %bcond_without	neon		# don't build neonhttpsrc plugin
 %bcond_without	ofa		# don't build OFA plugin
-%bcond_with	opencv		# don't build OpenCV plugin
+%bcond_without	opencv		# don't build OpenCV plugin
 %bcond_without	sdl		# don't build sdl plugin
 %bcond_with	swfdec		# swfdec plugin
 %bcond_without	spc		# don't build spc plugin
