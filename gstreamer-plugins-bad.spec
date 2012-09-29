@@ -949,9 +949,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/libgstsignalprocessor-%{gst_major_ver}.la
 %{_includedir}/gstreamer-%{gst_major_ver}/gst/basecamerabinsrc
 %{_includedir}/gstreamer-%{gst_major_ver}/gst/codecparsers
-%{_includedir}/gstreamer-%{gst_major_ver}/gst/interfaces/photography-enumtypes.h
-%{_includedir}/gstreamer-%{gst_major_ver}/gst/interfaces/photography.h
-%{_includedir}/gstreamer-%{gst_major_ver}/gst/signalprocessor/gstsignalprocessor.h
+%{_includedir}/gstreamer-%{gst_major_ver}/gst/interfaces
+%{_includedir}/gstreamer-%{gst_major_ver}/gst/signalprocessor
 %{_includedir}/gstreamer-%{gst_major_ver}/gst/video/gstsurfaceconverter.h
 %{_includedir}/gstreamer-%{gst_major_ver}/gst/video/gstsurfacemeta.h
 %{_includedir}/gstreamer-%{gst_major_ver}/gst/video/videocontext.h
