@@ -1048,7 +1048,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{gstlibdir}/libgstgsm.so
 %endif
 
-%files -n gstreamer-kate
+#%files -n gstreamer-kate
 #%defattr(644,root,root,755)
 #%doc ext/kate/README
 #%attr(755,root,root) %{gstlibdir}/libgstkate.so
