@@ -793,6 +793,7 @@ Summary:	GStreamer xvid decoder plugin
 Summary(pl.UTF-8):	Wtyczka do GStreamera dekodująca przy użyciu biblioteki xvid
 Group:		Libraries
 Requires:	gstreamer-plugins-base >= %{gstpb_req_ver}
+Obsoletes:	gstreamer-divx
 
 %description -n gstreamer-xvid
 GStreamer xvid decoder plugin.
