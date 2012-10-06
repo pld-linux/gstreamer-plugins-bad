@@ -38,6 +38,7 @@ Source0:	http://gstreamer.freedesktop.org/src/gst-plugins-bad/%{gstname}-%{versi
 Patch0:		%{name}-libdts.patch
 Patch1:		%{name}-timidity.patch
 Patch2:		%{name}-nas.patch
+Patch3:		%{name}-opencv.patch
 URL:		http://gstreamer.freedesktop.org/
 BuildRequires:	autoconf >= 2.62
 BuildRequires:	automake >= 1:1.11
@@ -110,7 +111,7 @@ BuildRequires:	nas-devel
 %{?with_neon:BuildRequires:	neon-devel >= 0.27.0}
 %if %{with opencv}
 BuildRequires:	opencv-devel >= 1:2.2.0
-BuildRequires:	opencv-devel < 1:2.4.0
+BuildRequires:	opencv-devel < 1:2.5.0
 %endif
 BuildRequires:	openssl-devel >= 0.9.5
 BuildRequires:	opus-devel >= 0.9.4
@@ -531,7 +532,7 @@ Summary:	GStreamer OpenCV plugin
 Summary(pl.UTF-8):	Wtyczka OpenCV do GStreamera
 Group:		Libraries
 Requires:	gstreamer >= %{gst_req_ver}
-Requires:	opencv >= 2.2.0
+Requires:	opencv >= 1:2.2.0
 
 %description -n gstreamer-opencv
 GStreamer OpenCV plugin. It contains the following elements:
@@ -784,6 +785,7 @@ Wtyczka do GStreamera skanująca kody kreskowe.
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
+%patch3 -p1
 
 %build
 %{__libtoolize}
