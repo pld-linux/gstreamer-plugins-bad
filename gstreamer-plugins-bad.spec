@@ -950,6 +950,9 @@ rm -rf $RPM_BUILD_ROOT
 #%attr(755,root,root) %{gstlibdir}/libgstfrei0r.so
 #%attr(755,root,root) %{gstlibdir}/libgsthdvparse.so
 #%attr(755,root,root) %{gstlibdir}/libgstivfparse.so
+%if %{with jasper}
+%attr(755,root,root) %{gstlibdir}/libgstjasper.so
+%endif
 #%attr(755,root,root) %{gstlibdir}/libgstjp2kdecimator.so
 #%attr(755,root,root) %{gstlibdir}/libgstlinsys.so
 #%attr(755,root,root) %{gstlibdir}/libgstmve.so
@@ -973,9 +976,6 @@ rm -rf $RPM_BUILD_ROOT
 #%attr(755,root,root) %{gstlibdir}/libgstvideomeasure.so
 #%attr(755,root,root) %{gstlibdir}/libgstvideosignal.so
 #%attr(755,root,root) %{gstlibdir}/libgstvmnc.so
-# ??? needs check
-#%attr(755,root,root) %{gstlibdir}/libgstjp2k.so
-#%attr(755,root,root) %{gstlibdir}/libgstmpegdemux.so
 %{_gtkdocdir}/gst-plugins-bad-plugins-%{gst_major_ver}
 
 %files devel
