@@ -45,12 +45,12 @@
 Summary:	Bad GStreamer Streaming-media framework plugins
 Summary(pl.UTF-8):	Złe wtyczki do środowiska obróbki strumieni GStreamer
 Name:		gstreamer-plugins-bad
-Version:	1.0.0
-Release:	2
+Version:	1.0.1
+Release:	1
 License:	LGPL v2+
 Group:		Libraries
 Source0:	http://gstreamer.freedesktop.org/src/gst-plugins-bad/%{gstname}-%{version}.tar.xz
-# Source0-md5:	f2d2c432917fb639a510bb3ce85c5329
+# Source0-md5:	801ca56f164c14854469193c3e34b5dc
 Patch0:		%{name}-libdts.patch
 Patch1:		%{name}-timidity.patch
 Patch2:		%{name}-nas.patch
@@ -907,6 +907,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{gstlibdir}/libgstdvdspu.so
 %attr(755,root,root) %{gstlibdir}/libgstfestival.so
 %attr(755,root,root) %{gstlibdir}/libgstfragmented.so
+%attr(755,root,root) %{gstlibdir}/libgstfrei0r.so
 %attr(755,root,root) %{gstlibdir}/libgstgaudieffects.so
 %attr(755,root,root) %{gstlibdir}/libgstgeometrictransform.so
 %attr(755,root,root) %{gstlibdir}/libgstgdp.so
@@ -947,7 +948,6 @@ rm -rf $RPM_BUILD_ROOT
 #%attr(755,root,root) %{gstlibdir}/libgstfbdevsink.so
 #%attr(755,root,root) %{gstlibdir}/libgstfieldanalysis.so
 #%attr(755,root,root) %{gstlibdir}/libgstfreeverb.so
-#%attr(755,root,root) %{gstlibdir}/libgstfrei0r.so
 #%attr(755,root,root) %{gstlibdir}/libgsthdvparse.so
 #%attr(755,root,root) %{gstlibdir}/libgstivfparse.so
 %if %{with jasper}
