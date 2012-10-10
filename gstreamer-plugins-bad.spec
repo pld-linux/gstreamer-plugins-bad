@@ -1,4 +1,4 @@
-# TODO: libchromaprint, libmpg123 >= 1.13
+# TODO: libchromaprint
 #
 # Conditional build:
 %bcond_with	cdaudio		# cdaudio input plugin [not ported to 1.0]
@@ -15,6 +15,7 @@
 %bcond_with	lv2		# LV2 plugin [not ported to 1.0]
 %bcond_without	mjpegtools	# don't build mpeg2enc plugin
 %bcond_without	mms		# don't build mms plugin
+%bcond_without	mpg123		# MPG123-based MP3 plugin
 %bcond_with	musepack	# don't build musepack plugin [not ported to 1.0]
 %bcond_with	musicbrainz	# musicbrainz plugin [not ported to 1.0]
 %bcond_with	mythtv		# mythtv plugin [not ported to 1.0]
@@ -106,6 +107,7 @@ BuildRequires:	libiptcdata-devel >= 1.0.2
 BuildRequires:	liblrdf-devel
 BuildRequires:	libmimic-devel >= 1.0
 %{?with_mms:BuildRequires:	libmms-devel >= 0.4}
+%{?with_mpg123:BuildRequires:	libmpg123-devel >= 1.13}
 BuildRequires:	libmodplug-devel
 %{?with_musepack:BuildRequires:	libmpcdec-devel >= 1.2}
 %{?with_musicbrainz:BuildRequires:	libmusicbrainz-devel >= 2.1.0}
@@ -467,6 +469,19 @@ GStreamer mms plugin.
 
 %description -n gstreamer-mms -l pl.UTF-8
 Wtyczka mms do GStreamera.
+
+%package -n gstreamer-mpg123
+Summary:	GStreamer mpg123 plugin
+Summary(pl.UTF-8):	Wtyczka mpg123 do GStreamera
+Group:		Libraries
+Requires:	gstreamer-plugins-base >= %{gstpb_req_ver}
+Requires:	libmpg123 >= 1.13
+
+%description -n gstreamer-mpg123
+GStreamer mpg123 plugin for MP3 playback.
+
+%description -n gstreamer-mpg123 -l pl.UTF-8
+Wtyczka mpg123 do GStreamera, odtwarzająca MP3.
 
 %package -n gstreamer-musepack
 Summary:	GStreamer musepack plugin
@@ -1125,6 +1140,12 @@ rm -rf $RPM_BUILD_ROOT
 %files -n gstreamer-mms
 %defattr(644,root,root,755)
 %attr(755,root,root) %{gstlibdir}/libgstmms.so
+%endif
+
+%if %{with mpg123}
+%files -n gstreamer-mpg123
+%defattr(644,root,root,755)
+%attr(755,root,root) %{gstlibdir}/libgstmpg123.so
 %endif
 
 %if %{with musepack}
