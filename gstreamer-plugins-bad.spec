@@ -1,37 +1,37 @@
-# TODO: libchromaprint
 #
 # Conditional build:
+%bcond_without	amr		# amrwbenc output plugin
 %bcond_with	cdaudio		# cdaudio input plugin [not ported to 1.0]
-%bcond_without	amr		# don't build amrwbenc plugin
+%bcond_without	chromaprint	# chromaprint plugin
 %bcond_with	dc1394		# dc1394 input plugin [not ported to 1.0]
 %bcond_with	dirac		# Dirac codec plugin [not ported to 1.0]
 %bcond_with	directfb	# DirectFB videosink plugin [not ported to 1.0]
-%bcond_without	dts		# don't build DTS plugin
-%bcond_without	faad		# don't build faad plugin
-%bcond_without	gsm		# don't build gsm plugin
+%bcond_without	dts		# DTS plugin
+%bcond_without	faad		# faad plugin
+%bcond_without	gsm		# gsm plugin
 %bcond_with	jasper		# JasPer plugin [not ported to 1.0]
 %bcond_with	kate		# Kate text streams plugin [not ported to 1.0]
 %bcond_with	ladspa		# LADSPA plugin [not ported to 1.0]
 %bcond_with	lv2		# LV2 plugin [not ported to 1.0]
-%bcond_without	mjpegtools	# don't build mpeg2enc plugin
-%bcond_without	mms		# don't build mms plugin
+%bcond_without	mjpegtools	# mpeg2enc plugin
+%bcond_without	mms		# mms plugin
 %bcond_without	mpg123		# MPG123-based MP3 plugin
-%bcond_with	musepack	# don't build musepack plugin [not ported to 1.0]
+%bcond_with	musepack	# musepack plugin [not ported to 1.0]
 %bcond_with	musicbrainz	# musicbrainz plugin [not ported to 1.0]
 %bcond_with	mythtv		# mythtv plugin [not ported to 1.0]
 %bcond_with	nas		# NAS audiosink plugin [not ported to 1.0]
 %bcond_with	neon		# neonhttpsrc plugin [not ported to 1.0]
 %bcond_with	ofa		# OFA plugin [not ported to 1.0]
 %bcond_with	openal		# OpenAL audiosink plugin [not ported to 1.0]
-%bcond_without	opencv		# don't build OpenCV plugin
+%bcond_without	opencv		# OpenCV plugin
 %bcond_with	rsvg		# RSVG plugin [not ported to 1.0]
 %bcond_with	sdl		# SDL audio/videosink plugin [not ported to 1.0]
 %bcond_with	sndfile		# sndfile plugin [not ported to 1.0]
 %bcond_with	swfdec		# swfdec plugin [not ready for swfdec >= 0.4]
-%bcond_without	spc		# don't build spc plugin
+%bcond_without	spc		# spc plugin
 %bcond_with	timidity	# timidity plugin [not ported to 1.0]
 %bcond_with	uvch264		# uvch264 plugin [not ported to 1.0]
-%bcond_without	wavpack		# don't build wavpack plugin
+%bcond_without	wavpack		# wavpack plugin
 %bcond_without	wayland		# Wayland videosink plugin
 %bcond_with	wildmidi	# wildmidi plugin [not ported to 1.0]
 %bcond_with	xvid		# XviD plugin [not ported to 1.0]
@@ -96,6 +96,7 @@ BuildRequires:	game-music-emu-devel >= 0.5.5
 %{?with_ladspa:BuildRequires:	ladspa-devel >= 1.12}
 BuildRequires:	libass-devel >= 0.9.4
 %{?with_cdaudio:BuildRequires:	libcdaudio-devel}
+%{?with_chromaprint:BuildRequires:	libchromaprint-devel}
 %{?with_dc1394:BuildRequires:	libdc1394-devel >= 2.0.0}
 %{?with_dts:BuildRequires:	libdts-devel}
 BuildRequires:	libdvdnav-devel >= 4.1.2
@@ -287,6 +288,19 @@ GStreamer Celt audio encoder and decoder plugin.
 
 %description -n gstreamer-celt -l pl.UTF-8
 Wtyczka GStreamera kodująca i dekodująca dźwięk w formacie Celt.
+
+%package -n gstreamer-chromaprint
+Summary:	GStreamer Chromaprint audio fingerprinting plugin
+Summary(pl.UTF-8):	Wtyczka Chromaprint do odcisków identyfikacyjnych dźwięku dla GStreamera
+Group:		Libraries
+Requires:	gstreamer >= %{gst_req_ver}
+
+%description -n gstreamer-chromaprint
+GStreamer Chromaprint audio fingerprinting plugin.
+
+%description -n gstreamer-chromaprint -l pl.UTF-8
+Wtyczka GStreamera wykonująca odciski identyfikacyjne dźwięku przy
+użyciu biblioteki Chromaprint.
 
 %package -n gstreamer-curl
 Summary:	GStreamer cURL network sink plugin
@@ -1060,6 +1074,12 @@ rm -rf $RPM_BUILD_ROOT
 %files -n gstreamer-celt
 %defattr(644,root,root,755)
 %attr(755,root,root) %{gstlibdir}/libgstcelt.so
+
+%if %{with chromaprint}
+%files -n gstreamer-chromaprint
+%defattr(644,root,root,755)
+%attr(755,root,root) %{gstlibdir}/libgstchromaprint.so
+%endif
 
 %files -n gstreamer-curl
 %defattr(644,root,root,755)
