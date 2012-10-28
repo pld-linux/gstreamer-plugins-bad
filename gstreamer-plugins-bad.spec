@@ -46,16 +46,17 @@
 Summary:	Bad GStreamer Streaming-media framework plugins
 Summary(pl.UTF-8):	Złe wtyczki do środowiska obróbki strumieni GStreamer
 Name:		gstreamer-plugins-bad
-Version:	1.0.1
+Version:	1.0.2
 Release:	1
 License:	LGPL v2+
 Group:		Libraries
 Source0:	http://gstreamer.freedesktop.org/src/gst-plugins-bad/%{gstname}-%{version}.tar.xz
-# Source0-md5:	801ca56f164c14854469193c3e34b5dc
+# Source0-md5:	17f2ba1b51347061f8f81436d6c7b65e
 Patch0:		%{name}-libdts.patch
 Patch1:		%{name}-timidity.patch
 Patch2:		%{name}-nas.patch
 Patch3:		%{name}-opencv.patch
+Patch4:		%{name}-doc.patch
 URL:		http://gstreamer.freedesktop.org/
 BuildRequires:	autoconf >= 2.62
 BuildRequires:	automake >= 1:1.11
@@ -108,7 +109,7 @@ BuildRequires:	libiptcdata-devel >= 1.0.2
 BuildRequires:	liblrdf-devel
 BuildRequires:	libmimic-devel >= 1.0
 %{?with_mms:BuildRequires:	libmms-devel >= 0.4}
-%{?with_mpg123:BuildRequires:	libmpg123-devel >= 1.13}
+%{?with_mpg123:BuildRequires:	libmpg123-devel >= 1.14}
 BuildRequires:	libmodplug-devel
 %{?with_musepack:BuildRequires:	libmpcdec-devel >= 1.2}
 %{?with_musicbrainz:BuildRequires:	libmusicbrainz-devel >= 2.1.0}
@@ -149,7 +150,7 @@ BuildRequires:	twolame-devel
 BuildRequires:	vo-aacenc-devel >= 0.1.0
 %{?with_amr:BuildRequires:	vo-amrwbenc-devel >= 0.1.0}
 # wayland-client
-%{?with_wayland:BuildRequires:	wayland-devel >= 0.95.0}
+%{?with_wayland:BuildRequires:	wayland-devel >= 1.0.0}
 %{?with_wildmidi:BuildRequires:	wildmidi-devel}
 BuildRequires:	xorg-lib-libX11-devel
 %{?with_xvid:BuildRequires:	xvid-devel >= 1.3.0}
@@ -489,7 +490,7 @@ Summary:	GStreamer mpg123 plugin
 Summary(pl.UTF-8):	Wtyczka mpg123 do GStreamera
 Group:		Libraries
 Requires:	gstreamer-plugins-base >= %{gstpb_req_ver}
-Requires:	libmpg123 >= 1.13
+Requires:	libmpg123 >= 1.14
 
 %description -n gstreamer-mpg123
 GStreamer mpg123 plugin for MP3 playback.
@@ -782,6 +783,7 @@ Summary:	GStreamer plugin for outputing to Wayland
 Summary(pl.UTF-8):	Wtyczka wyjścia Wayland do GStreamera
 Group:		Libraries
 Requires:	gstreamer-plugins-base >= %{gstpb_req_ver}
+Requires:	wayland >= 1.0.0
 Provides:	gstreamer-videosink = %{version}
 
 %description -n gstreamer-videosink-wayland
@@ -849,6 +851,7 @@ Wtyczka do GStreamera skanująca kody kreskowe.
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
+%patch4 -p1
 
 %build
 %{__libtoolize}
@@ -935,6 +938,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{gstlibdir}/libgstdvbsuboverlay.so
 %attr(755,root,root) %{gstlibdir}/libgstdvdspu.so
 %attr(755,root,root) %{gstlibdir}/libgstfestival.so
+%attr(755,root,root) %{gstlibdir}/libgstfieldanalysis.so
 %attr(755,root,root) %{gstlibdir}/libgstfragmented.so
 %attr(755,root,root) %{gstlibdir}/libgstfrei0r.so
 %attr(755,root,root) %{gstlibdir}/libgstgaudieffects.so
@@ -961,6 +965,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{gstlibdir}/libgstshm.so
 %attr(755,root,root) %{gstlibdir}/libgstsiren.so
 %attr(755,root,root) %{gstlibdir}/libgstsmooth.so
+%attr(755,root,root) %{gstlibdir}/libgstsubenc.so
 %if %{with vdpau}
 %attr(755,root,root) %{gstlibdir}/libgstvdpau.so
 %endif
@@ -975,7 +980,6 @@ rm -rf $RPM_BUILD_ROOT
 #%attr(755,root,root) %{gstlibdir}/libgstdecklink.so
 #%attr(755,root,root) %{gstlibdir}/libgstfaceoverlay.so
 #%attr(755,root,root) %{gstlibdir}/libgstfbdevsink.so
-#%attr(755,root,root) %{gstlibdir}/libgstfieldanalysis.so
 #%attr(755,root,root) %{gstlibdir}/libgstfreeverb.so
 #%attr(755,root,root) %{gstlibdir}/libgsthdvparse.so
 #%attr(755,root,root) %{gstlibdir}/libgstivfparse.so
@@ -998,7 +1002,6 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 #%attr(755,root,root) %{gstlibdir}/libgstsdi.so
 #%attr(755,root,root) %{gstlibdir}/libgststereo.so
-#%attr(755,root,root) %{gstlibdir}/libgstsubenc.so
 #%attr(755,root,root) %{gstlibdir}/libgsttta.so
 #%attr(755,root,root) %{gstlibdir}/libgstvcdsrc.so
 #%attr(755,root,root) %{gstlibdir}/libgstvideofiltersbad.so
