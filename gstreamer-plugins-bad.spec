@@ -8,6 +8,7 @@
 %bcond_with	directfb	# DirectFB videosink plugin [not ported to 1.0]
 %bcond_without	dts		# DTS plugin
 %bcond_without	faad		# faad plugin
+%bcond_without	gles		# EGL GLESv2 videosink plugin
 %bcond_without	gsm		# gsm plugin
 %bcond_with	jasper		# JasPer plugin [not ported to 1.0]
 %bcond_with	kate		# Kate text streams plugin [not ported to 1.0]
@@ -46,12 +47,12 @@
 Summary:	Bad GStreamer Streaming-media framework plugins
 Summary(pl.UTF-8):	Złe wtyczki do środowiska obróbki strumieni GStreamer
 Name:		gstreamer-plugins-bad
-Version:	1.0.5
+Version:	1.0.6
 Release:	1
 License:	LGPL v2+
 Group:		Libraries
 Source0:	http://gstreamer.freedesktop.org/src/gst-plugins-bad/%{gstname}-%{version}.tar.xz
-# Source0-md5:	07ed29084e0de968cdd1675f7ee228e2
+# Source0-md5:	5fe353942c6e5adac23f35542b131484
 Patch0:		%{name}-libdts.patch
 Patch1:		%{name}-timidity.patch
 Patch2:		%{name}-nas.patch
@@ -62,7 +63,7 @@ BuildRequires:	autoconf >= 2.62
 BuildRequires:	automake >= 1:1.11
 BuildRequires:	docbook-dtd412-xml
 BuildRequires:	gettext-devel >= 0.17
-BuildRequires:	glib2-devel >= 1:2.32
+BuildRequires:	glib2-devel >= 1:2.32.0
 BuildRequires:	gstreamer-devel >= %{gst_req_ver}
 BuildRequires:	gstreamer-plugins-base-devel >= %{gstpb_req_ver}
 BuildRequires:	gtk+3-devel >= 3.0.0
@@ -76,6 +77,9 @@ BuildRequires:	xorg-lib-libX11-devel
 ##
 ## plugins
 ##
+%{?with_gles:BuildRequires:	Mesa-libEGL-devel}
+# GLESv2
+%{?with_gles:BuildRequires:	Mesa-libGLES-devel}
 %{?with_directfb:BuildRequires:	DirectFB-devel >= 1:0.9.24}
 %{?with_openal:BuildRequires:	OpenAL-devel >= 1.13.0}
 %{?with_sdl:BuildRequires:	SDL-devel}
@@ -156,7 +160,7 @@ BuildRequires:	xorg-lib-libX11-devel
 %{?with_xvid:BuildRequires:	xvid-devel >= 1.3.0}
 BuildRequires:	zbar-devel >= 0.9
 %{?with_zvbi:BuildRequires:	zvbi-devel >= 0.2}
-Requires:	glib2 >= 1:2.32
+Requires:	glib2 >= 1:2.32.0
 Requires:	gstreamer >= %{gst_req_ver}
 Requires:	gstreamer-plugins-base >= %{gstpb_req_ver}
 Requires:	orc >= 0.4.16
@@ -384,7 +388,7 @@ Wtyczka dekodująca GME do GStreamera.
 Summary:	GStreamer GSettings plugin
 Summary(pl.UTF-8):	Wtyczka GSettings do GStreamera
 Group:		Libraries
-Requires:	glib2 >= 1:2.32
+Requires:	glib2 >= 1:2.32.0
 Requires:	gstreamer >= %{gst_req_ver}
 
 %description -n gstreamer-gsettings
@@ -762,6 +766,19 @@ GStreamer DirectFB output plugin.
 %description -n gstreamer-videosink-directfb -l pl.UTF-8
 Wtyczka wyjścia obrazu DirectFB do GStreamera.
 
+%package -n gstreamer-videosink-egl-gles
+Summary:	GStreamer EGL GLES output plugin
+Summary(pl.UTF-8):	Wtyczka wyjścia obrazu EGL GLES do GStreamera
+Group:		Libraries
+Requires:	gstreamer-plugins-base >= %{gstpb_req_ver}
+Provides:	gstreamer-videosink = %{version}
+
+%description -n gstreamer-videosink-egl-gles
+GStreamer EGL GLES output plugin.
+
+%description -n gstreamer-videosink-egl-gles -l pl.UTF-8
+Wtyczka wyjścia obrazu EGL GLES do GStreamera.
+
 %package -n gstreamer-videosink-sdl
 Summary:	GStreamer plugin for outputing to SDL
 Summary(pl.UTF-8):	Wtyczka wyjścia SDL do GStreamera
@@ -863,6 +880,7 @@ Wtyczka do GStreamera skanująca kody kreskowe.
 	%{!?with_cdaudio:--disable-cdaudio} \
 	%{!?with_dirac:--disable-dirac} \
 	%{!?with_dts:--disable-dts} \
+	%{!?with_gles:--disable-eglgles} \
 	%{!?with_faad:--disable-faad} \
 	%{!?with_gsm:--disable-gsm} \
 	%{!?with_ladspa:--disable-ladspa} \
@@ -932,6 +950,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{gstlibdir}/libgstcamerabin2.so
 %attr(755,root,root) %{gstlibdir}/libgstcoloreffects.so
 %attr(755,root,root) %{gstlibdir}/libgstdataurisrc.so
+%attr(755,root,root) %{gstlibdir}/libgstdecklink.so
 %attr(755,root,root) %{gstlibdir}/libgstdtmf.so
 %attr(755,root,root) %{gstlibdir}/libgstdebugutilsbad.so
 %attr(755,root,root) %{gstlibdir}/libgstdvb.so
@@ -978,7 +997,6 @@ rm -rf $RPM_BUILD_ROOT
 #%attr(755,root,root) %{gstlibdir}/libgstcdxaparse.so
 #%attr(755,root,root) %{gstlibdir}/libgstcog.so
 #%attr(755,root,root) %{gstlibdir}/libgstdccp.so
-#%attr(755,root,root) %{gstlibdir}/libgstdecklink.so
 #%attr(755,root,root) %{gstlibdir}/libgstfaceoverlay.so
 #%attr(755,root,root) %{gstlibdir}/libgstfbdevsink.so
 #%attr(755,root,root) %{gstlibdir}/libgstfreeverb.so
@@ -1276,6 +1294,12 @@ rm -rf $RPM_BUILD_ROOT
 %files -n gstreamer-videosink-directfb
 %defattr(644,root,root,755)
 %attr(755,root,root) %{gstlibdir}/libgstdfbvideosink.so
+%endif
+
+%if %{with gles}
+%files -n gstreamer-videosink-egl-gles
+%defattr(644,root,root,755)
+%attr(755,root,root) %{gstlibdir}/libgsteglglessink.so
 %endif
 
 %if %{with sdl}
