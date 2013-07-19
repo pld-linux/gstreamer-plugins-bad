@@ -21,9 +21,9 @@
 %bcond_with	musicbrainz	# musicbrainz plugin [not ported to 1.0]
 %bcond_with	mythtv		# mythtv plugin [not ported to 1.0]
 %bcond_with	nas		# NAS audiosink plugin [not ported to 1.0]
-%bcond_with	neon		# neonhttpsrc plugin [not ported to 1.0]
-%bcond_with	ofa		# OFA plugin [not ported to 1.0]
-%bcond_with	openal		# OpenAL audiosink plugin [not ported to 1.0]
+%bcond_without	neon		# neonhttpsrc plugin
+%bcond_without	ofa		# OFA plugin
+%bcond_without	openal		# OpenAL audiosink plugin
 %bcond_without	opencv		# OpenCV plugin
 %bcond_with	rsvg		# RSVG plugin [not ported to 1.0]
 %bcond_with	sdl		# SDL audio/videosink plugin [not ported to 1.0]
@@ -47,12 +47,12 @@
 Summary:	Bad GStreamer Streaming-media framework plugins
 Summary(pl.UTF-8):	Złe wtyczki do środowiska obróbki strumieni GStreamer
 Name:		gstreamer-plugins-bad
-Version:	1.0.7
+Version:	1.0.8
 Release:	1
 License:	LGPL v2+
 Group:		Libraries
 Source0:	http://gstreamer.freedesktop.org/src/gst-plugins-bad/%{gstname}-%{version}.tar.xz
-# Source0-md5:	d1493d1219b836a8cbf54f4fba962420
+# Source0-md5:	a2fdf125ee2ae46047dcbcfc305949ee
 Patch0:		%{name}-libdts.patch
 Patch1:		%{name}-timidity.patch
 Patch2:		%{name}-nas.patch
@@ -81,7 +81,7 @@ BuildRequires:	xorg-lib-libX11-devel
 # GLESv2
 %{?with_gles:BuildRequires:	Mesa-libGLES-devel}
 %{?with_directfb:BuildRequires:	DirectFB-devel >= 1:0.9.24}
-%{?with_openal:BuildRequires:	OpenAL-devel >= 1.13.0}
+%{?with_openal:BuildRequires:	OpenAL-devel >= 1.14}
 %{?with_sdl:BuildRequires:	SDL-devel}
 BuildRequires:	alsa-lib-devel >= 0.9.1
 BuildRequires:	bzip2-devel
@@ -570,6 +570,7 @@ plików dźwiękowych.
 Summary:	GStreamer OpenAL audio input/output plugin
 Summary(pl.UTF-8):	Wtyczka wejścia/wyjścia dźwięku OpenAL do GStreamera
 Group:		Libraries
+Requires:	OpenAL >= 1.14
 Requires:	gstreamer >= %{gst_req_ver}
 Requires:	gstreamer-plugins-base >= %{gstpb_req_ver}
 Provides:	gstreamer-audiosink = %{version}
@@ -1015,7 +1016,7 @@ rm -rf $RPM_BUILD_ROOT
 %ifarch %{ix86} %{x8664}
 #%attr(755,root,root) %{gstlibdir}/libgstreal.so
 %endif
-#%attr(755,root,root) %{gstlibdir}/libgstrfbsrc.so
+%attr(755,root,root) %{gstlibdir}/libgstrfbsrc.so
 %if %{with rsvg}
 %attr(755,root,root) %{gstlibdir}/libgstrsvg.so
 %endif
