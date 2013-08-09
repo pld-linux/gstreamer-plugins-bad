@@ -47,12 +47,12 @@
 Summary:	Bad GStreamer Streaming-media framework plugins
 Summary(pl.UTF-8):	Złe wtyczki do środowiska obróbki strumieni GStreamer
 Name:		gstreamer-plugins-bad
-Version:	1.0.8
+Version:	1.0.9
 Release:	1
 License:	LGPL v2+
 Group:		Libraries
 Source0:	http://gstreamer.freedesktop.org/src/gst-plugins-bad/%{gstname}-%{version}.tar.xz
-# Source0-md5:	a2fdf125ee2ae46047dcbcfc305949ee
+# Source0-md5:	569e5122fd7bfd7bd861a537f0a28c60
 Patch0:		%{name}-libdts.patch
 Patch1:		%{name}-timidity.patch
 Patch2:		%{name}-nas.patch
@@ -93,6 +93,7 @@ BuildRequires:	exempi-devel >= 1.99.5
 BuildRequires:	faac-devel
 %{?with_faad:BuildRequires:	faad2-devel >= 2.0-2}
 BuildRequires:	flite-devel
+BuildRequires:	fluidsynth-devel >= 1.0
 BuildRequires:	game-music-emu-devel >= 0.5.5
 # when becomes available...
 #BuildRequires:	game-music-emu-devel >= 0.5.6
@@ -138,6 +139,7 @@ BuildRequires:	libx264-devel >= 0.1.2
 BuildRequires:	opencv-devel >= 1:2.2.0
 BuildRequires:	opencv-devel < 1:2.5.0
 %endif
+BuildRequires:	openjpeg-devel >= 1
 BuildRequires:	openssl-devel >= 0.9.5
 BuildRequires:	opus-devel >= 0.9.4
 BuildRequires:	schroedinger-devel >= 1.0.10
@@ -372,6 +374,20 @@ Plugin for Flite support.
 %description -n gstreamer-flite -l pl.UTF-8
 Wtyczka do GStreamera obsługująca Flite.
 
+%package -n gstreamer-fluidsynth
+Summary:	GStreamer FluidSynth MIDI plugin
+Summary(pl.UTF-8):	Wtyczka FluidSynth MIDI do GStreamera
+Group:		Libraries
+# for generic gstmidi plugin
+Requires:	%{name} = %{version}-%{release}
+Requires:	fluidsynth>= 1.0
+
+%description -n gstreamer-fluidsynth
+GStreamer FluidSynth MIDI plugin.
+
+%description -n gstreamer-fluidsynth -l pl.UTF-8
+Wtyczka FluidSynth MIDI do GStreamera.
+
 %package -n gstreamer-gme
 Summary:	GStreamer GME Audio Decoder plugin
 Summary(pl.UTF-8):	Wtyczka dekodująca GME do GStreamera
@@ -600,6 +616,20 @@ Wtyczka OpenCV do GStreamera. Zawiera następujące elementy:
 facedetect, faceblur, edgedetect, cvsobel, cvsmooth, cvlaplace,
 cverode, cvequalizehist, cvdilate, textwrite, templatematch,
 pyramidsegment.
+
+%package -n gstreamer-openjpeg
+Summary:	GStreamer OpenJPEG plugin
+Summary(pl.UTF-8):	Wtyczka OpenJPEG do GStreamera
+Group:		Libraries
+Requires:	gstreamer >= %{gst_req_ver}
+Requires:	gstreamer-plugins-base >= %{gstpb_req_ver}
+
+%description -n gstreamer-openjpeg
+GStreamer OpenJPEG plugin - OpenJPEG-based JPEG2000 decoder/encoder.
+
+%description -n gstreamer-openjpeg -l pl.UTF-8
+Wtyczka OpenJPEG do GStreamera - koder/dekoder JPEG2000 oparty na
+bibliotece OpenJPEG.
 
 %package -n gstreamer-opus
 Summary:	GStreamer OPUS audio decoder/encoder plugin
@@ -969,6 +999,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{gstlibdir}/libgstinter.so
 %attr(755,root,root) %{gstlibdir}/libgstjpegformat.so
 %attr(755,root,root) %{gstlibdir}/libgstliveadder.so
+%attr(755,root,root) %{gstlibdir}/libgstmidi.so
 %attr(755,root,root) %{gstlibdir}/libgstmodplug.so
 %attr(755,root,root) %{gstlibdir}/libgstmpegpsdemux.so
 %attr(755,root,root) %{gstlibdir}/libgstmpegpsmux.so
@@ -1130,6 +1161,10 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %attr(755,root,root) %{gstlibdir}/libgstflite.so
 
+%files -n gstreamer-fluidsynth
+%defattr(644,root,root,755)
+%attr(755,root,root) %{gstlibdir}/libgstfluidsynthmidi.so
+
 %files -n gstreamer-gme
 %defattr(644,root,root,755)
 %attr(755,root,root) %{gstlibdir}/libgstgme.so
@@ -1232,6 +1267,10 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %attr(755,root,root) %{gstlibdir}/libgstopencv.so
 %endif
+
+%files -n gstreamer-openjpeg
+%defattr(644,root,root,755)
+%attr(755,root,root) %{gstlibdir}/libgstopenjpeg.so
 
 %files -n gstreamer-opus
 %defattr(644,root,root,755)
