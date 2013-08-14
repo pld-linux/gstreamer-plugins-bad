@@ -48,7 +48,7 @@ Summary:	Bad GStreamer Streaming-media framework plugins
 Summary(pl.UTF-8):	Złe wtyczki do środowiska obróbki strumieni GStreamer
 Name:		gstreamer-plugins-bad
 Version:	1.0.9
-Release:	1
+Release:	2
 License:	LGPL v2+
 Group:		Libraries
 Source0:	http://gstreamer.freedesktop.org/src/gst-plugins-bad/%{gstname}-%{version}.tar.xz
@@ -380,7 +380,7 @@ Summary(pl.UTF-8):	Wtyczka FluidSynth MIDI do GStreamera
 Group:		Libraries
 # for generic gstmidi plugin
 Requires:	%{name} = %{version}-%{release}
-Requires:	fluidsynth>= 1.0
+Requires:	fluidsynth >= 1.0
 
 %description -n gstreamer-fluidsynth
 GStreamer FluidSynth MIDI plugin.
