@@ -41,18 +41,18 @@
 
 %define		gstname		gst-plugins-bad
 %define		gst_major_ver	1.0
-%define		gst_req_ver	1.0.0
-%define		gstpb_req_ver	1.0.8
+%define		gst_req_ver	1.2.0
+%define		gstpb_req_ver	1.2.0
 %include	/usr/lib/rpm/macros.gstreamer
 Summary:	Bad GStreamer Streaming-media framework plugins
 Summary(pl.UTF-8):	Złe wtyczki do środowiska obróbki strumieni GStreamer
 Name:		gstreamer-plugins-bad
-Version:	1.0.10
-Release:	1
+Version:	1.2.0
+Release:	0.1
 License:	LGPL v2+
 Group:		Libraries
 Source0:	http://gstreamer.freedesktop.org/src/gst-plugins-bad/%{gstname}-%{version}.tar.xz
-# Source0-md5:	f1fd76e251824d80657dbe3ceb1d9aa1
+# Source0-md5:	4fd078e1b9d903d22b67872b616f1715
 Patch0:		%{name}-libdts.patch
 Patch1:		%{name}-timidity.patch
 Patch2:		%{name}-nas.patch
@@ -959,14 +959,14 @@ rm -rf $RPM_BUILD_ROOT
 %doc AUTHORS ChangeLog NEWS README RELEASE
 %attr(755,root,root) %{_libdir}/libgstbasecamerabinsrc-%{gst_major_ver}.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libgstbasecamerabinsrc-%{gst_major_ver}.so.0
-%attr(755,root,root) %{_libdir}/libgstbasevideo-%{gst_major_ver}.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libgstbasevideo-%{gst_major_ver}.so.0
+#%attr(755,root,root) %{_libdir}/libgstbasevideo-%{gst_major_ver}.so.*.*.*
+#%attr(755,root,root) %ghost %{_libdir}/libgstbasevideo-%{gst_major_ver}.so.0
 %attr(755,root,root) %{_libdir}/libgstcodecparsers-%{gst_major_ver}.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libgstcodecparsers-%{gst_major_ver}.so.0
 %attr(755,root,root) %{_libdir}/libgstphotography-%{gst_major_ver}.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libgstphotography-%{gst_major_ver}.so.0
-%attr(755,root,root) %{_libdir}/libgstsignalprocessor-%{gst_major_ver}.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libgstsignalprocessor-%{gst_major_ver}.so.0
+#%attr(755,root,root) %{_libdir}/libgstsignalprocessor-%{gst_major_ver}.so.*.*.*
+#%attr(755,root,root) %ghost %{_libdir}/libgstsignalprocessor-%{gst_major_ver}.so.0
 %if %{with vdpau}
 %attr(755,root,root) %{_libdir}/libgstvdp-%{gst_major_ver}.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libgstvdp-%{gst_major_ver}.so.23
@@ -982,7 +982,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{gstlibdir}/libgstcoloreffects.so
 %attr(755,root,root) %{gstlibdir}/libgstdataurisrc.so
 %attr(755,root,root) %{gstlibdir}/libgstdecklink.so
-%attr(755,root,root) %{gstlibdir}/libgstdtmf.so
 %attr(755,root,root) %{gstlibdir}/libgstdebugutilsbad.so
 %attr(755,root,root) %{gstlibdir}/libgstdvb.so
 %attr(755,root,root) %{gstlibdir}/libgstdvbsuboverlay.so
@@ -1009,9 +1008,9 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{gstlibdir}/libgstpnm.so
 %attr(755,root,root) %{gstlibdir}/libgstrawparse.so
 %attr(755,root,root) %{gstlibdir}/libgstremovesilence.so
-%attr(755,root,root) %{gstlibdir}/libgstrtpmux.so
-%attr(755,root,root) %{gstlibdir}/libgstrtpvp8.so
-%attr(755,root,root) %{gstlibdir}/libgstscaletempoplugin.so
+#%attr(755,root,root) %{gstlibdir}/libgstrtpmux.so
+#%attr(755,root,root) %{gstlibdir}/libgstrtpvp8.so
+#%attr(755,root,root) %{gstlibdir}/libgstscaletempoplugin.so
 %attr(755,root,root) %{gstlibdir}/libgstsdpelem.so
 %attr(755,root,root) %{gstlibdir}/libgstsegmentclip.so
 %attr(755,root,root) %{gstlibdir}/libgstshm.so
@@ -1064,22 +1063,22 @@ rm -rf $RPM_BUILD_ROOT
 %files devel
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libgstbasecamerabinsrc-%{gst_major_ver}.so
-%attr(755,root,root) %{_libdir}/libgstbasevideo-%{gst_major_ver}.so
+#%attr(755,root,root) %{_libdir}/libgstbasevideo-%{gst_major_ver}.so
 %attr(755,root,root) %{_libdir}/libgstcodecparsers-%{gst_major_ver}.so
 %attr(755,root,root) %{_libdir}/libgstphotography-%{gst_major_ver}.so
-%attr(755,root,root) %{_libdir}/libgstsignalprocessor-%{gst_major_ver}.so
+#%attr(755,root,root) %{_libdir}/libgstsignalprocessor-%{gst_major_ver}.so
 %{_includedir}/gstreamer-%{gst_major_ver}/gst/basecamerabinsrc
 %{_includedir}/gstreamer-%{gst_major_ver}/gst/codecparsers
 %{_includedir}/gstreamer-%{gst_major_ver}/gst/interfaces
-%{_includedir}/gstreamer-%{gst_major_ver}/gst/signalprocessor
-%{_includedir}/gstreamer-%{gst_major_ver}/gst/video/gstsurfaceconverter.h
-%{_includedir}/gstreamer-%{gst_major_ver}/gst/video/gstsurfacemeta.h
-%{_includedir}/gstreamer-%{gst_major_ver}/gst/video/videocontext.h
+#%{_includedir}/gstreamer-%{gst_major_ver}/gst/signalprocessor
+#%{_includedir}/gstreamer-%{gst_major_ver}/gst/video/gstsurfaceconverter.h
+#%{_includedir}/gstreamer-%{gst_major_ver}/gst/video/gstsurfacemeta.h
+#%{_includedir}/gstreamer-%{gst_major_ver}/gst/video/videocontext.h
 %if %{with vdpau}
 %attr(755,root,root) %{_libdir}/libgstvdp-%{gst_major_ver}.so
 %{_includedir}/gstreamer-%{gst_major_ver}/gst/vdpau
 %endif
-%{_pkgconfigdir}/gstreamer-basevideo-%{gst_major_ver}.pc
+#%{_pkgconfigdir}/gstreamer-basevideo-%{gst_major_ver}.pc
 %{_pkgconfigdir}/gstreamer-codecparsers-%{gst_major_ver}.pc
 %{_pkgconfigdir}/gstreamer-plugins-bad-%{gst_major_ver}.pc
 %{_gtkdocdir}/gst-plugins-bad-libs-%{gst_major_ver}
@@ -1125,9 +1124,10 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{gstlibdir}/libgstcdaudio.so
 %endif
 
-%files -n gstreamer-celt
-%defattr(644,root,root,755)
-%attr(755,root,root) %{gstlibdir}/libgstcelt.so
+# obsoleted by opus?
+#%files -n gstreamer-celt
+#%defattr(644,root,root,755)
+#%attr(755,root,root) %{gstlibdir}/libgstcelt.so
 
 %if %{with chromaprint}
 %files -n gstreamer-chromaprint
