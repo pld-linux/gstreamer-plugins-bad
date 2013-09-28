@@ -1,11 +1,16 @@
+# TODO:
+# - OpenSLES (when available on pure Linux, not Android)
+# - daala (BR: daalaenc.pc daaladec.pc)
 #
 # Conditional build:
 %bcond_without	amr		# amrwbenc output plugin
+%bcond_with	bluez		# Bluez plugin (not ready for bluez 5)
 %bcond_with	cdaudio		# cdaudio input plugin [not ported to 1.0]
-%bcond_without	chromaprint	# chromaprint plugin
+%bcond_without	chromaprint	# chromaprint fingerprint plugin
 %bcond_with	dc1394		# dc1394 input plugin [not ported to 1.0]
 %bcond_without	directfb	# DirectFB videosink plugin
-%bcond_without	dts		# DTS plugin
+%bcond_without	dts		# DTS audio decoder plugin
+%bcond_without	egl		# EGL subsystem
 %bcond_without	faad		# faad plugin
 %bcond_without	gles		# EGL GLESv2 videosink plugin
 %bcond_without	gsm		# gsm plugin
@@ -23,18 +28,20 @@
 %bcond_without	ofa		# OFA plugin
 %bcond_without	openal		# OpenAL audiosink plugin
 %bcond_without	opencv		# OpenCV plugin
-%bcond_without	rsvg		# RSVG plugin
+%bcond_without	rsvg		# RSVG SVG decoder/overlay plugin
+%bcond_without	sbc		# SBC bluetooth audio codec plugin
 %bcond_with	sdl		# SDL audio/videosink plugin [not ported to 1.0]
 %bcond_with	sndfile		# sndfile plugin [not ported to 1.0]
 %bcond_with	swfdec		# swfdec plugin [not ready for swfdec >= 0.4]
 %bcond_without	spc		# spc plugin
+%bcond_without	srtp		# SRTP decoder/encoder plugin
 %bcond_with	timidity	# timidity plugin [not ported to 1.0]
-%bcond_without	uvch264		# uvch264 plugin
+%bcond_without	uvch264		# uvch264 cameras plugin
 %bcond_without	wavpack		# wavpack plugin
 %bcond_without	wayland		# Wayland videosink plugin
 %bcond_without	wildmidi	# wildmidi plugin [not ported to 1.0]
 %bcond_with	xvid		# XviD plugin [not ported to 1.0]
-%bcond_without	vdpau		# VDPAU library [???] and plugin
+%bcond_without	vdpau		# VDPAU decoder/videopostprocess/videosink plugin
 %bcond_with	zvbi		# zvbi-based teletextdec plugin [not ported to 1.0]
 
 %define		gstname		gst-plugins-bad
@@ -76,6 +83,7 @@ BuildRequires:	xorg-lib-libX11-devel
 ##
 ## plugins
 ##
+%{?with_egl:BuildRequires:	EGL-devel}
 %{?with_gles:BuildRequires:	Mesa-libEGL-devel}
 # GLESv2
 %{?with_gles:BuildRequires:	Mesa-libGLES-devel}
@@ -83,18 +91,19 @@ BuildRequires:	xorg-lib-libX11-devel
 %{?with_openal:BuildRequires:	OpenAL-devel >= 1.14}
 %{?with_sdl:BuildRequires:	SDL-devel}
 BuildRequires:	alsa-lib-devel >= 0.9.1
+%{?with_bluez:BuildRequires:	bluez-libs-devel < 5.0}
 BuildRequires:	bzip2-devel
 %{?with_rsvg:BuildRequires:	cairo-devel}
 BuildRequires:	curl-devel >= 7.21.0
+%{?with_dbus:BuildRequires:	dbus-devel}
 BuildRequires:	exempi-devel >= 1.99.5
 BuildRequires:	faac-devel
 %{?with_faad:BuildRequires:	faad2-devel >= 2.0-2}
 BuildRequires:	flite-devel
 BuildRequires:	fluidsynth-devel >= 1.0
-BuildRequires:	game-music-emu-devel >= 0.5.5
-# when becomes available...
-#BuildRequires:	game-music-emu-devel >= 0.5.6
+BuildRequires:	game-music-emu-devel >= 0.5.6
 %{?with_mythtv:BuildRequires:	gmyth-devel >= 0.7}
+BuildRequires:	gnutls-devel >= 2.11.3
 %{?with_ladspa:BuildRequires:	ladspa-devel >= 1.12}
 BuildRequires:	libass-devel >= 0.9.4
 %{?with_cdaudio:BuildRequires:	libcdaudio-devel}
@@ -117,7 +126,7 @@ BuildRequires:	libmodplug-devel
 %{?with_ofa:BuildRequires:	libofa-devel >= 0.9.3}
 %{?with_spc:BuildRequires:	libopenspc-devel >= 0.3.99}
 BuildRequires:	libpng-devel >= 2:1.2.0
-%{?with_rsvg:BuildRequires:	librsvg-devel >= 2.14}
+%{?with_rsvg:BuildRequires:	librsvg-devel >= 2.36}
 BuildRequires:	librtmp-devel
 # for decklink, modplug, soundtouch
 BuildRequires:	libstdc++-devel
@@ -127,7 +136,9 @@ BuildRequires:	libtheora-devel >= 1.0
 %{?with_timidity:BuildRequires:	libtimidity-devel}
 %{?with_uvch264:BuildRequires:	libusb-devel >= 1.0}
 BuildRequires:	libvpx-devel
+BuildRequires:	libwebp-devel >= 0.2.1
 BuildRequires:	libx264-devel >= 0.1.2
+BuildRequires:	libxml2-devel >= 2.4
 %{?with_mjpegtools:BuildRequires:	mjpegtools-devel >= 2.0.0}
 %{?with_nas:BuildRequires:	nas-devel}
 %{?with_neon:BuildRequires:	neon-devel >= 0.27.0}
@@ -138,10 +149,12 @@ BuildRequires:	opencv-devel < 1:2.5.0
 BuildRequires:	openjpeg-devel >= 1
 BuildRequires:	openssl-devel >= 0.9.5
 BuildRequires:	opus-devel >= 0.9.4
+%{?with_sbc:BuildRequires:	sbc-devel >= 1.0}
 BuildRequires:	schroedinger-devel >= 1.0.10
 %{?with_lv2:BuildRequires:	slv2-devel >= 0.6.6}
 BuildRequires:	soundtouch-devel >= 1.4
 BuildRequires:	spandsp-devel >= 1:0.0.6
+%{?with_srtp:BuildRequires:	srtp-devel}
 %if %{with swfdec}
 BuildRequires:	swfdec-devel < 0.4.0
 BuildRequires:	swfdec-devel >= 0.3.6
@@ -266,6 +279,19 @@ GStreamer NAS audio output plugin.
 %description -n gstreamer-audiosink-nas -l pl.UTF-8
 Wtyczka wyjścia dźwięku NAS dla GStreamera.
 
+%package -n gstreamer-bluez
+Summary:	GStreamer plugin for Bluez-based bluetooth support
+Summary(pl.UTF-8):	Wtyczka GStreamera do obsługi bluetooth w oparciu o Bluez
+Group:		Libraries
+Requires:	gstreamer-plugins-base >= %{gstpb_req_ver}
+Obsoletes:	gstreamer-bluetooth
+
+%description -n gstreamer-bluez
+GStreamer plugin for Bluez-based bluetooth support.
+
+%description -n gstreamer-bluez -l pl.UTF-8
+Wtyczka GStreamera do obsługi bluetooth w oparciu o Bluez.
+
 %package -n gstreamer-cdaudio
 Summary:	GStreamer plugin for CD audio input using libcdaudio
 Summary(pl.UTF-8):	Wtyczka do GStreamera odtwarzająca płyty CD-Audio przy użyciu libcdaudio
@@ -363,6 +389,7 @@ Summary:	GStreamer GME Audio Decoder plugin
 Summary(pl.UTF-8):	Wtyczka dekodująca GME do GStreamera
 Group:		Libraries
 Requires:	gstreamer >= %{gst_req_ver}
+Requires:	game-music-emu >= 0.5.6
 
 %description -n gstreamer-gme
 GStreamer GME Audio Decoder plugin.
@@ -631,6 +658,19 @@ GStreamer Resin DVD playback plugin.
 %description -n gstreamer-resindvd -l pl.UTF-8
 Wtyczka odtwarzania Resin DVD do GStreamera.
 
+%package -n gstreamer-rsvg
+Summary:	GStreamer plugin for decoding SVG images
+Summary(pl.UTF-8):	Wtyczka GStreamera do dekodowania obrazów SVG
+Group:		Libraries
+Requires:	gstreamer-plugins-base >= %{gstpb_req_ver}
+Requires:	librsvg >= 2.36
+
+%description -n gstreamer-rsvg
+GStreamer plugin for decoding SVG images.
+
+%description -n gstreamer-rsvg -l pl.UTF-8
+Wtyczka GStreamera do dekodowania obrazów SVG.
+
 %package -n gstreamer-rtmp
 Summary:	RTMP stream input plugin for GStreamer
 Summary(pl.UTF-8):	Wtyczka strumieni wejściowych RTMP dla GStreamera
@@ -647,6 +687,19 @@ i.e. rtmp, rtmpt, rtmps, rtmpe, rtmpfp, rtmpte and rtmpts.
 Wtyczka GStreamera czytająca dane z lokalnego lub zdalnego miejsca
 określonego URI przy użyciu dowolnego protokołu obsługiwanego przez
 bibliotekę RTMP: rtmp, rtmpt, rtmps, rtmpe, rtmpfp, rtmpte lub rtmpts.
+
+%package -n gstreamer-sbc
+Summary:	GStreamer SBC plugin
+Summary(pl.UTF-8):	Wtyczka SBC dla GStreamera
+Group:		Libraries
+Requires:	gstreamer-plugins-base >= %{gstpb_req_ver}
+Requires:	sbc >= 1.0
+
+%description -n gstreamer-sbc
+SBC bluetooth audio codec plugin for GStreamer.
+
+%description -n gstreamer-sbc -l pl.UTF-8
+Wtyczka kodeka dźwięku bluetooth SBC dla GStreamera.
 
 %package -n gstreamer-schroedinger
 Summary:	Schroedinger plugin for GStreamer
@@ -720,6 +773,18 @@ GStreamer Plugin for playing SPC files using OpenSPC library.
 Wtyczka GStreamera odtwarzająca pliki SPC przy użyciu biblioteki
 OpenSPC.
 
+%package -n gstreamer-srtp
+Summary:	GStreamer plugin for encoding/decoding SRTP
+Summary(pl.UTF-8):	Wtyczka GStremaera do kodowania/dekodowania SRTP
+Group:		Libraries
+Requires:	gstreamer-plugins-base >= %{gstpb_req_ver}
+
+%description -n gstreamer-srtp
+GStreamer plugin for encoding/decoding SRTP.
+
+%description -n gstreamer-srtp -l pl.UTF-8
+Wtyczka GStremaera do kodowania/dekodowania SRTP.
+
 %package -n gstreamer-swfdec
 Summary:	GStreamer Flash redering plugin
 Summary(pl.UTF-8):	Wtyczka renderująca animacje flash dla GStreamera
@@ -757,6 +822,35 @@ timidity plugin for GStreamer.
 %description -n gstreamer-timidity -l pl.UTF-8
 Wtyczka timidity do GStreamera.
 
+%package -n gstreamer-uvch264
+Summary:	GStreamer plugin for UVC compliant H264 encoding cameras
+Summary(pl.UTF-8):	Wtyczka GStreamera do kamer kodujących w H264 zgodnych z UVC
+Group:		Libraries
+# for libgstbasecamerabin
+Requires:	%{name} = %{version}-%{release}
+
+%description -n gstreamer-uvch264
+GStreamer plugin for UVC compliant H264 encoding cameras.
+
+%description -n gstreamer-uvch264 -l pl.UTF-8
+Wtyczka GStreamera do kamer kodujących w H264 zgodnych z UVC.
+
+%package -n gstreamer-vdpau
+Summary:	GStreamer VDPAU plugin
+Summary(pl.UTF-8):	Wtyczka GStreamera VDPAU
+Group:		Libraries
+# for libgstcodecparsers
+Requires:	%{name} = %{version}-%{release}
+# videosink commented out in gstvdpau.c?
+#Provides:	gstreamer-videosink = %{version}
+
+%description -n gstreamer-vdpau
+GStreamer VDPAU plugin. It currently implements MPEG decoding.
+
+%description -n gstreamer-vdpau -l pl.UTF-8
+Wtyczka GStreamera VDPAU. Obecnie ma zaimplementowane dekodowanie
+obrazu MPEG.
+
 %package -n gstreamer-videosink-directfb
 Summary:	GStreamer DirectFB output plugin
 Summary(pl.UTF-8):	Wtyczka wyjścia obrazu DirectFB do GStreamera
@@ -774,7 +868,8 @@ Wtyczka wyjścia obrazu DirectFB do GStreamera.
 Summary:	GStreamer EGL GLES output plugin
 Summary(pl.UTF-8):	Wtyczka wyjścia obrazu EGL GLES do GStreamera
 Group:		Libraries
-Requires:	gstreamer-plugins-base >= %{gstpb_req_ver}
+# for libgstegl
+Requires:	%{name} = %{version}-%{release}
 Provides:	gstreamer-videosink = %{version}
 
 %description -n gstreamer-videosink-egl-gles
@@ -827,6 +922,19 @@ AAC audio encoder plugin for GStreamer using VisualOn library.
 %description -n gstreamer-voaacenc -l pl.UTF-8
 Wtyczka kodera dźwięku AAC do GStreamera, wykorzystująca bibliotekę
 VisualOn.
+
+%package -n gstreamer-webp
+Summary:	GStreamer plugin for decoding WebP images
+Summary(pl.UTF-8):	Wtyczka GStreamera do dekodowania obrazów WebP
+Group:		Libraries
+Requires:	gstreamer-plugins-base >= %{gstpb_req_ver}
+Requires:	libwebp >= 0.2.1
+
+%description -n gstreamer-webp
+GStreamer plugin for decoding WebP images.
+
+%description -n gstreamer-webp -l pl.UTF-8
+Wtyczka GStreamera do dekodowania obrazów WebP.
 
 %package -n gstreamer-wildmidi
 Summary:	wildmidi plugin for GStreamer
@@ -896,12 +1004,14 @@ Wtyczka do GStreamera skanująca kody kreskowe.
 	%{!?with_sdl:--disable-sdltest} \
 	%{!?with_spc:--disable-spc} \
 	%{!?with_swfdec:--disable-swfdec} \
+	%{!?with_uvch264:--disable-uvch264} \
 	%{!?with_amr:--disable-voamrwbenc} \
 	%{!?with_xvid:--disable-xvid} \
 	--disable-silent-rules \
 	--disable-static \
 	--enable-experimental \
 	--enable-gtk-doc \
+	--with-egl-window-system=x11 \
 	--with-gtk=3.0 \
 	--with-html-dir=%{_gtkdocdir}
 
@@ -933,8 +1043,10 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %ghost %{_libdir}/libgstbasecamerabinsrc-%{gst_major_ver}.so.0
 %attr(755,root,root) %{_libdir}/libgstcodecparsers-%{gst_major_ver}.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libgstcodecparsers-%{gst_major_ver}.so.0
+%if %{with egl}
 %attr(755,root,root) %{_libdir}/libgstegl-%{gst_major_ver}.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libgstegl-%{gst_major_ver}.so.0
+%endif
 %attr(755,root,root) %{_libdir}/libgstinsertbin-%{gst_major_ver}.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libgstinsertbin-%{gst_major_ver}.so.0
 %attr(755,root,root) %{_libdir}/libgstmpegts-%{gst_major_ver}.so.*.*.*
@@ -946,16 +1058,19 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/girepository-1.0/GstEGL-1.0.typelib
 %{_libdir}/girepository-1.0/GstInsertBin-1.0.typelib
 %{_libdir}/girepository-1.0/GstMpegts-1.0.typelib
+%attr(755,root,root) %{gstlibdir}/libgstaccurip.so
 %attr(755,root,root) %{gstlibdir}/libgstadpcmdec.so
 %attr(755,root,root) %{gstlibdir}/libgstadpcmenc.so
 %attr(755,root,root) %{gstlibdir}/libgstaiff.so
 %attr(755,root,root) %{gstlibdir}/libgstasfmux.so
+%attr(755,root,root) %{gstlibdir}/libgstaudiofxbad.so
 %attr(755,root,root) %{gstlibdir}/libgstaudiovisualizers.so
 %attr(755,root,root) %{gstlibdir}/libgstautoconvert.so
 %attr(755,root,root) %{gstlibdir}/libgstbayer.so
 %attr(755,root,root) %{gstlibdir}/libgstbz2.so
 %attr(755,root,root) %{gstlibdir}/libgstcamerabin2.so
 %attr(755,root,root) %{gstlibdir}/libgstcoloreffects.so
+%attr(755,root,root) %{gstlibdir}/libgstdashdemux.so
 %attr(755,root,root) %{gstlibdir}/libgstdataurisrc.so
 %attr(755,root,root) %{gstlibdir}/libgstdecklink.so
 %attr(755,root,root) %{gstlibdir}/libgstdebugutilsbad.so
@@ -974,46 +1089,32 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{gstlibdir}/libgstid3tag.so
 %attr(755,root,root) %{gstlibdir}/libgstinterlace.so
 %attr(755,root,root) %{gstlibdir}/libgstinter.so
+%attr(755,root,root) %{gstlibdir}/libgstivtc.so
 %attr(755,root,root) %{gstlibdir}/libgstjpegformat.so
 %attr(755,root,root) %{gstlibdir}/libgstliveadder.so
+%attr(755,root,root) %{gstlibdir}/libgstmfc.so
 %attr(755,root,root) %{gstlibdir}/libgstmidi.so
 %attr(755,root,root) %{gstlibdir}/libgstmodplug.so
 %attr(755,root,root) %{gstlibdir}/libgstmpegpsdemux.so
 %attr(755,root,root) %{gstlibdir}/libgstmpegpsmux.so
 %attr(755,root,root) %{gstlibdir}/libgstmpegtsdemux.so
 %attr(755,root,root) %{gstlibdir}/libgstmpegtsmux.so
+%attr(755,root,root) %{gstlibdir}/libgstmxf.so
 %attr(755,root,root) %{gstlibdir}/libgstpcapparse.so
 %attr(755,root,root) %{gstlibdir}/libgstpnm.so
 %attr(755,root,root) %{gstlibdir}/libgstrawparse.so
 %attr(755,root,root) %{gstlibdir}/libgstremovesilence.so
+%attr(755,root,root) %{gstlibdir}/libgstrfbsrc.so
 %attr(755,root,root) %{gstlibdir}/libgstsdpelem.so
 %attr(755,root,root) %{gstlibdir}/libgstsegmentclip.so
 %attr(755,root,root) %{gstlibdir}/libgstshm.so
 %attr(755,root,root) %{gstlibdir}/libgstsiren.so
 %attr(755,root,root) %{gstlibdir}/libgstsmooth.so
+%attr(755,root,root) %{gstlibdir}/libgstsmoothstreaming.so
 %attr(755,root,root) %{gstlibdir}/libgstsubenc.so
-%if %{with vdpau}
-%attr(755,root,root) %{gstlibdir}/libgstvdpau.so
-%endif
+%attr(755,root,root) %{gstlibdir}/libgstvideofiltersbad.so
 %attr(755,root,root) %{gstlibdir}/libgstvideoparsersbad.so
 %attr(755,root,root) %{gstlibdir}/libgsty4mdec.so
-# new?
-%attr(755,root,root) %{gstlibdir}/libgstaccurip.so
-%attr(755,root,root) %{gstlibdir}/libgstaudiofxbad.so
-%attr(755,root,root) %{gstlibdir}/libgstdashdemux.so
-%attr(755,root,root) %{gstlibdir}/libgstivtc.so
-%attr(755,root,root) %{gstlibdir}/libgstmfc.so
-%attr(755,root,root) %{gstlibdir}/libgstmxf.so
-%attr(755,root,root) %{gstlibdir}/libgstrfbsrc.so
-%if %{with rsvg}
-%attr(755,root,root) %{gstlibdir}/libgstrsvg.so
-%endif
-%attr(755,root,root) %{gstlibdir}/libgstsbc.so
-%attr(755,root,root) %{gstlibdir}/libgstsmoothstreaming.so
-%attr(755,root,root) %{gstlibdir}/libgstsrtp.so
-%attr(755,root,root) %{gstlibdir}/libgstuvch264.so
-%attr(755,root,root) %{gstlibdir}/libgstvideofiltersbad.so
-%attr(755,root,root) %{gstlibdir}/libgstwebp.so
 %attr(755,root,root) %{gstlibdir}/libgstyadif.so
 # not ported to 1.0
 #%attr(755,root,root) %{gstlibdir}/libgstapexsink.so
@@ -1045,23 +1146,31 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libgstbasecamerabinsrc-%{gst_major_ver}.so
 %attr(755,root,root) %{_libdir}/libgstcodecparsers-%{gst_major_ver}.so
+%if %{with egl}
 %attr(755,root,root) %{_libdir}/libgstegl-%{gst_major_ver}.so
+%endif
 %attr(755,root,root) %{_libdir}/libgstinsertbin-%{gst_major_ver}.so
 %attr(755,root,root) %{_libdir}/libgstmpegts-%{gst_major_ver}.so
 %attr(755,root,root) %{_libdir}/libgstphotography-%{gst_major_ver}.so
 %attr(755,root,root) %{_libdir}/libgsturidownloader-%{gst_major_ver}.so
 %{_includedir}/gstreamer-%{gst_major_ver}/gst/basecamerabinsrc
 %{_includedir}/gstreamer-%{gst_major_ver}/gst/codecparsers
+%if %{with egl}
 %{_includedir}/gstreamer-%{gst_major_ver}/gst/egl
+%endif
 %{_includedir}/gstreamer-%{gst_major_ver}/gst/insertbin
 %{_includedir}/gstreamer-%{gst_major_ver}/gst/interfaces
 %{_includedir}/gstreamer-%{gst_major_ver}/gst/mpegts
 %{_includedir}/gstreamer-%{gst_major_ver}/gst/uridownloader
+%if %{with egl}
 %{_datadir}/gir-1.0/GstEGL-1.0.gir
+%endif
 %{_datadir}/gir-1.0/GstInsertBin-1.0.gir
 %{_datadir}/gir-1.0/GstMpegts-1.0.gir
 %{_pkgconfigdir}/gstreamer-codecparsers-%{gst_major_ver}.pc
+%if %{with egl}
 %{_pkgconfigdir}/gstreamer-egl-%{gst_major_ver}.pc
+%endif
 %{_pkgconfigdir}/gstreamer-insertbin-%{gst_major_ver}.pc
 %{_pkgconfigdir}/gstreamer-plugins-bad-%{gst_major_ver}.pc
 %{_gtkdocdir}/gst-plugins-bad-libs-%{gst_major_ver}
@@ -1099,6 +1208,12 @@ rm -rf $RPM_BUILD_ROOT
 %files -n gstreamer-audiosink-nas
 %defattr(644,root,root,755)
 %attr(755,root,root) %{gstlibdir}/libgstnassink.so
+%endif
+
+%if %{with bluez}
+%files -n gstreamer-bluez
+%defattr(644,root,root,755)
+%attr(755,root,root) %{gstlibdir}/libgstbluez.so
 %endif
 
 %if %{with cdaudio}
@@ -1256,6 +1371,12 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %attr(755,root,root) %{gstlibdir}/libgstresindvd.so
 
+%if %{with rsvg}
+%files -n gstreamer-rsvg
+%defattr(644,root,root,755)
+%attr(755,root,root) %{gstlibdir}/libgstrsvg.so
+%endif
+
 %files -n gstreamer-rtmp
 %defattr(644,root,root,755)
 %attr(755,root,root) %{gstlibdir}/libgstrtmp.so
@@ -1263,6 +1384,12 @@ rm -rf $RPM_BUILD_ROOT
 %files -n gstreamer-schroedinger
 %defattr(644,root,root,755)
 %attr(755,root,root) %{gstlibdir}/libgstschro.so
+
+%if %{with sbc}
+%files -n gstreamer-sbc
+%defattr(644,root,root,755)
+%attr(755,root,root) %{gstlibdir}/libgstsbc.so
+%endif
 
 %if %{with sndfile}
 %files -n gstreamer-sndfile
@@ -1284,6 +1411,11 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{gstlibdir}/libgstspc.so
 %endif
 
+%if %{with srtp}
+%files -n gstreamer-srtp
+%attr(755,root,root) %{gstlibdir}/libgstsrtp.so
+%endif
+
 %if %{with swfdec}
 %files -n gstreamer-swfdec
 %defattr(644,root,root,755)
@@ -1300,6 +1432,18 @@ rm -rf $RPM_BUILD_ROOT
 %files -n gstreamer-timidity
 %defattr(644,root,root,755)
 %attr(755,root,root) %{gstlibdir}/libgsttimidity.so
+%endif
+
+%if %{with uvch264}
+%files -n gstreamer-uvch264
+%defattr(644,root,root,755)
+%attr(755,root,root) %{gstlibdir}/libgstuvch264.so
+%endif
+
+%if %{with vdpau}
+%files -n gstreamer-vdpau
+%defattr(644,root,root,755)
+%attr(755,root,root) %{gstlibdir}/libgstvdpau.so
 %endif
 
 %files -n gstreamer-voaacenc
@@ -1329,6 +1473,10 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %attr(755,root,root) %{gstlibdir}/libgstwaylandsink.so
 %endif
+
+%files -n gstreamer-webp
+%defattr(644,root,root,755)
+%attr(755,root,root) %{gstlibdir}/libgstwebp.so
 
 %if %{with wildmidi}
 %files -n gstreamer-wildmidi
