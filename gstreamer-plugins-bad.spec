@@ -11,35 +11,32 @@
 %bcond_without	directfb	# DirectFB videosink plugin
 %bcond_without	dts		# DTS audio decoder plugin
 %bcond_without	egl		# EGL subsystem
-%bcond_without	faad		# faad plugin
+%bcond_without	faad		# faad audio decoder plugin
 %bcond_without	gles		# EGL GLESv2 videosink plugin
-%bcond_without	gsm		# gsm plugin
+%bcond_without	gsm		# gsm audio decoder/encoder plugin
 %bcond_without	kate		# Kate text streams plugin
-%bcond_with	ladspa		# LADSPA plugin [not ported to 1.0]
-%bcond_with	lv2		# LV2 plugin [not ported to 1.0]
-%bcond_without	mjpegtools	# mpeg2enc plugin
-%bcond_without	mms		# mms plugin
+%bcond_with	ladspa		# LADSPA plugins bridge plugin [not ported to 1.0]
+%bcond_with	lv2		# LV2 plugins bridge plugin [not ported to 1.0]
+%bcond_without	mjpegtools	# mpeg2enc video encoder plugin
+%bcond_without	mms		# mms streaming plugin
 %bcond_without	mpg123		# MPG123-based MP3 plugin
-%bcond_with	musepack	# musepack plugin [not ported to 1.0]
-%bcond_with	musicbrainz	# musicbrainz plugin [not ported to 1.0]
-%bcond_with	mythtv		# mythtv plugin [not ported to 1.0]
+%bcond_with	musepack	# musepack audio decoder plugin [not ported to 1.0]
+%bcond_with	mythtv		# mythtv data source plugin [not ported to 1.0]
 %bcond_with	nas		# NAS audiosink plugin [not ported to 1.0]
-%bcond_without	neon		# neonhttpsrc plugin
-%bcond_without	ofa		# OFA plugin
+%bcond_without	neon		# neonhttpsrc HTTP client plugin
+%bcond_without	ofa		# OFA fingerprint plugin
 %bcond_without	openal		# OpenAL audiosink plugin
-%bcond_without	opencv		# OpenCV plugin
+%bcond_without	opencv		# OpenCV effects plugin
 %bcond_without	rsvg		# RSVG SVG decoder/overlay plugin
 %bcond_without	sbc		# SBC bluetooth audio codec plugin
 %bcond_with	sdl		# SDL audio/videosink plugin [not ported to 1.0]
-%bcond_with	sndfile		# sndfile plugin [not ported to 1.0]
-%bcond_with	swfdec		# swfdec plugin [not ready for swfdec >= 0.4]
-%bcond_without	spc		# spc plugin
+%bcond_with	sndfile		# sndfile audio files encoder/decoder plugin [not ported to 1.0]
+%bcond_without	spc		# spc audio decoder plugin
 %bcond_without	srtp		# SRTP decoder/encoder plugin
-%bcond_with	timidity	# timidity plugin [not ported to 1.0]
+%bcond_with	timidity	# timidity MIDI files decoder plugin [not ported to 1.0]
 %bcond_without	uvch264		# uvch264 cameras plugin
-%bcond_without	wavpack		# wavpack plugin
 %bcond_without	wayland		# Wayland videosink plugin
-%bcond_without	wildmidi	# wildmidi plugin [not ported to 1.0]
+%bcond_without	wildmidi	# wildmidi MIDI files decoder plugin
 %bcond_with	xvid		# XviD plugin [not ported to 1.0]
 %bcond_without	vdpau		# VDPAU decoder/videopostprocess/videosink plugin
 %bcond_with	zvbi		# zvbi-based teletextdec plugin [not ported to 1.0]
@@ -122,7 +119,6 @@ BuildRequires:	libmimic-devel >= 1.0
 %{?with_mpg123:BuildRequires:	libmpg123-devel >= 1.14}
 BuildRequires:	libmodplug-devel
 %{?with_musepack:BuildRequires:	libmpcdec-devel >= 1.2}
-%{?with_musicbrainz:BuildRequires:	libmusicbrainz-devel >= 2.1.0}
 %{?with_ofa:BuildRequires:	libofa-devel >= 0.9.3}
 %{?with_spc:BuildRequires:	libopenspc-devel >= 0.3.99}
 BuildRequires:	libpng-devel >= 2:1.2.0
@@ -155,10 +151,6 @@ BuildRequires:	schroedinger-devel >= 1.0.10
 BuildRequires:	soundtouch-devel >= 1.4
 BuildRequires:	spandsp-devel >= 1:0.0.6
 %{?with_srtp:BuildRequires:	srtp-devel}
-%if %{with swfdec}
-BuildRequires:	swfdec-devel < 0.4.0
-BuildRequires:	swfdec-devel >= 0.3.6
-%endif
 %{?with_vdpau:BuildRequires:	libvdpau-devel}
 BuildRequires:	twolame-devel
 %{?with_uvch264:BuildRequires:	udev-glib-devel}
@@ -539,18 +531,6 @@ GStreamer MythTV plugin.
 %description -n gstreamer-mythtv -l pl.UTF-8
 Wtyczka MythTV do GStreamera.
 
-%package -n gstreamer-musicbrainz
-Summary:	GStreamer musicbrainz plugin
-Summary(pl.UTF-8):	Wtyczka musicbrainz do GStreamera
-Group:		Libraries
-Requires:	gstreamer-plugins-base >= %{gstpb_req_ver}
-
-%description -n gstreamer-musicbrainz
-GStreamer musicbrainz plugin - a TRM signature producer.
-
-%description -n gstreamer-musicbrainz -l pl.UTF-8
-Wtyczka musicbrainz do GStreamera, tworząca sygnatury TRM.
-
 %package -n gstreamer-neon
 Summary:	GStreamer neon HTTP source plugin
 Summary(pl.UTF-8):	Wtyczka źródła HTTP neon do GStreamera
@@ -785,19 +765,6 @@ GStreamer plugin for encoding/decoding SRTP.
 %description -n gstreamer-srtp -l pl.UTF-8
 Wtyczka GStremaera do kodowania/dekodowania SRTP.
 
-%package -n gstreamer-swfdec
-Summary:	GStreamer Flash redering plugin
-Summary(pl.UTF-8):	Wtyczka renderująca animacje flash dla GStreamera
-Group:		Libraries
-Requires:	gstreamer-plugins-base >= %{gstpb_req_ver}
-Requires:	swfdec >= 0.3.6
-
-%description -n gstreamer-swfdec
-Plugin for rendering Flash animations using swfdec library.
-
-%description -n gstreamer-swfdec -l pl.UTF-8
-Wtyczka renderująca animacje flash w oparciu o bibliotekę swfdec.
-
 %package -n gstreamer-teletextdec
 Summary:	teletextdec plugin for GStreamer
 Summary(pl.UTF-8):	Wtyczka teletextdec do GStreamera
@@ -1003,7 +970,6 @@ Wtyczka do GStreamera skanująca kody kreskowe.
 	%{!?with_sdl:--disable-sdl} \
 	%{!?with_sdl:--disable-sdltest} \
 	%{!?with_spc:--disable-spc} \
-	%{!?with_swfdec:--disable-swfdec} \
 	%{!?with_uvch264:--disable-uvch264} \
 	%{!?with_amr:--disable-voamrwbenc} \
 	%{!?with_xvid:--disable-xvid} \
@@ -1319,12 +1285,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{gstlibdir}/libgstmusepack.so
 %endif
 
-%if %{with musicbrainz}
-%files -n gstreamer-musicbrainz
-%defattr(644,root,root,755)
-%attr(755,root,root) %{gstlibdir}/libgsttrm.so
-%endif
-
 %if %{with mythtv}
 %files -n gstreamer-mythtv
 %defattr(644,root,root,755)
@@ -1414,12 +1374,6 @@ rm -rf $RPM_BUILD_ROOT
 %if %{with srtp}
 %files -n gstreamer-srtp
 %attr(755,root,root) %{gstlibdir}/libgstsrtp.so
-%endif
-
-%if %{with swfdec}
-%files -n gstreamer-swfdec
-%defattr(644,root,root,755)
-%attr(755,root,root) %{gstlibdir}/libgstswfdec.so
 %endif
 
 %if %{with zvbi}
