@@ -46,7 +46,7 @@ Summary:	Bad GStreamer Streaming-media framework plugins
 Summary(pl.UTF-8):	Złe wtyczki do środowiska obróbki strumieni GStreamer
 Name:		gstreamer-plugins-bad
 Version:	1.2.0
-Release:	0.1
+Release:	1
 License:	LGPL v2+
 Group:		Libraries
 Source0:	http://gstreamer.freedesktop.org/src/gst-plugins-bad/%{gstname}-%{version}.tar.xz
@@ -943,10 +943,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %ghost %{_libdir}/libgstphotography-%{gst_major_ver}.so.0
 %attr(755,root,root) %{_libdir}/libgsturidownloader-%{gst_major_ver}.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libgsturidownloader-%{gst_major_ver}.so.0
-%if %{with vdpau}
-%attr(755,root,root) %{_libdir}/libgstvdp-%{gst_major_ver}.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libgstvdp-%{gst_major_ver}.so.23
-%endif
 %{_libdir}/girepository-1.0/GstEGL-1.0.typelib
 %{_libdir}/girepository-1.0/GstInsertBin-1.0.typelib
 %{_libdir}/girepository-1.0/GstMpegts-1.0.typelib
@@ -1015,6 +1011,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{gstlibdir}/libgstsbc.so
 %attr(755,root,root) %{gstlibdir}/libgstsmoothstreaming.so
 %attr(755,root,root) %{gstlibdir}/libgstsrtp.so
+%attr(755,root,root) %{gstlibdir}/libgstuvch264.so
 %attr(755,root,root) %{gstlibdir}/libgstvideofiltersbad.so
 %attr(755,root,root) %{gstlibdir}/libgstwebp.so
 %attr(755,root,root) %{gstlibdir}/libgstyadif.so
@@ -1060,10 +1057,6 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/gstreamer-%{gst_major_ver}/gst/interfaces
 %{_includedir}/gstreamer-%{gst_major_ver}/gst/mpegts
 %{_includedir}/gstreamer-%{gst_major_ver}/gst/uridownloader
-%if %{with vdpau}
-%attr(755,root,root) %{_libdir}/libgstvdp-%{gst_major_ver}.so
-%{_includedir}/gstreamer-%{gst_major_ver}/gst/vdpau
-%endif
 %{_datadir}/gir-1.0/GstEGL-1.0.gir
 %{_datadir}/gir-1.0/GstInsertBin-1.0.gir
 %{_datadir}/gir-1.0/GstMpegts-1.0.gir
