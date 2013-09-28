@@ -1,12 +1,12 @@
 # TODO:
 # - OpenSLES (when available on pure Linux, not Android)
-# - daala (BR: daalaenc.pc daaladec.pc)
 #
 # Conditional build:
 %bcond_without	amr		# amrwbenc output plugin
 %bcond_with	bluez		# Bluez plugin (not ready for bluez 5)
 %bcond_with	cdaudio		# cdaudio input plugin [not ported to 1.0]
 %bcond_without	chromaprint	# chromaprint fingerprint plugin
+%bcond_with	daala		# Daala video encoder/decoder plugin [not ready as of 1.2.0]
 %bcond_with	dc1394		# dc1394 input plugin [not ported to 1.0]
 %bcond_without	directfb	# DirectFB videosink plugin
 %bcond_without	dts		# DTS audio decoder plugin
@@ -92,6 +92,7 @@ BuildRequires:	alsa-lib-devel >= 0.9.1
 BuildRequires:	bzip2-devel
 %{?with_rsvg:BuildRequires:	cairo-devel}
 BuildRequires:	curl-devel >= 7.21.0
+%{?with_daala:BuildRequires:	daala-devel}
 %{?with_dbus:BuildRequires:	dbus-devel}
 BuildRequires:	exempi-devel >= 1.99.5
 BuildRequires:	faac-devel
@@ -324,6 +325,18 @@ data to a server (e.g. HTTP or FTP).
 %description -n gstreamer-curl -l pl.UTF-8
 Wtyczka wyjścia sieciowego GStreamera wykorzystująca libcurl jako
 klienta do wysyłania danych na serwer (np. HTTP lub FTP).
+
+%package -n gstreamer-daala
+Summary:	GStreamer Daala video encoder/decoder plugin
+Summary(pl.UTF-8):	Wtyczka kodera/dekodera obrazu Daala GStreamera
+Group:		Libraries
+Requires:	gstreamer-plugins-base >= %{gstpb_req_ver}
+
+%description -n gstreamer-daala
+GStreamer Daala video encoder/decoder plugin.
+
+%description -n gstreamer-daala -l pl.UTF-8
+Wtyczka kodera/dekodera obrazu Daala GStreamera.
 
 %package -n gstreamer-dc1394
 Summary:	GStreamer 1394 IIDC (Firewire digital cameras) video source plugin
@@ -957,6 +970,7 @@ Wtyczka do GStreamera skanująca kody kreskowe.
 %{__automake}
 %configure \
 	%{!?with_cdaudio:--disable-cdaudio} \
+	%{!?with_daala:--disable-daala} \
 	%{!?with_dts:--disable-dts} \
 	%{!?with_gles:--disable-eglgles} \
 	%{!?with_faad:--disable-faad} \
@@ -1197,6 +1211,12 @@ rm -rf $RPM_BUILD_ROOT
 %files -n gstreamer-curl
 %defattr(644,root,root,755)
 %attr(755,root,root) %{gstlibdir}/libgstcurl.so
+
+%if %{with daala}
+%files -n gstreamer-daala
+%defattr(644,root,root,755)
+%attr(755,root,root) %{gstlibdir}/libgstdaala.so
+%endif
 
 %if %{with dc1394}
 %files -n gstreamer-dc1394
