@@ -6,7 +6,7 @@
 %bcond_with	bluez		# Bluez plugin (not ready for bluez 5)
 %bcond_with	cdaudio		# cdaudio input plugin [not ported to 1.0]
 %bcond_without	chromaprint	# chromaprint fingerprint plugin
-%bcond_with	daala		# Daala video encoder/decoder plugin [not ready as of 1.2.0]
+%bcond_with	daala		# Daala video encoder/decoder plugin [not ready as of 1.2.0-3]
 %bcond_with	dc1394		# dc1394 input plugin [not ported to 1.0]
 %bcond_without	directfb	# DirectFB videosink plugin
 %bcond_without	dts		# DTS audio decoder plugin
@@ -15,7 +15,7 @@
 %bcond_without	gles		# EGL GLESv2 videosink plugin
 %bcond_without	gsm		# gsm audio decoder/encoder plugin
 %bcond_without	kate		# Kate text streams plugin
-%bcond_with	ladspa		# LADSPA plugins bridge plugin [not ported to 1.0]
+%bcond_without	ladspa		# LADSPA plugins bridge plugin
 %bcond_with	lv2		# LV2 plugins bridge plugin [not ported to 1.0]
 %bcond_without	mjpegtools	# mpeg2enc video encoder plugin
 %bcond_without	mms		# mms streaming plugin
@@ -49,17 +49,16 @@
 Summary:	Bad GStreamer Streaming-media framework plugins
 Summary(pl.UTF-8):	Złe wtyczki do środowiska obróbki strumieni GStreamer
 Name:		gstreamer-plugins-bad
-Version:	1.2.2
-Release:	2
+Version:	1.2.3
+Release:	1
 License:	LGPL v2+
 Group:		Libraries
 Source0:	http://gstreamer.freedesktop.org/src/gst-plugins-bad/%{gstname}-%{version}.tar.xz
-# Source0-md5:	d519b7e8e570c4a22d6b79f2ab89765c
+# Source0-md5:	cfd6f303c8df2740b27cc63b945decef
 Patch0:		%{name}-libdts.patch
 Patch1:		%{name}-timidity.patch
 Patch2:		%{name}-nas.patch
-Patch3:		%{name}-opencv.patch
-Patch4:		%{name}-doc.patch
+Patch3:		%{name}-doc.patch
 URL:		http://gstreamer.freedesktop.org/
 BuildRequires:	autoconf >= 2.68
 BuildRequires:	automake >= 1:1.11
@@ -141,7 +140,7 @@ BuildRequires:	libxml2-devel >= 2.4
 %{?with_neon:BuildRequires:	neon-devel >= 0.27.0}
 %if %{with opencv}
 BuildRequires:	opencv-devel >= 1:2.2.0
-BuildRequires:	opencv-devel < 1:2.5.0
+BuildRequires:	opencv-devel < 1:2.4.9
 %endif
 BuildRequires:	openjpeg-devel >= 1
 BuildRequires:	openssl-devel >= 0.9.5
@@ -965,7 +964,6 @@ Wtyczka do GStreamera skanująca kody kreskowe.
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
-%patch4 -p1
 
 %build
 %{__libtoolize}
