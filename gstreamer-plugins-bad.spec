@@ -6,7 +6,7 @@
 %bcond_with	bluez		# Bluez plugin (not ready for bluez 5)
 %bcond_with	cdaudio		# cdaudio input plugin [not ported to 1.0]
 %bcond_without	chromaprint	# chromaprint fingerprint plugin
-%bcond_with	daala		# Daala video encoder/decoder plugin [not ready as of 1.2.0-3]
+%bcond_without	daala		# Daala video encoder/decoder plugin
 %bcond_with	dc1394		# dc1394 input plugin [not ported to 1.0]
 %bcond_without	directfb	# DirectFB videosink plugin
 %bcond_without	dts		# DTS audio decoder plugin
@@ -49,12 +49,12 @@
 Summary:	Bad GStreamer Streaming-media framework plugins
 Summary(pl.UTF-8):	Złe wtyczki do środowiska obróbki strumieni GStreamer
 Name:		gstreamer-plugins-bad
-Version:	1.2.3
-Release:	2
+Version:	1.2.4
+Release:	1
 License:	LGPL v2+
 Group:		Libraries
 Source0:	http://gstreamer.freedesktop.org/src/gst-plugins-bad/%{gstname}-%{version}.tar.xz
-# Source0-md5:	cfd6f303c8df2740b27cc63b945decef
+# Source0-md5:	16c2050716383926909664aa6c6aca2b
 Patch0:		%{name}-libdts.patch
 Patch1:		%{name}-timidity.patch
 Patch2:		%{name}-nas.patch
