@@ -1,5 +1,4 @@
 # TODO:
-# - libopenni2 >= 0.26
 # - OpenSLES (when available on pure Linux, not Android)
 #
 # Conditional build:
@@ -29,8 +28,9 @@
 %bcond_without	ofa		# OFA fingerprint plugin
 %bcond_without	openal		# OpenAL audiosink plugin
 %bcond_without	opencv		# OpenCV effects plugin
-%bcond_without	opengl		# OpenGL videosink plugin
 %bcond_without	openexr		# OpenEXR EXR decoder plugin
+%bcond_without	opengl		# OpenGL videosink plugin
+%bcond_without	openni2		# OpenNI2 device source plugin
 %bcond_without	rsvg		# RSVG SVG decoder/overlay plugin
 %bcond_without	sbc		# SBC bluetooth audio codec plugin
 %bcond_with	sdl		# SDL audio/videosink plugin [not ported to 1.0]
@@ -102,6 +102,7 @@ BuildRequires:	xorg-lib-libXcomposite-devel
 %{?with_opengl:BuildRequires:	OpenGL-GLU-devel}
 %{?with_opengl:BuildRequires:	OpenGL-GLX-devel}
 %{?with_gles:BuildRequires:	OpenGLESv2-devel}
+%{?with_openni2:BuildRequires:	OpenNI2-devel >= 0.26}
 %{?with_gles:BuildRequires:	Mesa-libGLES-devel}
 %{?with_sdl:BuildRequires:	SDL-devel}
 BuildRequires:	alsa-lib-devel >= 0.9.1
@@ -672,6 +673,22 @@ GStreamer OpenJPEG plugin - OpenJPEG-based JPEG2000 decoder/encoder.
 Wtyczka OpenJPEG do GStreamera - koder/dekoder JPEG2000 oparty na
 bibliotece OpenJPEG.
 
+%package -n gstreamer-openni2
+Summary:	GStreamer OpenNI2 video input plugin
+Summary(pl.UTF-8):	Wtyczka wejścia obrazu OpenNI2 do GStreamera
+Group:		Libraries
+Requires:	%{name} = %{version}-%{release}
+Requires:	gstreamer >= %{gst_req_ver}
+Requires:	gstreamer-plugins-base >= %{gstpb_req_ver}
+
+%description -n gstreamer-openni2
+GStreamer OpenNI2 plugin to extract readings from an OpenNI supported
+device (Kinect etc.).
+
+%description -n gstreamer-openni2 -l pl.UTF-8
+Wtyczka OpenNI2 do GStreamera, pobierająca odczyty z urządzeń
+obsługiwanych przez bibliotekę OpenNI (np. Kinect).
+
 %package -n gstreamer-opus
 Summary:	GStreamer OPUS audio decoder/encoder plugin
 Summary(pl.UTF-8):	Wtyczka kodera/dekodera dźwięku OPUS do GStreamera
@@ -1021,6 +1038,7 @@ Wtyczka do GStreamera skanująca kody kreskowe.
 	%{!?with_neon:--disable-neon} \
 	%{!?with_ofa:--disable-ofa} \
 	%{!?with_opengl:--disable-opengl} \
+	%{!?with_openni2:--disable-openni2} \
 	%{!?with_sdl:--disable-sdl} \
 	%{!?with_sdl:--disable-sdltest} \
 	%{!?with_spc:--disable-spc} \
@@ -1388,6 +1406,12 @@ rm -rf $RPM_BUILD_ROOT
 %files -n gstreamer-openjpeg
 %defattr(644,root,root,755)
 %attr(755,root,root) %{gstlibdir}/libgstopenjpeg.so
+
+%if %{with openni2}
+%files -n gstreamer-openni2
+%defattr(644,root,root,755)
+%attr(755,root,root) %{gstlibdir}/libgstopenni2.so
+%endif
 
 %files -n gstreamer-opus
 %defattr(644,root,root,755)
