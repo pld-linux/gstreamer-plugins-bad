@@ -12,7 +12,7 @@
 %bcond_without	egl		# EGL ???
 %bcond_without	faad		# faad audio decoder plugin
 %bcond_without	gles		# GLESv2 ???
-%bcond_with	gnustep		# Cocoa support using GNUstep
+%bcond_with	gnustep		# Cocoa support using GNUstep [unsupported since 1.4.5]
 %bcond_without	gsm		# gsm audio decoder/encoder plugin
 %bcond_without	kate		# Kate text streams plugin
 %bcond_without	ladspa		# LADSPA plugins bridge plugin
@@ -58,12 +58,12 @@
 Summary:	Bad GStreamer Streaming-media framework plugins
 Summary(pl.UTF-8):	Złe wtyczki do środowiska obróbki strumieni GStreamer
 Name:		gstreamer-plugins-bad
-Version:	1.4.4
+Version:	1.4.5
 Release:	1
 License:	LGPL v2+
 Group:		Libraries
 Source0:	http://gstreamer.freedesktop.org/src/gst-plugins-bad/%{gstname}-%{version}.tar.xz
-# Source0-md5:	972c6e22dd2e44fcf0b04b9d810a56be
+# Source0-md5:	e0bb39412cf4a48fe0397bcf3a7cd451
 Patch0:		%{name}-libdts.patch
 Patch1:		%{name}-timidity.patch
 Patch2:		%{name}-nas.patch
