@@ -44,6 +44,7 @@
 %bcond_without	wildmidi	# wildmidi MIDI files decoder plugin
 %bcond_with	xvid		# XviD plugin [not ported to 1.0]
 %bcond_with	zvbi		# zvbi-based teletextdec plugin [not ported to 1.0]
+%bcond_with	yadif		# build yadif plugin
 %bcond_without	examples	# examples build
 
 %if %{without egl}
@@ -59,7 +60,7 @@ Summary:	Bad GStreamer Streaming-media framework plugins
 Summary(pl.UTF-8):	Złe wtyczki do środowiska obróbki strumieni GStreamer
 Name:		gstreamer-plugins-bad
 Version:	1.4.5
-Release:	1
+Release:	2
 License:	LGPL v2+
 Group:		Libraries
 Source0:	http://gstreamer.freedesktop.org/src/gst-plugins-bad/%{gstname}-%{version}.tar.xz
@@ -1046,6 +1047,7 @@ Wtyczka do GStreamera skanująca kody kreskowe.
 	%{!?with_amr:--disable-voamrwbenc} \
 	%{!?with_wayland:--disable-wayland} \
 	%{!?with_xvid:--disable-xvid} \
+	%{!?with_yadif:--disable-yadif} \
 	--disable-silent-rules \
 	--disable-static \
 	--enable-experimental \
@@ -1163,7 +1165,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{gstlibdir}/libgstvideosignal.so
 %attr(755,root,root) %{gstlibdir}/libgstvmnc.so
 %attr(755,root,root) %{gstlibdir}/libgsty4mdec.so
-%attr(755,root,root) %{gstlibdir}/libgstyadif.so
+%{?with_yadif:%attr(755,root,root) %{gstlibdir}/libgstyadif.so}
 # not ported to 1.0
 #%attr(755,root,root) %{gstlibdir}/libgstapexsink.so
 #%attr(755,root,root) %{gstlibdir}/libgstcdxaparse.so
@@ -1176,7 +1178,7 @@ rm -rf $RPM_BUILD_ROOT
 #%attr(755,root,root) %{gstlibdir}/libgstnsf.so
 #%attr(755,root,root) %{gstlibdir}/libgstnuvdemux.so
 #%attr(755,root,root) %{gstlibdir}/libgstpatchdetect.so
-%ifarch %{ix86} %{x8664}
+%ifarch %{ix86} %{x8664} x32
 #%attr(755,root,root) %{gstlibdir}/libgstreal.so
 %endif
 #%attr(755,root,root) %{gstlibdir}/libgstsdi.so
