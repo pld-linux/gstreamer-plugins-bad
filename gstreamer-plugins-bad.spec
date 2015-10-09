@@ -3,7 +3,7 @@
 #
 # Conditional build:
 %bcond_without	amr		# amrwbenc output plugin
-%bcond_with	bluez		# Bluez plugin (not ready for bluez 5)
+%bcond_without	bluez		# Bluez plugin
 %bcond_without	chromaprint	# chromaprint fingerprint plugin
 %bcond_without	daala		# Daala video encoder/decoder plugin
 %bcond_with	dc1394		# dc1394 input plugin [not ported to 1.0]
@@ -53,22 +53,20 @@
 
 %define		gstname		gst-plugins-bad
 %define		gst_major_ver	1.0
-%define		gst_req_ver	1.4.0
-%define		gstpb_req_ver	1.4.0
+%define		gst_req_ver	1.6.0
+%define		gstpb_req_ver	1.6.0
 %include	/usr/lib/rpm/macros.gstreamer
 Summary:	Bad GStreamer Streaming-media framework plugins
 Summary(pl.UTF-8):	Złe wtyczki do środowiska obróbki strumieni GStreamer
 Name:		gstreamer-plugins-bad
-Version:	1.4.5
-Release:	3
+Version:	1.6.0
+Release:	0.1
 License:	LGPL v2+
 Group:		Libraries
 Source0:	http://gstreamer.freedesktop.org/src/gst-plugins-bad/%{gstname}-%{version}.tar.xz
-# Source0-md5:	e0bb39412cf4a48fe0397bcf3a7cd451
+# Source0-md5:	111632f8d1d1ba39bbf3665aaafcb28c
 Patch0:		%{name}-libdts.patch
 Patch1:		%{name}-timidity.patch
-Patch2:		%{name}-nas.patch
-Patch3:		%{name}-doc.patch
 URL:		http://gstreamer.freedesktop.org/
 BuildRequires:	autoconf >= 2.68
 BuildRequires:	automake >= 1:1.11
@@ -107,7 +105,7 @@ BuildRequires:	xorg-lib-libXcomposite-devel
 %{?with_gles:BuildRequires:	Mesa-libGLES-devel}
 %{?with_sdl:BuildRequires:	SDL-devel}
 BuildRequires:	alsa-lib-devel >= 0.9.1
-%{?with_bluez:BuildRequires:	bluez-libs-devel < 5.0}
+%{?with_bluez:BuildRequires:	bluez-libs-devel >= 5.0}
 BuildRequires:	bzip2-devel
 %{?with_rsvg:BuildRequires:	cairo-devel}
 BuildRequires:	curl-devel >= 7.21.0
@@ -309,6 +307,7 @@ Wtyczka wyjścia dźwięku NAS dla GStreamera.
 Summary:	GStreamer plugin for Bluez-based bluetooth support
 Summary(pl.UTF-8):	Wtyczka GStreamera do obsługi bluetooth w oparciu o Bluez
 Group:		Libraries
+Requires:	bluez-libs >= 5.0
 Requires:	gstreamer-plugins-base >= %{gstpb_req_ver}
 Obsoletes:	gstreamer-bluetooth
 
@@ -1012,8 +1011,6 @@ Wtyczka do GStreamera skanująca kody kreskowe.
 %setup -q -n %{gstname}-%{version}
 %patch0 -p1
 %patch1 -p1
-%patch2 -p1
-%patch3 -p1
 
 %build
 %{__libtoolize}
@@ -1080,6 +1077,8 @@ rm -rf $RPM_BUILD_ROOT
 %files -f %{gstname}-%{gst_major_ver}.lang
 %defattr(644,root,root,755)
 %doc AUTHORS ChangeLog NEWS README RELEASE
+%attr(755,root,root) %{_libdir}/libgstadaptivedemux-%{gst_major_ver}.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libgstadaptivedemux-%{gst_major_ver}.so.0
 %attr(755,root,root) %{_libdir}/libgstbadbase-%{gst_major_ver}.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libgstbadbase-%{gst_major_ver}.so.0
 %attr(755,root,root) %{_libdir}/libgstbadvideo-%{gst_major_ver}.so.*.*.*
@@ -1100,6 +1099,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %ghost %{_libdir}/libgsturidownloader-%{gst_major_ver}.so.0
 %attr(755,root,root) %{_libdir}/libgstwayland-%{gst_major_ver}.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libgstwayland-%{gst_major_ver}.so.0
+%{_libdir}/girepository-1.0/GstGL-1.0.typelib
 %{_libdir}/girepository-1.0/GstInsertBin-1.0.typelib
 %{_libdir}/girepository-1.0/GstMpegts-1.0.typelib
 %attr(755,root,root) %{gstlibdir}/libgstaccurip.so
@@ -1160,6 +1160,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{gstlibdir}/libgstsmoothstreaming.so
 %attr(755,root,root) %{gstlibdir}/libgststereo.so
 %attr(755,root,root) %{gstlibdir}/libgstsubenc.so
+%attr(755,root,root) %{gstlibdir}/libgstvcdsrc.so
 %attr(755,root,root) %{gstlibdir}/libgstvideofiltersbad.so
 %attr(755,root,root) %{gstlibdir}/libgstvideoparsersbad.so
 %attr(755,root,root) %{gstlibdir}/libgstvideosignal.so
@@ -1183,12 +1184,16 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 #%attr(755,root,root) %{gstlibdir}/libgstsdi.so
 #%attr(755,root,root) %{gstlibdir}/libgsttta.so
-#%attr(755,root,root) %{gstlibdir}/libgstvcdsrc.so
 #%attr(755,root,root) %{gstlibdir}/libgstvideomeasure.so
+# dirs should belong to gstreamer or gstreamer-pb?
+%dir %{gstdatadir}
+%dir %{gstdatadir}/presets
+%{gstdatadir}/presets/GstFreeverb.prs
 %{_gtkdocdir}/gst-plugins-bad-plugins-%{gst_major_ver}
 
 %files devel
 %defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/libgstadaptivedemux-%{gst_major_ver}.so
 %attr(755,root,root) %{_libdir}/libgstbadbase-%{gst_major_ver}.so
 %attr(755,root,root) %{_libdir}/libgstbadvideo-%{gst_major_ver}.so
 %attr(755,root,root) %{_libdir}/libgstbasecamerabinsrc-%{gst_major_ver}.so
@@ -1206,6 +1211,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/gstreamer-%{gst_major_ver}/gst/interfaces
 %{_includedir}/gstreamer-%{gst_major_ver}/gst/mpegts
 %{_includedir}/gstreamer-%{gst_major_ver}/gst/uridownloader
+%{_libdir}/gstreamer-1.0/include/gst/gl
+%{_datadir}/gir-1.0/GstGL-1.0.gir
 %{_datadir}/gir-1.0/GstInsertBin-1.0.gir
 %{_datadir}/gir-1.0/GstMpegts-1.0.gir
 %{_pkgconfigdir}/gstreamer-codecparsers-%{gst_major_ver}.pc
@@ -1230,9 +1237,6 @@ rm -rf $RPM_BUILD_ROOT
 %files -n gstreamer-amrwbenc
 %defattr(644,root,root,755)
 %attr(755,root,root) %{gstlibdir}/libgstvoamrwbenc.so
-# dirs should belong to gstreamer or gstreamer-pb?
-%dir %{gstdatadir}
-%dir %{gstdatadir}/presets
 %{gstdatadir}/presets/GstVoAmrwbEnc.prs
 %endif
 
