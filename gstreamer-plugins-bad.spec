@@ -3,17 +3,19 @@
 #
 # Conditional build:
 %bcond_without	amr		# amrwbenc output plugin
+%bcond_without	bs2b		# bs2b headphone stereo improvement plugin
 %bcond_without	bluez		# Bluez plugin
 %bcond_without	chromaprint	# chromaprint fingerprint plugin
 %bcond_without	daala		# Daala video encoder/decoder plugin
 %bcond_with	dc1394		# dc1394 input plugin [not ported to 1.0]
 %bcond_without	directfb	# DirectFB videosink plugin
 %bcond_without	dts		# DTS audio decoder plugin
-%bcond_without	egl		# EGL ???
+%bcond_without	egl		# EGL support in GL output
 %bcond_without	faad		# faad audio decoder plugin
-%bcond_without	gles		# GLESv2 ???
+%bcond_without	gles		# GLESv2 support in GL output
 %bcond_with	gnustep		# Cocoa support using GNUstep [unsupported since 1.4.5]
 %bcond_without	gsm		# gsm audio decoder/encoder plugin
+%bcond_without	gtk		# GTK+ (3.x) elements (video sink plugin)
 %bcond_without	kate		# Kate text streams plugin
 %bcond_without	ladspa		# LADSPA plugins bridge plugin
 %bcond_with	libvisual	# libvisualgl plugin [not ported to 1.0]
@@ -22,7 +24,6 @@
 %bcond_without	mms		# mms streaming plugin
 %bcond_without	mpg123		# MPG123-based MP3 plugin
 %bcond_with	musepack	# musepack audio decoder plugin [not ported to 1.0]
-%bcond_with	mythtv		# mythtv data source plugin [not ported to 1.0]
 %bcond_with	nas		# NAS audiosink plugin [not ported to 1.0]
 %bcond_without	neon		# neonhttpsrc HTTP client plugin
 %bcond_without	ofa		# OFA fingerprint plugin
@@ -30,7 +31,9 @@
 %bcond_without	opencv		# OpenCV effects plugin
 %bcond_without	openexr		# OpenEXR EXR decoder plugin
 %bcond_without	opengl		# OpenGL videosink plugin
+%bcond_without	openh264	# OpenH264 encoder/decoder
 %bcond_without	openni2		# OpenNI2 device source plugin
+%bcond_without	qt		# Qt (5.x) elements (video sink plugin)
 %bcond_without	rsvg		# RSVG SVG decoder/overlay plugin
 %bcond_without	sbc		# SBC bluetooth audio codec plugin
 %bcond_with	sdl		# SDL audio/videosink plugin [not ported to 1.0]
@@ -42,6 +45,7 @@
 %bcond_without	vdpau		# VDPAU decoder/videopostprocess/videosink plugin
 %bcond_without	wayland		# Wayland videosink plugin and Wayland EGL support
 %bcond_without	wildmidi	# wildmidi MIDI files decoder plugin
+%bcond_without	x265		# x265 H.265 encoder plugin
 %bcond_with	xvid		# XviD plugin [not ported to 1.0]
 %bcond_with	zvbi		# zvbi-based teletextdec plugin [not ported to 1.0]
 %bcond_with	yadif		# build yadif plugin
@@ -68,8 +72,8 @@ Source0:	http://gstreamer.freedesktop.org/src/gst-plugins-bad/%{gstname}-%{versi
 Patch0:		%{name}-libdts.patch
 Patch1:		%{name}-timidity.patch
 URL:		http://gstreamer.freedesktop.org/
-BuildRequires:	autoconf >= 2.68
-BuildRequires:	automake >= 1:1.11
+BuildRequires:	autoconf >= 2.69
+BuildRequires:	automake >= 1:1.14
 BuildRequires:	docbook-dtd412-xml
 BuildRequires:	gettext-tools >= 0.17
 BuildRequires:	glib2-devel >= 1:2.32.0
@@ -77,7 +81,7 @@ BuildRequires:	gobject-introspection-devel >= 1.31.1
 BuildRequires:	gstreamer-devel >= %{gst_req_ver}
 BuildRequires:	gstreamer-plugins-base-devel >= %{gstpb_req_ver}
 BuildRequires:	gtk-doc >= 1.12
-BuildRequires:	libtool >= 1.4
+BuildRequires:	libtool >= 2:2.2.6
 BuildRequires:	orc-devel >= 0.4.17
 BuildRequires:	pkgconfig >= 1:0.9.0
 BuildRequires:	python >= 2.1
@@ -94,6 +98,7 @@ BuildRequires:	xorg-lib-libXcomposite-devel
 ##
 %{?with_directfb:BuildRequires:	DirectFB-devel >= 1:0.9.24}
 %{?with_egl:BuildRequires:	EGL-devel}
+%{?with_gles:BuildRequires:	Mesa-libGLES-devel}
 %{?with_wayland:BuildRequires:	Mesa-libwayland-egl-devel >= 9.0}
 %{?with_openal:BuildRequires:	OpenAL-devel >= 1.14}
 %{?with_openexr:BuildRequires:	OpenEXR-devel}
@@ -102,36 +107,39 @@ BuildRequires:	xorg-lib-libXcomposite-devel
 %{?with_opengl:BuildRequires:	OpenGL-GLX-devel}
 %{?with_gles:BuildRequires:	OpenGLESv2-devel}
 %{?with_openni2:BuildRequires:	OpenNI2-devel >= 0.26}
-%{?with_gles:BuildRequires:	Mesa-libGLES-devel}
+%{?with_qt:BuildRequires:	Qt5Core-devel >= 5.4.0}
+%{?with_qt:BuildRequires:	Qt5Gui-devel >= 5.4.0}
+%{?with_qt:BuildRequires:	Qt5Quick-devel >= 5.4.0}
 %{?with_sdl:BuildRequires:	SDL-devel}
 BuildRequires:	alsa-lib-devel >= 0.9.1
 %{?with_bluez:BuildRequires:	bluez-libs-devel >= 5.0}
 BuildRequires:	bzip2-devel
 %{?with_rsvg:BuildRequires:	cairo-devel}
-BuildRequires:	curl-devel >= 7.21.0
+BuildRequires:	curl-devel >= 7.35.0
 %{?with_daala:BuildRequires:	daala-devel}
-%{?with_bluez:BuildRequires:	dbus-devel}
 BuildRequires:	exempi-devel >= 1.99.5
 BuildRequires:	faac-devel
 %{?with_faad:BuildRequires:	faad2-devel >= 2.0-2}
 BuildRequires:	flite-devel
 BuildRequires:	fluidsynth-devel >= 1.0
 BuildRequires:	game-music-emu-devel >= 0.5.6
-%{?with_mythtv:BuildRequires:	gmyth-devel >= 0.7}
 BuildRequires:	gnutls-devel >= 2.11.3
 %if %{with gnustep}
 BuildRequires:	gnustep-base-devel
 BuildRequires:	gnustep-gui-devel
 %endif
-BuildRequires:	graphene-devel >= 0.99
+#BuildRequires:	graphene-devel >= 1.0.0
+%{?with_gtk:BuildRequires:	gtk+3-devel >= 3.15.0}
 %{?with_ladspa:BuildRequires:	ladspa-devel >= 1.12}
 BuildRequires:	libass-devel >= 0.9.4
+%{?with_bs2b:BuildRequires:	libbs2b-devel >= 3.1.0}
 %{?with_chromaprint:BuildRequires:	libchromaprint-devel}
 %{?with_dc1394:BuildRequires:	libdc1394-devel >= 2.0.0}
+#TODO: libde265 >= 0.9
 %{?with_dts:BuildRequires:	libdts-devel}
 BuildRequires:	libdvdnav-devel >= 4.1.2
 BuildRequires:	libdvdread-devel >= 4.1.2
-BuildRequires:	libexif-devel >= 0.6.16
+BuildRequires:	libexif-devel >= 1:0.6.16
 %{?with_gsm:BuildRequires:	libgsm-devel}
 BuildRequires:	libiptcdata-devel >= 1.0.2
 BuildRequires:	libjpeg-devel
@@ -155,30 +163,34 @@ BuildRequires:	libtheora-devel >= 1.0
 %{?with_kate:BuildRequires:	libtiger-devel >= 0.3.2}
 %{?with_timidity:BuildRequires:	libtimidity-devel}
 %{?with_uvch264:BuildRequires:	libusb-devel >= 1.0}
+%{?with_vdpau:BuildRequires:	libvdpau-devel}
 %{?with_libvisual:BuildRequires:	libvisual-devel >= 0.4.0}
 BuildRequires:	libvpx-devel
 BuildRequires:	libwebp-devel >= 0.2.1
-BuildRequires:	libx264-devel >= 0.1.2
-BuildRequires:	libxml2-devel >= 2.4
+%{?with_x265:BuildRequires:	libx265-devel}
+BuildRequires:	libxml2-devel >= 1:2.8
 %{?with_mjpegtools:BuildRequires:	mjpegtools-devel >= 2.0.0}
 %{?with_nas:BuildRequires:	nas-devel}
 %{?with_neon:BuildRequires:	neon-devel >= 0.27.0}
-# for hls (gstfragmented plugin)
+# for hls (gstfragmented plugin); could also use libgcrypt>=1.2.0 or openssl
 BuildRequires:	nettle-devel
 %if %{with opencv}
-BuildRequires:	opencv-devel >= 1:2.2.0
+BuildRequires:	opencv-devel >= 1:2.3.0
 BuildRequires:	opencv-devel < 1:2.5.0
 %endif
+%{?with_openh264:BuildRequires:	openh264-devel >= 1.3.0}
+# openjpeg 2.0 also supported, but not 2.1
 BuildRequires:	openjpeg-devel >= 1
+# for apexsink (not ported yet) and dtls
 BuildRequires:	openssl-devel >= 0.9.5
 BuildRequires:	opus-devel >= 0.9.4
+%{?with_qt:BuildRequires:	qt5-build >= 5.4.0}
 %{?with_sbc:BuildRequires:	sbc-devel >= 1.0}
 BuildRequires:	schroedinger-devel >= 1.0.10
 %{?with_lv2:BuildRequires:	slv2-devel >= 0.6.6}
 BuildRequires:	soundtouch-devel >= 1.4
 BuildRequires:	spandsp-devel >= 1:0.0.6
 %{?with_srtp:BuildRequires:	srtp-devel}
-%{?with_vdpau:BuildRequires:	libvdpau-devel}
 BuildRequires:	twolame-devel
 %{?with_uvch264:BuildRequires:	udev-glib-devel}
 BuildRequires:	vo-aacenc-devel >= 0.1.0
@@ -193,6 +205,7 @@ BuildRequires:	zbar-devel >= 0.9
 Requires:	glib2 >= 1:2.32.0
 Requires:	gstreamer >= %{gst_req_ver}
 Requires:	gstreamer-plugins-base >= %{gstpb_req_ver}
+Requires:	libxml2 >= 1:2.8
 Requires:	orc >= 0.4.17
 Obsoletes:	gstreamer-cdaudio
 Obsoletes:	gstreamer-plugins-gl
@@ -303,6 +316,21 @@ GStreamer NAS audio output plugin.
 %description -n gstreamer-audiosink-nas -l pl.UTF-8
 Wtyczka wyjścia dźwięku NAS dla GStreamera.
 
+%package -n gstreamer-bs2b
+Summary:	GStreamer bs2b plugin
+Summary(pl.UTF-8):	Wtyczka bs2b do GStreamera
+Group:		Libraries
+Requires:	gstreamer-plugins-base >= %{gstpb_req_ver}
+Requires:	libbs2b >= 3.1.0
+
+%description -n gstreamer-bs2b
+GStreamer plugin to improve headphone listening of stereo audio
+records using the b2sb library.
+
+%description -n gstreamer-bs2b -l pl.UTF-8
+Wtyczka GStreamera poprawiająca odsłuchiwanie nagrań stereofonicznych
+przez słuchawki przy użyciu biblioteki bs2b.
+
 %package -n gstreamer-bluez
 Summary:	GStreamer plugin for Bluez-based bluetooth support
 Summary(pl.UTF-8):	Wtyczka GStreamera do obsługi bluetooth w oparciu o Bluez
@@ -335,7 +363,7 @@ Summary:	GStreamer cURL network sink plugin
 Summary(pl.UTF-8):	Wtyczka wyjścia sieciowego cURL dla GStreamera
 Group:		Libraries
 Requires:	gstreamer >= %{gst_req_ver}
-Requires:	curl-libs >= 7.21.0
+Requires:	curl-libs >= 7.35.0
 Requires:	libssh2 >= 1.4.3
 
 %description -n gstreamer-curl
@@ -370,6 +398,19 @@ GStreamer 1394 IIDC (Firewire digital cameras) video source plugin.
 %description -n gstreamer-dc1394 -l pl.UTF-8
 Wtyczka źródła obrazu 1394 IIDC (z kamer cyfrowych Firewire) do
 GStreamera.
+
+%package -n gstreamer-dtls
+Summary:	GStreamer DTLS decoder and encoder plugin
+Summary(pl.UTF-8):	Wtyczka kodera i dekodera DTLS dla GStreamera
+Group:		Libraries
+Requires:	gstreamer-plugins-base >= %{gstpb_req_ver}
+Requires:	openssl >= 0.9.5
+
+%description -n gstreamer-dtls
+GStreamer DTLS decoder and encoder plugin.
+
+%description -n gstreamer-dtls -l pl.UTF-8
+Wtyczka kodera i dekodera DTLS dla GStreamera.
 
 %package -n gstreamer-dts
 Summary:	GStreamer DTS plugin
@@ -415,6 +456,7 @@ Summary(pl.UTF-8):	Wtyczka dekodująca GME do GStreamera
 Group:		Libraries
 Requires:	gstreamer >= %{gst_req_ver}
 Requires:	game-music-emu >= 0.5.6
+Obsoletes:	gstreamer-nsf
 
 %description -n gstreamer-gme
 GStreamer GME Audio Decoder plugin.
@@ -552,18 +594,6 @@ GStreamer musepack plugin.
 %description -n gstreamer-musepack -l pl.UTF-8
 Wtyczka musepack do GStreamera.
 
-%package -n gstreamer-mythtv
-Summary:	GStreamer MythTV plugin
-Summary(pl.UTF-8):	Wtyczka MythTV do GStreamera
-Group:		Libraries
-Requires:	gstreamer >= %{gst_req_ver}
-
-%description -n gstreamer-mythtv
-GStreamer MythTV plugin.
-
-%description -n gstreamer-mythtv -l pl.UTF-8
-Wtyczka MythTV do GStreamera.
-
 %package -n gstreamer-neon
 Summary:	GStreamer neon HTTP source plugin
 Summary(pl.UTF-8):	Wtyczka źródła HTTP neon do GStreamera
@@ -613,7 +643,7 @@ Summary:	GStreamer OpenCV plugin
 Summary(pl.UTF-8):	Wtyczka OpenCV do GStreamera
 Group:		Libraries
 Requires:	gstreamer >= %{gst_req_ver}
-Requires:	opencv >= 1:2.2.0
+Requires:	opencv >= 1:2.3.0
 
 %description -n gstreamer-opencv
 GStreamer OpenCV plugin. It contains the following elements:
@@ -657,6 +687,21 @@ GStreamer OpenGL support plugin, providing video sink.
 %description -n gstreamer-opengl -l pl.UTF-8
 Wtyczka obsługująca OpenGL do GStreamera, zapewniająca wyjście
 obrazu.
+
+%package -n gstreamer-openh264
+Summary:	GStreamer OpenH264 encoder/decoder plugin
+Summary(pl.UTF-8):	Wtyczka kodera/dekodera OpenH264 do GStreamera
+Group:		Libraries
+Requires:	%{name} = %{version}-%{release}
+Requires:	gstreamer >= %{gst_req_ver}
+Requires:	gstreamer-plugins-base >= %{gstpb_req_ver}
+Requires:	openh264 >= 1.3.0
+
+%description -n gstreamer-openh264
+GStreamer OpenH264 plugin - H.264 encoder/decoder.
+
+%description -n gstreamer-openh264 -l pl.UTF-8
+Wtyczka OpenH264 do GStreamera - koder/dekoder H.264.
 
 %package -n gstreamer-openjpeg
 Summary:	GStreamer OpenJPEG plugin
@@ -911,6 +956,36 @@ GStreamer DirectFB output plugin.
 %description -n gstreamer-videosink-directfb -l pl.UTF-8
 Wtyczka wyjścia obrazu DirectFB do GStreamera.
 
+%package -n gstreamer-videosink-gtk
+Summary:	GStreamer GTK+ (3.x) output plugin
+Summary(pl.UTF-8):	Wtyczka wyjścia obrazu GTK+ (3.x) do GStreamera
+Group:		Libraries
+Requires:	gstreamer-plugins-base >= %{gstpb_req_ver}
+Requires:	gtk+3 >= 3.15.0
+Provides:	gstreamer-videosink = %{version}
+
+%description -n gstreamer-videosink-gtk
+GStreamer GTK+ (3.x) output plugin.
+
+%description -n gstreamer-videosink-gtk -l pl.UTF-8
+Wtyczka wyjścia obrazu GTK+ (3.x) do GStreamera.
+
+%package -n gstreamer-videosink-qt
+Summary:	GStreamer Qt (5.x) output plugin
+Summary(pl.UTF-8):	Wtyczka wyjścia obrazu Qt (5.x) do GStreamera
+Group:		Libraries
+Requires:	Qt5Core >= 5.4.0
+Requires:	Qt5Gui >= 5.4.0
+Requires:	Qt5Quick >= 5.4.0
+Requires:	gstreamer-plugins-base >= %{gstpb_req_ver}
+Provides:	gstreamer-videosink = %{version}
+
+%description -n gstreamer-videosink-qt
+GStreamer Qt (5.x) output plugin.
+
+%description -n gstreamer-videosink-qt -l pl.UTF-8
+Wtyczka wyjścia obrazu Qt (5.x) do GStreamera.
+
 %package -n gstreamer-videosink-sdl
 Summary:	GStreamer plugin for outputing to SDL
 Summary(pl.UTF-8):	Wtyczka wyjścia SDL do GStreamera
@@ -981,6 +1056,18 @@ wildmidi plugin for GStreamer.
 %description -n gstreamer-wildmidi -l pl.UTF-8
 Wtyczka wildmidi do GStreamera.
 
+%package -n gstreamer-x265
+Summary:	GStreamer x265 encoder plugin
+Summary(pl.UTF-8):	Wtyczka do GStreamera kodująca przy użyciu biblioteki x265
+Group:		Libraries
+Requires:	gstreamer-plugins-base >= %{gstpb_req_ver}
+
+%description -n gstreamer-x265
+GStreamer x265 encoder plugin.
+
+%description -n gstreamer-x265 -l pl.UTF-8
+Wtyczka do GStreamera kodująca przy użyciu biblioteki x265.
+
 %package -n gstreamer-xvid
 Summary:	GStreamer xvid decoder plugin
 Summary(pl.UTF-8):	Wtyczka do GStreamera dekodująca przy użyciu biblioteki xvid
@@ -1019,15 +1106,18 @@ Wtyczka do GStreamera skanująca kody kreskowe.
 %{__autoheader}
 %{__automake}
 %configure \
+	%{!?with_bluez:--disable-bluez} \
+	%{!?with_bs2b:--disable-bs2b} \
 	%{!?with_gnustep:--disable-cocoa} \
 	%{!?with_daala:--disable-daala} \
 	%{!?with_dts:--disable-dts} \
 	%{!?with_egl:--disable-egl} \
 	%{!?with_examples:--disable-examples} \
-	%{!?with_gles:--disable-gles2} \
 	%{!?with_faad:--disable-faad} \
+	%{!?with_gles:--disable-gles2} \
 	%{!?with_opengl:--disable-glx} \
 	%{!?with_gsm:--disable-gsm} \
+	%{!?with_gtk:--disable-gtk} \
 	%{!?with_ladspa:--disable-ladspa} \
 	%{!?with_mms:--disable-libmms} \
 	%{!?with_libvisual:--disable-libvisual} \
@@ -1036,13 +1126,16 @@ Wtyczka do GStreamera skanująca kody kreskowe.
 	%{!?with_neon:--disable-neon} \
 	%{!?with_ofa:--disable-ofa} \
 	%{!?with_opengl:--disable-opengl} \
+	%{!?with_openh264:--disable-openh264} \
 	%{!?with_openni2:--disable-openni2} \
+	%{!?with_qt:--disable-qt} \
 	%{!?with_sdl:--disable-sdl} \
 	%{!?with_sdl:--disable-sdltest} \
 	%{!?with_spc:--disable-spc} \
 	%{!?with_uvch264:--disable-uvch264} \
 	%{!?with_amr:--disable-voamrwbenc} \
 	%{!?with_wayland:--disable-wayland} \
+	%{!?with_x265:--disable-x265} \
 	%{!?with_xvid:--disable-xvid} \
 	%{!?with_yadif:--disable-yadif} \
 	--disable-silent-rules \
@@ -1152,6 +1245,8 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{gstlibdir}/libgstrawparse.so
 %attr(755,root,root) %{gstlibdir}/libgstremovesilence.so
 %attr(755,root,root) %{gstlibdir}/libgstrfbsrc.so
+%attr(755,root,root) %{gstlibdir}/libgstrtpbad.so
+%attr(755,root,root) %{gstlibdir}/libgstrtponvif.so
 %attr(755,root,root) %{gstlibdir}/libgstsdpelem.so
 %attr(755,root,root) %{gstlibdir}/libgstsegmentclip.so
 %attr(755,root,root) %{gstlibdir}/libgstshm.so
@@ -1170,18 +1265,13 @@ rm -rf $RPM_BUILD_ROOT
 # not ported to 1.0
 #%attr(755,root,root) %{gstlibdir}/libgstapexsink.so
 #%attr(755,root,root) %{gstlibdir}/libgstcdxaparse.so
-#%attr(755,root,root) %{gstlibdir}/libgstcog.so
 #%attr(755,root,root) %{gstlibdir}/libgstdccp.so
 #%attr(755,root,root) %{gstlibdir}/libgstfaceoverlay.so
 #%attr(755,root,root) %{gstlibdir}/libgsthdvparse.so
 #%attr(755,root,root) %{gstlibdir}/libgstlinsys.so
 #%attr(755,root,root) %{gstlibdir}/libgstmve.so
-#%attr(755,root,root) %{gstlibdir}/libgstnsf.so
 #%attr(755,root,root) %{gstlibdir}/libgstnuvdemux.so
 #%attr(755,root,root) %{gstlibdir}/libgstpatchdetect.so
-%ifarch %{ix86} %{x8664} x32
-#%attr(755,root,root) %{gstlibdir}/libgstreal.so
-%endif
 #%attr(755,root,root) %{gstlibdir}/libgstsdi.so
 #%attr(755,root,root) %{gstlibdir}/libgsttta.so
 #%attr(755,root,root) %{gstlibdir}/libgstvideomeasure.so
@@ -1260,6 +1350,12 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{gstlibdir}/libgstbluez.so
 %endif
 
+%if %{with bs2b}
+%files -n gstreamer-bs2b
+%defattr(644,root,root,755)
+%attr(755,root,root) %{gstlibdir}/libgstbs2b.so
+%endif
+
 %if %{with chromaprint}
 %files -n gstreamer-chromaprint
 %defattr(644,root,root,755)
@@ -1281,6 +1377,10 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %attr(755,root,root) %{gstlibdir}/libgstdc1394.so
 %endif
+
+%files -n gstreamer-dtls
+%defattr(644,root,root,755)
+%attr(755,root,root) %{gstlibdir}/libgstdtls.so
 
 %if %{with dts}
 %files -n gstreamer-dts
@@ -1363,12 +1463,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{gstlibdir}/libgstmusepack.so
 %endif
 
-%if %{with mythtv}
-%files -n gstreamer-mythtv
-%defattr(644,root,root,755)
-%attr(755,root,root) %{gstlibdir}/libgstmythtvsrc.so
-%endif
-
 %if %{with neon}
 %files -n gstreamer-neon
 %defattr(644,root,root,755)
@@ -1407,6 +1501,12 @@ rm -rf $RPM_BUILD_ROOT
 %files -n gstreamer-opengl
 %defattr(644,root,root,755)
 %attr(755,root,root) %{gstlibdir}/libgstopengl.so
+%endif
+
+%if %{with openh264}
+%files -n gstreamer-openh264
+%defattr(644,root,root,755)
+%attr(755,root,root) %{gstlibdir}/libgstopenh264.so
 %endif
 
 %files -n gstreamer-openjpeg
@@ -1506,6 +1606,18 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{gstlibdir}/libgstdfbvideosink.so
 %endif
 
+%if %{with gtk}
+%files -n gstreamer-videosink-gtk
+%defattr(644,root,root,755)
+%attr(755,root,root) %{gstlibdir}/libgstgtksink.so
+%endif
+
+%if %{with qt}
+%files -n gstreamer-videosink-qt
+%defattr(644,root,root,755)
+%attr(755,root,root) %{gstlibdir}/libqtsink.so
+%endif
+
 %if %{with sdl}
 %files -n gstreamer-videosink-sdl
 %defattr(644,root,root,755)
@@ -1526,6 +1638,12 @@ rm -rf $RPM_BUILD_ROOT
 %files -n gstreamer-wildmidi
 %defattr(644,root,root,755)
 %attr(755,root,root) %{gstlibdir}/libgstwildmidi.so
+%endif
+
+%if %{with x265}
+%files -n gstreamer-x265
+%defattr(644,root,root,755)
+%attr(755,root,root) %{gstlibdir}/libgstx265.so
 %endif
 
 %if %{with xvid}
