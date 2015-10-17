@@ -18,6 +18,7 @@
 %bcond_without	gtk		# GTK+ (3.x) elements (video sink plugin)
 %bcond_without	kate		# Kate text streams plugin
 %bcond_without	ladspa		# LADSPA plugins bridge plugin
+%bcond_without	libde265	# libde265 H.265 decoder plugin
 %bcond_with	libvisual	# libvisualgl plugin [not ported to 1.0]
 %bcond_with	lv2		# LV2 plugins bridge plugin [not ported to 1.0]
 %bcond_without	mjpegtools	# mpeg2enc video encoder plugin
@@ -64,7 +65,7 @@ Summary:	Bad GStreamer Streaming-media framework plugins
 Summary(pl.UTF-8):	Złe wtyczki do środowiska obróbki strumieni GStreamer
 Name:		gstreamer-plugins-bad
 Version:	1.6.0
-Release:	0.1
+Release:	1
 License:	LGPL v2+
 Group:		Libraries
 Source0:	http://gstreamer.freedesktop.org/src/gst-plugins-bad/%{gstname}-%{version}.tar.xz
@@ -128,14 +129,14 @@ BuildRequires:	gnutls-devel >= 2.11.3
 BuildRequires:	gnustep-base-devel
 BuildRequires:	gnustep-gui-devel
 %endif
-#BuildRequires:	graphene-devel >= 1.0.0
+BuildRequires:	graphene-devel >= 1.0.0
 %{?with_gtk:BuildRequires:	gtk+3-devel >= 3.15.0}
 %{?with_ladspa:BuildRequires:	ladspa-devel >= 1.12}
 BuildRequires:	libass-devel >= 0.9.4
 %{?with_bs2b:BuildRequires:	libbs2b-devel >= 3.1.0}
 %{?with_chromaprint:BuildRequires:	libchromaprint-devel}
 %{?with_dc1394:BuildRequires:	libdc1394-devel >= 2.0.0}
-#TODO: libde265 >= 0.9
+%{?with_libde265:BuildRequires:	libde265-devel >= 0.9}
 %{?with_dts:BuildRequires:	libdts-devel}
 BuildRequires:	libdvdnav-devel >= 4.1.2
 BuildRequires:	libdvdread-devel >= 4.1.2
@@ -517,10 +518,26 @@ Plugin which wraps LADSPA plugins for use by GStreamer applications.
 Wtyczka pozwalająca na używanie wtyczek LADSPA przez aplikacje
 GStreamera.
 
+%package -n gstreamer-libde265
+Summary:	GStreamer libde265 H.265 decoder plugin
+Summary(pl.UTF-8):	Wtyczka dekodera H.265 libde265 do GStreamera
+Group:		Libraries
+Requires:	gstreamer >= %{gst_req_ver}
+Requires:	gstreamer-plugins-base >= %{gstpb_req_ver}
+Requires:	libde265 >= 0.9
+
+%description -n gstreamer-libde265
+GStreamer libde265 plugin - H.265 decoder.
+
+%description -n gstreamer-libde265 -l pl.UTF-8
+Wtyczka libde265 do GStreamera - dekoder H.265.
+
 %package -n gstreamer-lv2
 Summary:	GStreamer wrapper for LV2 plugins
 Summary(pl.UTF-8):	Wrapper do wtyczek LV2 dla GStreamera
 Group:		Libraries
+# for libgstsignalprocessor
+Requires:	%{name} = %{version}-%{release}
 Requires:	gstreamer-plugins-base >= %{gstpb_req_ver}
 Requires:	slv2 >= 0.6.6
 
@@ -642,6 +659,8 @@ Wtyczka obsługująca OpenAL do GStreamera, zapewniająca wyjście i
 Summary:	GStreamer OpenCV plugin
 Summary(pl.UTF-8):	Wtyczka OpenCV do GStreamera
 Group:		Libraries
+# for locales
+Requires:	%{name} = %{version}-%{release}
 Requires:	gstreamer >= %{gst_req_ver}
 Requires:	opencv >= 1:2.3.0
 
@@ -676,6 +695,7 @@ Summary:	GStreamer OpenGL video output plugin
 Summary(pl.UTF-8):	Wtyczka wyjścia obrazu OpenGL do GStreamera
 Group:		Libraries
 Requires:	%{name} = %{version}-%{release}
+Requires:	graphene >= 1.0.0
 Requires:	gstreamer >= %{gst_req_ver}
 Requires:	gstreamer-plugins-base >= %{gstpb_req_ver}
 Provides:	gstreamer-videosink = %{version}
@@ -692,7 +712,6 @@ obrazu.
 Summary:	GStreamer OpenH264 encoder/decoder plugin
 Summary(pl.UTF-8):	Wtyczka kodera/dekodera OpenH264 do GStreamera
 Group:		Libraries
-Requires:	%{name} = %{version}-%{release}
 Requires:	gstreamer >= %{gst_req_ver}
 Requires:	gstreamer-plugins-base >= %{gstpb_req_ver}
 Requires:	openh264 >= 1.3.0
@@ -722,7 +741,6 @@ bibliotece OpenJPEG.
 Summary:	GStreamer OpenNI2 video input plugin
 Summary(pl.UTF-8):	Wtyczka wejścia obrazu OpenNI2 do GStreamera
 Group:		Libraries
-Requires:	%{name} = %{version}-%{release}
 Requires:	gstreamer >= %{gst_req_ver}
 Requires:	gstreamer-plugins-base >= %{gstpb_req_ver}
 
@@ -960,6 +978,8 @@ Wtyczka wyjścia obrazu DirectFB do GStreamera.
 Summary:	GStreamer GTK+ (3.x) output plugin
 Summary(pl.UTF-8):	Wtyczka wyjścia obrazu GTK+ (3.x) do GStreamera
 Group:		Libraries
+# for libgstgl
+Requires:	%{name} = %{version}-%{release}
 Requires:	gstreamer-plugins-base >= %{gstpb_req_ver}
 Requires:	gtk+3 >= 3.15.0
 Provides:	gstreamer-videosink = %{version}
@@ -974,6 +994,8 @@ Wtyczka wyjścia obrazu GTK+ (3.x) do GStreamera.
 Summary:	GStreamer Qt (5.x) output plugin
 Summary(pl.UTF-8):	Wtyczka wyjścia obrazu Qt (5.x) do GStreamera
 Group:		Libraries
+# for libgstgl
+Requires:	%{name} = %{version}-%{release}
 Requires:	Qt5Core >= 5.4.0
 Requires:	Qt5Gui >= 5.4.0
 Requires:	Qt5Quick >= 5.4.0
@@ -1006,6 +1028,8 @@ odtwarzania na pełnym ekranie.
 Summary:	GStreamer plugin for outputing to Wayland
 Summary(pl.UTF-8):	Wtyczka wyjścia Wayland do GStreamera
 Group:		Libraries
+# for libgstgl
+Requires:	%{name} = %{version}-%{release}
 Requires:	gstreamer-plugins-base >= %{gstpb_req_ver}
 Requires:	wayland >= 1.4.0
 Provides:	gstreamer-videosink = %{version}
@@ -1119,6 +1143,7 @@ Wtyczka do GStreamera skanująca kody kreskowe.
 	%{!?with_gsm:--disable-gsm} \
 	%{!?with_gtk:--disable-gtk} \
 	%{!?with_ladspa:--disable-ladspa} \
+	%{!?with_libde265:--disable-libde265} \
 	%{!?with_mms:--disable-libmms} \
 	%{!?with_libvisual:--disable-libvisual} \
 	%{!?with_mjpegtools:--disable-mpeg2enc} \
@@ -1425,6 +1450,12 @@ rm -rf $RPM_BUILD_ROOT
 %files -n gstreamer-ladspa
 %defattr(644,root,root,755)
 %attr(755,root,root) %{gstlibdir}/libgstladspa.so
+%endif
+
+%if %{with libde265}
+%files -n gstreamer-libde265
+%defattr(644,root,root,755)
+%attr(755,root,root) %{gstlibdir}/libgstlibde265.so
 %endif
 
 %if %{with lv2}
