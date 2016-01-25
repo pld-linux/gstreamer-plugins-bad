@@ -58,18 +58,18 @@
 
 %define		gstname		gst-plugins-bad
 %define		gst_major_ver	1.0
-%define		gst_req_ver	1.6.2
-%define		gstpb_req_ver	1.6.2
+%define		gst_req_ver	1.6.3
+%define		gstpb_req_ver	1.6.3
 %include	/usr/lib/rpm/macros.gstreamer
 Summary:	Bad GStreamer Streaming-media framework plugins
 Summary(pl.UTF-8):	Złe wtyczki do środowiska obróbki strumieni GStreamer
 Name:		gstreamer-plugins-bad
-Version:	1.6.2
-Release:	2
+Version:	1.6.3
+Release:	1
 License:	LGPL v2+
 Group:		Libraries
 Source0:	http://gstreamer.freedesktop.org/src/gst-plugins-bad/%{gstname}-%{version}.tar.xz
-# Source0-md5:	7c73bec1d389f0e184ebbbbb9e9f883d
+# Source0-md5:	4857adcafe41e4b9b8805cf88303bd55
 Patch0:		%{name}-libdts.patch
 Patch1:		%{name}-timidity.patch
 URL:		http://gstreamer.freedesktop.org/
