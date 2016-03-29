@@ -29,7 +29,7 @@
 %bcond_without	neon		# neonhttpsrc HTTP client plugin
 %bcond_without	ofa		# OFA fingerprint plugin
 %bcond_without	openal		# OpenAL audiosink plugin
-%bcond_without	opencv		# OpenCV effects plugin
+%bcond_with	opencv		# OpenCV effects plugin
 %bcond_without	openexr		# OpenEXR EXR decoder plugin
 %bcond_without	opengl		# OpenGL videosink plugin
 %bcond_without	openh264	# OpenH264 encoder/decoder
@@ -65,7 +65,7 @@ Summary:	Bad GStreamer Streaming-media framework plugins
 Summary(pl.UTF-8):	Złe wtyczki do środowiska obróbki strumieni GStreamer
 Name:		gstreamer-plugins-bad
 Version:	1.6.3
-Release:	2
+Release:	3
 License:	LGPL v2+
 Group:		Libraries
 Source0:	http://gstreamer.freedesktop.org/src/gst-plugins-bad/%{gstname}-%{version}.tar.xz
