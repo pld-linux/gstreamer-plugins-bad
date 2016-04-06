@@ -23,7 +23,6 @@
 %bcond_with	lv2		# LV2 plugins bridge plugin [not ported to 1.0]
 %bcond_without	mjpegtools	# mpeg2enc video encoder plugin
 %bcond_without	mms		# mms streaming plugin
-%bcond_without	mpg123		# MPG123-based MP3 plugin
 %bcond_with	musepack	# musepack audio decoder plugin [not ported to 1.0]
 %bcond_with	nas		# NAS audiosink plugin [not ported to 1.0]
 %bcond_without	neon		# neonhttpsrc HTTP client plugin
@@ -64,12 +63,12 @@
 Summary:	Bad GStreamer Streaming-media framework plugins
 Summary(pl.UTF-8):	Złe wtyczki do środowiska obróbki strumieni GStreamer
 Name:		gstreamer-plugins-bad
-Version:	1.6.3
-Release:	3
+Version:	1.8.0
+Release:	1
 License:	LGPL v2+
 Group:		Libraries
 Source0:	http://gstreamer.freedesktop.org/src/gst-plugins-bad/%{gstname}-%{version}.tar.xz
-# Source0-md5:	4857adcafe41e4b9b8805cf88303bd55
+# Source0-md5:	1c2d797bb96a81e9ef570c7a0a37203e
 Patch0:		%{name}-libdts.patch
 Patch1:		%{name}-timidity.patch
 URL:		http://gstreamer.freedesktop.org/
@@ -111,6 +110,9 @@ BuildRequires:	xorg-lib-libXcomposite-devel
 %{?with_qt:BuildRequires:	Qt5Core-devel >= 5.4.0}
 %{?with_qt:BuildRequires:	Qt5Gui-devel >= 5.4.0}
 %{?with_qt:BuildRequires:	Qt5Quick-devel >= 5.4.0}
+%{?with_qt:BuildRequires:	Qt5Qml-devel >= 5.4.0}
+%{?with_qt:BuildRequires:	Qt5X11Extras-devel >= 5.4.0}
+%{?with_qt:BuildRequires:	Qt5WaylandClient-devel >= 5.4.0}
 %{?with_sdl:BuildRequires:	SDL-devel}
 BuildRequires:	alsa-lib-devel >= 0.9.1
 %{?with_bluez:BuildRequires:	bluez-libs-devel >= 5.0}
@@ -148,7 +150,6 @@ BuildRequires:	libjpeg-devel
 BuildRequires:	liblrdf-devel
 BuildRequires:	libmimic-devel >= 1.0
 %{?with_mms:BuildRequires:	libmms-devel >= 0.4}
-%{?with_mpg123:BuildRequires:	libmpg123-devel >= 1.14}
 BuildRequires:	libmodplug-devel
 %{?with_musepack:BuildRequires:	libmpcdec-devel >= 1.2}
 %{?with_ofa:BuildRequires:	libofa-devel >= 0.9.3}
@@ -173,7 +174,7 @@ BuildRequires:	libxml2-devel >= 1:2.8
 %{?with_mjpegtools:BuildRequires:	mjpegtools-devel >= 2.0.0}
 %{?with_nas:BuildRequires:	nas-devel}
 %{?with_neon:BuildRequires:	neon-devel >= 0.27.0}
-# for hls (gstfragmented plugin); could also use libgcrypt>=1.2.0 or openssl
+# for hls, could also use libgcrypt>=1.2.0 or openssl
 BuildRequires:	nettle-devel
 %if %{with opencv}
 BuildRequires:	opencv-devel >= 1:2.3.0
@@ -603,20 +604,6 @@ GStreamer mms plugin.
 
 %description -n gstreamer-mms -l pl.UTF-8
 Wtyczka mms do GStreamera.
-
-%package -n gstreamer-mpg123
-Summary:	GStreamer mpg123 plugin
-Summary(pl.UTF-8):	Wtyczka mpg123 do GStreamera
-Group:		Libraries
-Requires:	gstreamer >= %{gst_req_ver}
-Requires:	gstreamer-plugins-base >= %{gstpb_req_ver}
-Requires:	libmpg123 >= 1.14
-
-%description -n gstreamer-mpg123
-GStreamer mpg123 plugin for MP3 playback.
-
-%description -n gstreamer-mpg123 -l pl.UTF-8
-Wtyczka mpg123 do GStreamera, odtwarzająca MP3.
 
 %package -n gstreamer-musepack
 Summary:	GStreamer musepack plugin
@@ -1237,6 +1224,8 @@ rm -rf $RPM_BUILD_ROOT
 %doc AUTHORS ChangeLog NEWS README RELEASE
 %attr(755,root,root) %{_libdir}/libgstadaptivedemux-%{gst_major_ver}.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libgstadaptivedemux-%{gst_major_ver}.so.0
+%attr(755,root,root) %{_libdir}/libgstbadaudio-%{gst_major_ver}.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libgstbadaudio-%{gst_major_ver}.so.0
 %attr(755,root,root) %{_libdir}/libgstbadbase-%{gst_major_ver}.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libgstbadbase-%{gst_major_ver}.so.0
 %attr(755,root,root) %{_libdir}/libgstbadvideo-%{gst_major_ver}.so.*.*.*
@@ -1253,6 +1242,8 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %ghost %{_libdir}/libgstmpegts-%{gst_major_ver}.so.0
 %attr(755,root,root) %{_libdir}/libgstphotography-%{gst_major_ver}.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libgstphotography-%{gst_major_ver}.so.0
+%attr(755,root,root) %{_libdir}/libgstplayer-%{gst_major_ver}.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libgstplayer-%{gst_major_ver}.so.0
 %attr(755,root,root) %{_libdir}/libgsturidownloader-%{gst_major_ver}.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libgsturidownloader-%{gst_major_ver}.so.0
 %attr(755,root,root) %{_libdir}/libgstwayland-%{gst_major_ver}.so.*.*.*
@@ -1260,6 +1251,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/girepository-1.0/GstGL-1.0.typelib
 %{_libdir}/girepository-1.0/GstInsertBin-1.0.typelib
 %{_libdir}/girepository-1.0/GstMpegts-1.0.typelib
+%{_libdir}/girepository-1.0/GstPlayer-1.0.typelib
 %attr(755,root,root) %{gstlibdir}/libgstaccurip.so
 %attr(755,root,root) %{gstlibdir}/libgstadpcmdec.so
 %attr(755,root,root) %{gstlibdir}/libgstadpcmenc.so
@@ -1284,12 +1276,12 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{gstlibdir}/libgstfbdevsink.so
 %attr(755,root,root) %{gstlibdir}/libgstfestival.so
 %attr(755,root,root) %{gstlibdir}/libgstfieldanalysis.so
-%attr(755,root,root) %{gstlibdir}/libgstfragmented.so
 %attr(755,root,root) %{gstlibdir}/libgstfreeverb.so
 %attr(755,root,root) %{gstlibdir}/libgstfrei0r.so
 %attr(755,root,root) %{gstlibdir}/libgstgaudieffects.so
 %attr(755,root,root) %{gstlibdir}/libgstgeometrictransform.so
 %attr(755,root,root) %{gstlibdir}/libgstgdp.so
+%attr(755,root,root) %{gstlibdir}/libgsthls.so
 %attr(755,root,root) %{gstlibdir}/libgstid3tag.so
 %attr(755,root,root) %{gstlibdir}/libgstinterlace.so
 %attr(755,root,root) %{gstlibdir}/libgstinter.so
@@ -1297,7 +1289,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{gstlibdir}/libgstivtc.so
 %attr(755,root,root) %{gstlibdir}/libgstjp2kdecimator.so
 %attr(755,root,root) %{gstlibdir}/libgstjpegformat.so
-%attr(755,root,root) %{gstlibdir}/libgstliveadder.so
 %attr(755,root,root) %{gstlibdir}/libgstmidi.so
 %attr(755,root,root) %{gstlibdir}/libgstmodplug.so
 %attr(755,root,root) %{gstlibdir}/libgstmpegpsdemux.so
@@ -1305,12 +1296,12 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{gstlibdir}/libgstmpegtsdemux.so
 %attr(755,root,root) %{gstlibdir}/libgstmpegtsmux.so
 %attr(755,root,root) %{gstlibdir}/libgstmxf.so
+%attr(755,root,root) %{gstlibdir}/libgstnetsim.so
 %attr(755,root,root) %{gstlibdir}/libgstpcapparse.so
 %attr(755,root,root) %{gstlibdir}/libgstpnm.so
 %attr(755,root,root) %{gstlibdir}/libgstrawparse.so
 %attr(755,root,root) %{gstlibdir}/libgstremovesilence.so
 %attr(755,root,root) %{gstlibdir}/libgstrfbsrc.so
-%attr(755,root,root) %{gstlibdir}/libgstrtpbad.so
 %attr(755,root,root) %{gstlibdir}/libgstrtponvif.so
 %attr(755,root,root) %{gstlibdir}/libgstsdpelem.so
 %attr(755,root,root) %{gstlibdir}/libgstsegmentclip.so
@@ -1322,6 +1313,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{gstlibdir}/libgstsubenc.so
 %attr(755,root,root) %{gstlibdir}/libgstvcdsrc.so
 %attr(755,root,root) %{gstlibdir}/libgstvideofiltersbad.so
+%attr(755,root,root) %{gstlibdir}/libgstvideoframe_audiolevel.so
 %attr(755,root,root) %{gstlibdir}/libgstvideoparsersbad.so
 %attr(755,root,root) %{gstlibdir}/libgstvideosignal.so
 %attr(755,root,root) %{gstlibdir}/libgstvmnc.so
@@ -1349,6 +1341,7 @@ rm -rf $RPM_BUILD_ROOT
 %files devel
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libgstadaptivedemux-%{gst_major_ver}.so
+%attr(755,root,root) %{_libdir}/libgstbadaudio-%{gst_major_ver}.so
 %attr(755,root,root) %{_libdir}/libgstbadbase-%{gst_major_ver}.so
 %attr(755,root,root) %{_libdir}/libgstbadvideo-%{gst_major_ver}.so
 %attr(755,root,root) %{_libdir}/libgstbasecamerabinsrc-%{gst_major_ver}.so
@@ -1357,24 +1350,35 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/libgstinsertbin-%{gst_major_ver}.so
 %attr(755,root,root) %{_libdir}/libgstmpegts-%{gst_major_ver}.so
 %attr(755,root,root) %{_libdir}/libgstphotography-%{gst_major_ver}.so
+%attr(755,root,root) %{_libdir}/libgstplayer-%{gst_major_ver}.so
 %attr(755,root,root) %{_libdir}/libgsturidownloader-%{gst_major_ver}.so
 %attr(755,root,root) %{_libdir}/libgstwayland-%{gst_major_ver}.so
+%{_includedir}/gstreamer-%{gst_major_ver}/gst/audio/gstaudioaggregator.h
+%{_includedir}/gstreamer-%{gst_major_ver}/gst/base/gstaggregator.h
 %{_includedir}/gstreamer-%{gst_major_ver}/gst/basecamerabinsrc
 %{_includedir}/gstreamer-%{gst_major_ver}/gst/codecparsers
 %{_includedir}/gstreamer-%{gst_major_ver}/gst/gl
 %{_includedir}/gstreamer-%{gst_major_ver}/gst/insertbin
 %{_includedir}/gstreamer-%{gst_major_ver}/gst/interfaces
 %{_includedir}/gstreamer-%{gst_major_ver}/gst/mpegts
+%{_includedir}/gstreamer-%{gst_major_ver}/gst/player
 %{_includedir}/gstreamer-%{gst_major_ver}/gst/uridownloader
+%{_includedir}/gstreamer-%{gst_major_ver}/gst/video/gstvideoaggregator.h
+%{_includedir}/gstreamer-%{gst_major_ver}/gst/video/gstvideoaggregatorpad.h
 %{_libdir}/gstreamer-1.0/include/gst/gl
 %{_datadir}/gir-1.0/GstGL-1.0.gir
 %{_datadir}/gir-1.0/GstInsertBin-1.0.gir
 %{_datadir}/gir-1.0/GstMpegts-1.0.gir
+%{_datadir}/gir-1.0/GstPlayer-1.0.gir
 %{_pkgconfigdir}/gstreamer-codecparsers-%{gst_major_ver}.pc
 %{_pkgconfigdir}/gstreamer-gl-%{gst_major_ver}.pc
 %{_pkgconfigdir}/gstreamer-insertbin-%{gst_major_ver}.pc
 %{_pkgconfigdir}/gstreamer-mpegts-%{gst_major_ver}.pc
 %{_pkgconfigdir}/gstreamer-plugins-bad-%{gst_major_ver}.pc
+%{_pkgconfigdir}/gstreamer-bad-audio-%{gst_major_ver}.pc
+%{_pkgconfigdir}/gstreamer-bad-base-%{gst_major_ver}.pc
+%{_pkgconfigdir}/gstreamer-bad-video-%{gst_major_ver}.pc
+%{_pkgconfigdir}/gstreamer-player-%{gst_major_ver}.pc
 %{_gtkdocdir}/gst-plugins-bad-libs-%{gst_major_ver}
 
 ##
@@ -1522,12 +1526,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{gstlibdir}/libgstmms.so
 %endif
 
-%if %{with mpg123}
-%files -n gstreamer-mpg123
-%defattr(644,root,root,755)
-%attr(755,root,root) %{gstlibdir}/libgstmpg123.so
-%endif
-
 %if %{with musepack}
 %files -n gstreamer-musepack
 %defattr(644,root,root,755)
@@ -1592,7 +1590,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files -n gstreamer-opus
 %defattr(644,root,root,755)
-%attr(755,root,root) %{gstlibdir}/libgstopus.so
+%attr(755,root,root) %{gstlibdir}/libgstopusparse.so
 
 %files -n gstreamer-resindvd
 %defattr(644,root,root,755)
@@ -1686,7 +1684,7 @@ rm -rf $RPM_BUILD_ROOT
 %if %{with qt}
 %files -n gstreamer-videosink-qt
 %defattr(644,root,root,755)
-%attr(755,root,root) %{gstlibdir}/libqtsink.so
+%attr(755,root,root) %{gstlibdir}/libgstqtsink.so
 %endif
 
 %if %{with sdl}
