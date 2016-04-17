@@ -64,7 +64,7 @@ Summary:	Bad GStreamer Streaming-media framework plugins
 Summary(pl.UTF-8):	Złe wtyczki do środowiska obróbki strumieni GStreamer
 Name:		gstreamer-plugins-bad
 Version:	1.8.0
-Release:	2
+Release:	3
 License:	LGPL v2+
 Group:		Libraries
 Source0:	http://gstreamer.freedesktop.org/src/gst-plugins-bad/%{gstname}-%{version}.tar.xz
@@ -760,7 +760,7 @@ device (Kinect etc.).
 Wtyczka OpenNI2 do GStreamera, pobierająca odczyty z urządzeń
 obsługiwanych przez bibliotekę OpenNI (np. Kinect).
 
-%package -n gstreamer-opus
+%package -n gstreamer-opusparse
 Summary:	GStreamer OPUS audio decoder/encoder plugin
 Summary(pl.UTF-8):	Wtyczka kodera/dekodera dźwięku OPUS do GStreamera
 Group:		Libraries
@@ -769,10 +769,10 @@ Requires:	gstreamer-plugins-base >= %{gstpb_req_ver}
 Requires:	opus >= 0.9.4
 Obsoletes:	gstreamer-celt
 
-%description -n gstreamer-opus
+%description -n gstreamer-opusparse
 GStreamer OPUS audio decoder/encoder plugin.
 
-%description -n gstreamer-opus -l pl.UTF-8
+%description -n gstreamer-opusparse -l pl.UTF-8
 Wtyczka GStreamera kodująca/dekodująca dźwięk w formacie OPUS.
 
 %package -n gstreamer-resindvd
@@ -1588,7 +1588,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{gstlibdir}/libgstopenni2.so
 %endif
 
-%files -n gstreamer-opus
+%files -n gstreamer-opusparse
 %defattr(644,root,root,755)
 %attr(755,root,root) %{gstlibdir}/libgstopusparse.so
 
