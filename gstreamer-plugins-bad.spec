@@ -1,4 +1,6 @@
 # TODO:
+# - Vulkan (BR: libxcb-devel >= 1.10, <vulkan/vulkan.h>, -lvulkan)
+# - nvenc (BR: cuda >= 6.5, nvEncodeAPI.h, -lnvidia-encode)
 # - OpenSLES (when available on pure Linux, not Android)
 #
 # Conditional build:
@@ -41,14 +43,15 @@
 %bcond_without	spc		# spc audio decoder plugin
 %bcond_without	srtp		# SRTP decoder/encoder plugin
 %bcond_with	timidity	# timidity MIDI files decoder plugin [not ported to 1.0]
+%bcond_without	tinyalsa	# ALSA audiosink using tinyalsa library
 %bcond_without	uvch264		# uvch264 cameras plugin
 %bcond_without	vdpau		# VDPAU decoder/videopostprocess/videosink plugin
 %bcond_without	wayland		# Wayland videosink plugin and Wayland EGL support
 %bcond_without	wildmidi	# wildmidi MIDI files decoder plugin
 %bcond_without	x265		# x265 H.265 encoder plugin
 %bcond_with	xvid		# XviD plugin [not ported to 1.0]
-%bcond_with	zvbi		# zvbi-based teletextdec plugin [not ported to 1.0]
-%bcond_with	yadif		# build yadif plugin
+%bcond_with	yadif		# YADIF deinterlacing filter plugin
+%bcond_without	zvbi		# zvbi-based teletextdec plugin [not ported to 1.0]
 %bcond_without	examples	# examples build
 
 %if %{without egl}
@@ -57,26 +60,26 @@
 
 %define		gstname		gst-plugins-bad
 %define		gst_major_ver	1.0
-%define		gst_req_ver	1.6.3
-%define		gstpb_req_ver	1.6.3
+%define		gst_req_ver	1.8.0
+%define		gstpb_req_ver	1.8.0
 %include	/usr/lib/rpm/macros.gstreamer
 Summary:	Bad GStreamer Streaming-media framework plugins
 Summary(pl.UTF-8):	Złe wtyczki do środowiska obróbki strumieni GStreamer
 Name:		gstreamer-plugins-bad
-Version:	1.8.0
-Release:	3
+Version:	1.8.1
+Release:	1
 License:	LGPL v2+
 Group:		Libraries
-Source0:	http://gstreamer.freedesktop.org/src/gst-plugins-bad/%{gstname}-%{version}.tar.xz
-# Source0-md5:	1c2d797bb96a81e9ef570c7a0a37203e
+Source0:	https://gstreamer.freedesktop.org/src/gst-plugins-bad/%{gstname}-%{version}.tar.xz
+# Source0-md5:	e508da2a8a5c3d12264fe3415be2f451
 Patch0:		%{name}-libdts.patch
 Patch1:		%{name}-timidity.patch
-URL:		http://gstreamer.freedesktop.org/
+URL:		https://gstreamer.freedesktop.org/
 BuildRequires:	autoconf >= 2.69
 BuildRequires:	automake >= 1:1.14
 BuildRequires:	docbook-dtd412-xml
 BuildRequires:	gettext-tools >= 0.17
-BuildRequires:	glib2-devel >= 1:2.32.0
+BuildRequires:	glib2-devel >= 1:2.40.0
 BuildRequires:	gobject-introspection-devel >= 1.31.1
 BuildRequires:	gstreamer-devel >= %{gst_req_ver}
 BuildRequires:	gstreamer-plugins-base-devel >= %{gstpb_req_ver}
@@ -122,7 +125,7 @@ BuildRequires:	curl-devel >= 7.35.0
 %{?with_daala:BuildRequires:	daala-devel}
 BuildRequires:	exempi-devel >= 1.99.5
 BuildRequires:	faac-devel
-%{?with_faad:BuildRequires:	faad2-devel >= 2.0-2}
+%{?with_faad:BuildRequires:	faad2-devel >= 2.7}
 BuildRequires:	flite-devel
 BuildRequires:	fluidsynth-devel >= 1.0
 BuildRequires:	game-music-emu-devel >= 0.5.6
@@ -134,11 +137,13 @@ BuildRequires:	gnustep-gui-devel
 BuildRequires:	graphene-devel >= 1.0.0
 %{?with_gtk:BuildRequires:	gtk+3-devel >= 3.15.0}
 %{?with_ladspa:BuildRequires:	ladspa-devel >= 1.12}
-BuildRequires:	libass-devel >= 0.9.4
+BuildRequires:	libass-devel >= 0.10.2
 %{?with_bs2b:BuildRequires:	libbs2b-devel >= 3.1.0}
 %{?with_chromaprint:BuildRequires:	libchromaprint-devel}
 %{?with_dc1394:BuildRequires:	libdc1394-devel >= 2.0.0}
 %{?with_libde265:BuildRequires:	libde265-devel >= 0.9}
+# <libdrm/drm_fourcc.h>
+%{?with_egl:BuildRequires:	libdrm-devel}
 %{?with_dts:BuildRequires:	libdts-devel}
 BuildRequires:	libdvdnav-devel >= 4.1.2
 BuildRequires:	libdvdread-devel >= 4.1.2
@@ -204,7 +209,7 @@ BuildRequires:	xorg-lib-libX11-devel
 %{?with_xvid:BuildRequires:	xvid-devel >= 1.3.0}
 BuildRequires:	zbar-devel >= 0.9
 %{?with_zvbi:BuildRequires:	zvbi-devel >= 0.2}
-Requires:	glib2 >= 1:2.32.0
+Requires:	glib2 >= 1:2.40.0
 Requires:	gstreamer >= %{gst_req_ver}
 Requires:	gstreamer-plugins-base >= %{gstpb_req_ver}
 Requires:	libxml2 >= 1:2.8
@@ -255,6 +260,7 @@ Pliki nagłówkowe i dokumentacja API biblioteki gstapp.
 Summary:	GStreamer plugin for AAC audio encoding and decoding
 Summary(pl.UTF-8):	Wtyczka do GStreamera do kodowania i dekodowania plików audio AAC
 Group:		Libraries
+Requires:	faad2-libs >= 2.7
 Requires:	gstreamer >= %{gst_req_ver}
 Requires:	gstreamer-plugins-base >= %{gstpb_req_ver}
 
@@ -285,7 +291,7 @@ Summary(pl.UTF-8):	Wtyczka do GStreamera do renderowania napisów ASS/SSA
 Group:		Libraries
 Requires:	gstreamer >= %{gst_req_ver}
 Requires:	gstreamer-plugins-base >= %{gstpb_req_ver}
-Requires:	libass >= 0.9.4
+Requires:	libass >= 0.10.2
 
 %description -n gstreamer-ass
 GStreamer plugin for ASS/SSA subtitles rendering.
@@ -321,6 +327,21 @@ GStreamer NAS audio output plugin.
 
 %description -n gstreamer-audiosink-nas -l pl.UTF-8
 Wtyczka wyjścia dźwięku NAS dla GStreamera.
+
+%package -n gstreamer-audiosink-tinyalsa
+Summary:	GStreamer ALSA audio output plugin using tinyalsa library
+Summary(pl.UTF-8):	Wtyczka wyjścia dźwięku ALSA dla GStreamera, wykorzystująca bibliotekę tinyalsa
+Group:		Libraries
+Requires:	gstreamer >= %{gst_req_ver}
+Requires:	gstreamer-plugins-base >= %{gstpb_req_ver}
+Provides:	gstreamer-audiosink = %{version}
+
+%description -n gstreamer-audiosink-tinyalsa
+GStreamer ALSA audio output plugin using tinyalsa library.
+
+%description -n gstreamer-audiosink-tinyalsa -l pl.UTF-8
+Wtyczka wyjścia dźwięku ALSA dla GStreamera, wykorzystująca bibliotekę
+tinyalsa.
 
 %package -n gstreamer-bs2b
 Summary:	GStreamer bs2b plugin
@@ -482,7 +503,7 @@ Wtyczka dekodująca GME do GStreamera.
 Summary:	GStreamer GSettings plugin
 Summary(pl.UTF-8):	Wtyczka GSettings do GStreamera
 Group:		Libraries
-Requires:	glib2 >= 1:2.32.0
+Requires:	glib2 >= 1:2.40.0
 Requires:	gstreamer >= %{gst_req_ver}
 
 %description -n gstreamer-gsettings
@@ -570,6 +591,7 @@ Summary:	GStreamer Mimic video decoding/encoding plugin
 Summary(pl.UTF-8):	Wtyczka kodująca/dekodująca obraz Mimic do GStreamera
 Group:		Libraries
 Requires:	gstreamer >= %{gst_req_ver}
+Requires:	libmimic >= 1.0
 
 %description -n gstreamer-mimic
 GStreamer Mimic video decoding/encoding plugin.
@@ -1177,6 +1199,7 @@ Wtyczka do GStreamera skanująca kody kreskowe.
 	%{!?with_musepack:--disable-musepack} \
 	%{!?with_neon:--disable-neon} \
 	%{!?with_ofa:--disable-ofa} \
+	%{!?with_opencv:--disable-opencv} \
 	%{!?with_opengl:--disable-opengl} \
 	%{!?with_openh264:--disable-openh264} \
 	%{!?with_openni2:--disable-openni2} \
@@ -1184,6 +1207,8 @@ Wtyczka do GStreamera skanująca kody kreskowe.
 	%{!?with_sdl:--disable-sdl} \
 	%{!?with_sdl:--disable-sdltest} \
 	%{!?with_spc:--disable-spc} \
+	%{!?with_zvbi:--disable-teletextdec} \
+	%{!?with_tinyalsa:--disable-tinyalsa} \
 	%{!?with_uvch264:--disable-uvch264} \
 	%{!?with_amr:--disable-voamrwbenc} \
 	%{!?with_wayland:--disable-wayland} \
@@ -1411,6 +1436,12 @@ rm -rf $RPM_BUILD_ROOT
 %files -n gstreamer-audiosink-nas
 %defattr(644,root,root,755)
 %attr(755,root,root) %{gstlibdir}/libgstnassink.so
+%endif
+
+%if %{with tinyalsa}
+%files -n gstreamer-audiosink-tinyalsa
+%defattr(644,root,root,755)
+%attr(755,root,root) %{gstlibdir}/libgsttinyalsa.so
 %endif
 
 %if %{with bluez}
