@@ -9,7 +9,7 @@
 %bcond_without	bluez		# Bluez plugin
 %bcond_without	chromaprint	# chromaprint fingerprint plugin
 %bcond_without	daala		# Daala video encoder/decoder plugin
-%bcond_with	dc1394		# dc1394 input plugin [not ported to 1.0]
+%bcond_without	dc1394		# dc1394 input plugin
 %bcond_without	directfb	# DirectFB videosink plugin
 %bcond_without	dts		# DTS audio decoder plugin
 %bcond_without	egl		# EGL support in GL output
@@ -60,18 +60,18 @@
 
 %define		gstname		gst-plugins-bad
 %define		gst_major_ver	1.0
-%define		gst_req_ver	1.8.0
-%define		gstpb_req_ver	1.8.0
+%define		gst_req_ver	1.10.0
+%define		gstpb_req_ver	1.10.0
 %include	/usr/lib/rpm/macros.gstreamer
 Summary:	Bad GStreamer Streaming-media framework plugins
 Summary(pl.UTF-8):	Złe wtyczki do środowiska obróbki strumieni GStreamer
 Name:		gstreamer-plugins-bad
-Version:	1.8.1
-Release:	5
+Version:	1.10.1
+Release:	1
 License:	LGPL v2+
 Group:		Libraries
 Source0:	https://gstreamer.freedesktop.org/src/gst-plugins-bad/%{gstname}-%{version}.tar.xz
-# Source0-md5:	e508da2a8a5c3d12264fe3415be2f451
+# Source0-md5:	491d2d5aab55ffc60c66e714d3d664ea
 Patch0:		%{name}-libdts.patch
 Patch1:		%{name}-timidity.patch
 URL:		https://gstreamer.freedesktop.org/
@@ -1337,6 +1337,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{gstlibdir}/libgstsmoothstreaming.so
 %attr(755,root,root) %{gstlibdir}/libgststereo.so
 %attr(755,root,root) %{gstlibdir}/libgstsubenc.so
+%attr(755,root,root) %{gstlibdir}/libgsttimecode.so
 %attr(755,root,root) %{gstlibdir}/libgstvcdsrc.so
 %attr(755,root,root) %{gstlibdir}/libgstvideofiltersbad.so
 %attr(755,root,root) %{gstlibdir}/libgstvideoframe_audiolevel.so
@@ -1716,7 +1717,7 @@ rm -rf $RPM_BUILD_ROOT
 %if %{with qt}
 %files -n gstreamer-videosink-qt
 %defattr(644,root,root,755)
-%attr(755,root,root) %{gstlibdir}/libgstqtsink.so
+%attr(755,root,root) %{gstlibdir}/libgstqmlgl.so
 %endif
 
 %if %{with sdl}
