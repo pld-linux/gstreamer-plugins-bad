@@ -1,0 +1,13 @@
+--- gst-plugins-bad-1.12.0/configure.ac.orig	2017-05-15 19:01:27.766782482 +0200
++++ gst-plugins-bad-1.12.0/configure.ac	2017-05-15 21:28:05.130015371 +0200
+@@ -2034,8 +2034,8 @@
+           [AS_IF([test "x$MFX_HOME" != "x"],
+                  [MSDK_PREFIX="$MFX_HOME"],
+                  [MSDK_PREFIX="/opt/intel/media"])])
+-  MSDK_CFLAGS="-I$MSDK_PREFIX/include"
+-  MSDK_LIBS="-L$MSDK_PREFIX/lib/lin_x64 -lmfx -ldl"
++  MSDK_CFLAGS="-I/usr/include/mfx"
++  MSDK_LIBS="-lmfx -ldl"
+   AC_SUBST(MSDK_CFLAGS)
+   AC_SUBST(MSDK_LIBS)
+ 
