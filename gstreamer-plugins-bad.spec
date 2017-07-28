@@ -1,6 +1,5 @@
 # TODO:
 # - iqa (BR: dssim-devel, https://github.com/pornel/dssim?)
-# - Vulkan (BR: libxcb-devel >= 1.10, <vulkan/vulkan.h>, -lvulkan)
 # - nvenc (BR: cuda >= 6.5, nvEncodeAPI.h, -lnvidia-encode)
 # - OpenSLES (when available on pure Linux, not Android)
 #
@@ -48,7 +47,8 @@
 %bcond_without	tinyalsa	# ALSA audiosink using tinyalsa library
 %bcond_without	uvch264		# uvch264 cameras plugin
 %bcond_without	vdpau		# VDPAU decoder/videopostprocess/videosink plugin
-%bcond_without	wayland		# Wayland videosink plugin and Wayland EGL support
+%bcond_without	vulkan		# Vulkan videosink/upload plugin
+%bcond_without	wayland		# Wayland videosink plugin, Wayland EGL support, Wayland support in Vulkan plugin
 %bcond_without	wildmidi	# wildmidi MIDI files decoder plugin
 %bcond_without	x265		# x265 H.265 encoder plugin
 %bcond_with	xvid		# XviD plugin [not ported to 1.0, removed]
@@ -68,12 +68,12 @@
 Summary:	Bad GStreamer Streaming-media framework plugins
 Summary(pl.UTF-8):	Złe wtyczki do środowiska obróbki strumieni GStreamer
 Name:		gstreamer-plugins-bad
-Version:	1.12.0
-Release:	4
+Version:	1.12.2
+Release:	1
 License:	LGPL v2+
 Group:		Libraries
 Source0:	https://gstreamer.freedesktop.org/src/gst-plugins-bad/%{gstname}-%{version}.tar.xz
-# Source0-md5:	a1813105dc7394aff0be6dbedbf7c6d5
+# Source0-md5:	5683f0ea91f9e1e0613b0f6f729980a7
 Patch0:		%{name}-libdts.patch
 Patch1:		%{name}-mfx.patch
 URL:		https://gstreamer.freedesktop.org/
@@ -176,6 +176,7 @@ BuildRequires:	libtheora-devel >= 1.0
 BuildRequires:	libvpx-devel
 BuildRequires:	libwebp-devel >= 0.2.1
 %{?with_x265:BuildRequires:	libx265-devel}
+%{?with_vulkan:BuildRequires:	libxcb-devel >= 1.10}
 BuildRequires:	libxml2-devel >= 1:2.9.2
 %{?with_mfx:BuildRequires:	mfx_dispatch-devel}
 %{?with_mjpegtools:BuildRequires:	mjpegtools-devel >= 2.0.0}
@@ -206,6 +207,7 @@ BuildRequires:	twolame-devel
 %{?with_uvch264:BuildRequires:	udev-glib-devel}
 BuildRequires:	vo-aacenc-devel >= 0.1.0
 %{?with_amr:BuildRequires:	vo-amrwbenc-devel >= 0.1.0}
+%{?with_vulkan:BuildRequires:	vulkan-devel}
 # wayland-client, wayland-cursor, wayland-scanner
 %{?with_wayland:BuildRequires:	wayland-devel >= 1.4.0}
 %{?with_wayland:BuildRequires:	wayland-protocols >= 1.4}
@@ -1152,6 +1154,20 @@ AAC audio encoder plugin for GStreamer using VisualOn library.
 Wtyczka kodera dźwięku AAC dla GStreamera, wykorzystująca bibliotekę
 VisualOn.
 
+%package -n gstreamer-vulkan
+Summary:	GStreamer Vulkan plugin
+Summary(pl.UTF-8):	Wtyczka GStreamera Vulkan
+Group:		Libraries
+Requires:	gstreamer >= %{gst_req_ver}
+Requires:	gstreamer-plugins-base >= %{gstpb_req_ver}
+Provides:	gstreamer-videosink = %{version}
+
+%description -n gstreamer-vulkan
+GStreamer Vulkan video sink and filter (uploader) plugin.
+
+%description -n gstreamer-vulkan -l pl.UTF-8
+Wtyczka GStreamera Vulkan - wyjście i filtr obrazu.
+
 %package -n gstreamer-webp
 Summary:	GStreamer plugin for decoding WebP images
 Summary(pl.UTF-8):	Wtyczka GStreamera do dekodowania obrazów WebP
@@ -1277,6 +1293,7 @@ Wtyczka GStreamera skanująca kody kreskowe.
 	%{!?with_tinyalsa:--disable-tinyalsa} \
 	%{!?with_uvch264:--disable-uvch264} \
 	%{!?with_amr:--disable-voamrwbenc} \
+	%{!?with_vulkan:--disable-vulkan} \
 	%{!?with_wayland:--disable-wayland} \
 	%{!?with_x265:--disable-x265} \
 	%{!?with_xvid:--disable-xvid} \
@@ -1776,10 +1793,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{gstlibdir}/libgstvdpau.so
 %endif
 
-%files -n gstreamer-voaacenc
-%defattr(644,root,root,755)
-%attr(755,root,root) %{gstlibdir}/libgstvoaacenc.so
-
 %if %{with directfb}
 %files -n gstreamer-videosink-directfb
 %defattr(644,root,root,755)
@@ -1808,6 +1821,16 @@ rm -rf $RPM_BUILD_ROOT
 %files -n gstreamer-videosink-wayland
 %defattr(644,root,root,755)
 %attr(755,root,root) %{gstlibdir}/libgstwaylandsink.so
+%endif
+
+%files -n gstreamer-voaacenc
+%defattr(644,root,root,755)
+%attr(755,root,root) %{gstlibdir}/libgstvoaacenc.so
+
+%if %{with vulkan}
+%files -n gstreamer-vulkan
+%defattr(644,root,root,755)
+%attr(755,root,root) %{gstlibdir}/libgstvulkan.so
 %endif
 
 %files -n gstreamer-webp
