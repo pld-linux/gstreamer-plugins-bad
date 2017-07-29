@@ -1,5 +1,4 @@
 # TODO:
-# - iqa (BR: dssim-devel, https://github.com/pornel/dssim?)
 # - nvenc (BR: cuda >= 6.5, nvEncodeAPI.h, -lnvidia-encode)
 # - OpenSLES (when available on pure Linux, not Android)
 #
@@ -124,6 +123,7 @@ BuildRequires:	bzip2-devel
 %{?with_rsvg:BuildRequires:	cairo-devel}
 BuildRequires:	curl-devel >= 7.35.0
 %{?with_daala:BuildRequires:	daala-devel}
+BuildRequires:	dssim-devel
 BuildRequires:	exempi-devel >= 1.99.5
 BuildRequires:	faac-devel
 %{?with_faad:BuildRequires:	faad2-devel >= 2.7}
@@ -548,6 +548,21 @@ Output plugin for GStreamer to convert to GSM lossy audio format.
 %description -n gstreamer-gsm -l pl.UTF-8
 Wtyczka wyjścia dźwięku GSteamera konwertująca do stratnego formatu
 GSM.
+
+%package -n gstreamer-iqa
+Summary:	GStreamer analyzer plugin to provide various Image Quality Assessment metrics
+Summary(pl.UTF-8):	Wtyczka analizująca GStreamera zapewniająca różne wskaźniki oceny jakości obrazu
+Group:		Libraries
+Requires:	gstreamer >= %{gst_req_ver}
+Requires:	gstreamer-plugins-base >= %{gstpb_req_ver}
+
+%description -n gstreamer-iqa
+GStreamer analyzer plugin to provide various Image Quality Assessment
+metrics.
+
+%description -n gstreamer-iqa -l pl.UTF-8
+Wtyczka analizująca GStreamera zapewniająca różne wskaźniki oceny
+jakości obrazu.
 
 %package -n gstreamer-kate
 Summary:	GStreamer plugin for Kate text streams
@@ -1600,6 +1615,10 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %attr(755,root,root) %{gstlibdir}/libgstgsm.so
 %endif
+
+%files -n gstreamer-iqa
+%defattr(644,root,root,755)
+%attr(755,root,root) %{gstlibdir}/libgstiqa.so
 
 %if %{with kate}
 %files -n gstreamer-kate
