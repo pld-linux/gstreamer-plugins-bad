@@ -68,7 +68,7 @@ Summary:	Bad GStreamer Streaming-media framework plugins
 Summary(pl.UTF-8):	Złe wtyczki do środowiska obróbki strumieni GStreamer
 Name:		gstreamer-plugins-bad
 Version:	1.12.4
-Release:	3
+Release:	4
 License:	LGPL v2+
 Group:		Libraries
 Source0:	https://gstreamer.freedesktop.org/src/gst-plugins-bad/%{gstname}-%{version}.tar.xz
@@ -745,8 +745,8 @@ Group:		Libraries
 # for locales
 Requires:	%{name} = %{version}-%{release}
 Requires:	gstreamer >= %{gst_req_ver}
+Requires:	gstreamer-opencv-libs = %{version}-%{release}
 Requires:	gstreamer-plugins-base >= %{gstpb_req_ver}
-Requires:	opencv >= 1:2.3.0
 
 %description -n gstreamer-opencv
 GStreamer OpenCV plugin. It contains the following elements:
@@ -759,6 +759,34 @@ Wtyczka OpenCV dla GStreamera. Zawiera następujące elementy:
 facedetect, faceblur, edgedetect, cvsobel, cvsmooth, cvlaplace,
 cverode, cvequalizehist, cvdilate, textwrite, templatematch,
 pyramidsegment.
+
+%package -n gstreamer-opencv-libs
+Summary:	GStreamer OpenCV shared library
+Summary(pl.UTF-8):	Biblioteka współdzielona GStreamer OpenCV
+Group:		Libraries
+Requires:	gstreamer >= %{gst_req_ver}
+Requires:	gstreamer-plugins-base >= %{gstpb_req_ver}
+Requires:	opencv >= 1:2.3.0
+
+%description -n gstreamer-opencv-libs
+GStreamer OpenCV shared library.
+
+%description -n gstreamer-opencv-libs -l pl.UTF-8
+Biblioteka współdzielona GStreamer OpenCV.
+
+%package -n gstreamer-opencv-devel
+Summary:	Header files for GStreamer OpenCV library
+Summary(pl.UTF-8):	Pliki nagłówkowe biblioteki GStreamer OpenCV
+Group:		Development/Libraries
+Requires:	gstreamer-devel >= %{gst_req_ver}
+Requires:	gstreamer-opencv-libs = %{version}-%{release}
+Requires:	gstreamer-plugins-base-devel >= %{gstpb_req_ver}
+
+%description -n gstreamer-opencv-devel
+Header files for GStreamer OpenCV library.
+
+%description -n gstreamer-opencv-devel -l pl.UTF-8
+Pliki nagłówkowe biblioteki GStreamer OpenCV.
 
 %package -n gstreamer-openexr
 Summary:	GStreamer OpenEXR plugin
@@ -1342,6 +1370,9 @@ rm -rf $RPM_BUILD_ROOT
 %post	-p /sbin/ldconfig
 %postun	-p /sbin/ldconfig
 
+%post	-n gstreamer-opencv-libs -p /sbin/ldconfig
+%postun	-n gstreamer-opencv-libs -p /sbin/ldconfig
+
 %files -f %{gstname}-%{gst_major_ver}.lang
 %defattr(644,root,root,755)
 %doc AUTHORS ChangeLog NEWS README RELEASE
@@ -1701,6 +1732,16 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_datadir}/gst-plugins-bad
 %dir %{_datadir}/gst-plugins-bad/1.0
 %{_datadir}/gst-plugins-bad/1.0/opencv_haarcascades
+
+%files -n gstreamer-opencv-libs
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/libgstopencv-1.0.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libgstopencv-1.0.so.0
+
+%files -n gstreamer-opencv-devel
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/libgstopencv-1.0.so
+%{_includedir}/gstreamer-1.0/gst/opencv
 %endif
 
 %if %{with openexr}
