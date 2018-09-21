@@ -187,7 +187,7 @@ BuildRequires:	pango-devel >= 1:1.10
 BuildRequires:	schroedinger-devel >= 1.0.10
 BuildRequires:	soundtouch-devel >= 1.4
 BuildRequires:	spandsp-devel >= 1:0.0.6
-%{?with_srtp:BuildRequires:	srtp2-devel}
+%{?with_srtp:BuildRequires:	libsrtp2-devel}
 %{?with_tinyalsa:BuildRequires:	tinyalsa-devel}
 BuildRequires:	twolame-devel
 %{?with_uvch264:BuildRequires:	udev-glib-devel}
