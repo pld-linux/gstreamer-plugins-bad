@@ -65,7 +65,7 @@ Summary:	Bad GStreamer Streaming-media framework plugins
 Summary(pl.UTF-8):	Złe wtyczki do środowiska obróbki strumieni GStreamer
 Name:		gstreamer-plugins-bad
 Version:	1.14.3
-Release:	1
+Release:	2
 License:	LGPL v2+
 Group:		Libraries
 Source0:	https://gstreamer.freedesktop.org/src/gst-plugins-bad/%{gstname}-%{version}.tar.xz
@@ -187,7 +187,7 @@ BuildRequires:	pango-devel >= 1:1.10
 BuildRequires:	schroedinger-devel >= 1.0.10
 BuildRequires:	soundtouch-devel >= 1.4
 BuildRequires:	spandsp-devel >= 1:0.0.6
-%{?with_srtp:BuildRequires:	srtp-devel}
+%{?with_srtp:BuildRequires:	srtp2-devel}
 %{?with_tinyalsa:BuildRequires:	tinyalsa-devel}
 BuildRequires:	twolame-devel
 %{?with_uvch264:BuildRequires:	udev-glib-devel}
