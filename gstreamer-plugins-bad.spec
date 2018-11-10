@@ -99,7 +99,7 @@ BuildRequires:	xorg-lib-libXcomposite-devel
 ##
 %{?with_directfb:BuildRequires:	DirectFB-devel >= 1:0.9.24}
 %{?with_egl:BuildRequires:	EGL-devel}
-%{?with_wayland:BuildRequires:	Mesa-libwayland-egl-devel >= 9.0}
+%{?with_wayland:BuildRequires:	wayland-egl-devel}
 %{?with_openal:BuildRequires:	OpenAL-devel >= 1.14}
 %{?with_openexr:BuildRequires:	OpenEXR-devel}
 %{?with_gles:BuildRequires:	OpenGLESv2-devel}
