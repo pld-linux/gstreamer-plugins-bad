@@ -64,12 +64,12 @@
 Summary:	Bad GStreamer Streaming-media framework plugins
 Summary(pl.UTF-8):	Złe wtyczki do środowiska obróbki strumieni GStreamer
 Name:		gstreamer-plugins-bad
-Version:	1.14.3
-Release:	2
+Version:	1.14.4
+Release:	1
 License:	LGPL v2+
 Group:		Libraries
 Source0:	https://gstreamer.freedesktop.org/src/gst-plugins-bad/%{gstname}-%{version}.tar.xz
-# Source0-md5:	caddacfa4ffff2b3171961ad278507c2
+# Source0-md5:	5d20a91d027708abcf924f6c1279dd25
 Patch0:		%{name}-libdts.patch
 Patch1:		%{name}-mfx.patch
 URL:		https://gstreamer.freedesktop.org/
