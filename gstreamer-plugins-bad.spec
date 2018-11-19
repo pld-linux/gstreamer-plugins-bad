@@ -190,7 +190,6 @@ BuildRequires:	soundtouch-devel >= 1.4
 BuildRequires:	spandsp-devel >= 1:0.0.6
 %{?with_srtp:BuildRequires:	libsrtp2-devel}
 %{?with_tinyalsa:BuildRequires:	tinyalsa-devel}
-BuildRequires:	twolame-devel
 %{?with_uvch264:BuildRequires:	udev-glib-devel}
 BuildRequires:	vo-aacenc-devel >= 0.1.0
 %{?with_amr:BuildRequires:	vo-amrwbenc-devel >= 0.1.0}
@@ -211,12 +210,9 @@ Requires:	gstreamer-plugins-base >= %{gstpb_req_ver}
 Requires:	libxml2 >= 1:2.8
 Requires:	orc >= 0.4.17
 Obsoletes:	gstreamer-cdaudio
-Obsoletes:	gstreamer-plugins-gl
 Obsoletes:	gstreamer-quicktime
 Obsoletes:	gstreamer-schroedinger
 Obsoletes:	gstreamer-vcd
-Obsoletes:	gstreamer-videosink-gtk
-Obsoletes:	gstreamer-videosink-qt
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		gstlibdir	%{_libdir}/gstreamer-%{gst_major_ver}
@@ -244,8 +240,6 @@ Summary(pl.UTF-8):	Pliki nagłówkowe i dokumentacja API biblioteki gstapp
 Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
 Requires:	gstreamer-devel >= %{gst_req_ver}
-Obsoletes:	gstreamer-plugins-gl-apidocs
-Obsoletes:	gstreamer-plugins-gl-devel
 
 %description devel
 Header files and API documentation for gstapp library.
