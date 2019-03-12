@@ -65,7 +65,7 @@ Summary:	Bad GStreamer Streaming-media framework plugins
 Summary(pl.UTF-8):	Złe wtyczki do środowiska obróbki strumieni GStreamer
 Name:		gstreamer-plugins-bad
 Version:	1.14.4
-Release:	3
+Release:	4
 License:	LGPL v2+
 Group:		Libraries
 Source0:	https://gstreamer.freedesktop.org/src/gst-plugins-bad/%{gstname}-%{version}.tar.xz
@@ -83,6 +83,7 @@ BuildRequires:	gstreamer-devel >= %{gst_req_ver}
 BuildRequires:	gstreamer-gl-devel >= %{gst_req_ver}
 BuildRequires:	gstreamer-plugins-base-devel >= %{gstpb_req_ver}
 BuildRequires:	gtk-doc >= 1.12
+BuildRequires:	libnice-devel
 BuildRequires:	libtool >= 2:2.2.6
 BuildRequires:	orc-devel >= 0.4.17
 BuildRequires:	pkgconfig >= 1:0.9.0
@@ -1141,6 +1142,19 @@ GStreamer plugin for decoding WebP images.
 Wtyczka GStreamera do dekodowania obrazów WebP.
 
 %package -n gstreamer-webrtc
+Summary:	WebRTC plugin for GStreamer
+Summary(pl.UTF-8):	Wtyczka WebRTC dla GStreamera
+Group:		Libraries
+Requires:	gstreamer >= %{gst_req_ver}
+Requires:	gstreamer-plugins-base >= %{gstpb_req_ver}
+
+%description -n gstreamer-webrtc
+WebRTC plugin for GStreamer.
+
+%description -n gstreamer-webrtc -l pl.UTF-8
+Wtyczka WebRTC dla GStreamera.
+
+%package -n gstreamer-webrtcdsp
 Summary:	WebRTC Audio Processing plugin for GStreamer
 Summary(pl.UTF-8):	Wtyczka WebRTC Audio Processing dla GStreamera
 Group:		Libraries
@@ -1148,10 +1162,10 @@ Requires:	gstreamer >= %{gst_req_ver}
 Requires:	gstreamer-plugins-base >= %{gstpb_req_ver}
 Requires:	webrtc-audio-processing >= 0.2
 
-%description -n gstreamer-webrtc
+%description -n gstreamer-webrtcdsp
 WebRTC Audio Processing plugin for GStreamer.
 
-%description -n gstreamer-webrtc -l pl.UTF-8
+%description -n gstreamer-webrtcdsp -l pl.UTF-8
 Wtyczka WebRTC Audio Processing dla GStreamera.
 
 %package -n gstreamer-wildmidi
@@ -1783,6 +1797,10 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{gstlibdir}/libgstwebp.so
 
 %files -n gstreamer-webrtc
+%defattr(644,root,root,755)
+%attr(755,root,root) %{gstlibdir}/libgstwebrtc.so
+
+%files -n gstreamer-webrtcdsp
 %defattr(644,root,root,755)
 %attr(755,root,root) %{gstlibdir}/libgstwebrtcdsp.so
 
