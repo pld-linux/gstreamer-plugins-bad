@@ -1,5 +1,6 @@
 # TODO:
-# - nvenc (BR: cuda >= 6.5, nvEncodeAPI.h, -lnvidia-encode)
+# - nvenc (BR: cuda >= 6.5, nvEncodeAPI.h >= 5.0, -lnvidia-encode)
+# - nvdec (BR: libnvcuvid)
 # - OpenSLES (when available on pure Linux, not Android)
 #
 # Conditional build:
@@ -58,20 +59,21 @@
 
 %define		gstname		gst-plugins-bad
 %define		gst_major_ver	1.0
-%define		gst_req_ver	1.14.3
-%define		gstpb_req_ver	1.14.3
+%define		gst_req_ver	1.14.4
+%define		gstpb_req_ver	1.14.4
 %include	/usr/lib/rpm/macros.gstreamer
 Summary:	Bad GStreamer Streaming-media framework plugins
 Summary(pl.UTF-8):	Złe wtyczki do środowiska obróbki strumieni GStreamer
 Name:		gstreamer-plugins-bad
 Version:	1.14.4
-Release:	5
+Release:	6
 License:	LGPL v2+
 Group:		Libraries
 Source0:	https://gstreamer.freedesktop.org/src/gst-plugins-bad/%{gstname}-%{version}.tar.xz
 # Source0-md5:	5d20a91d027708abcf924f6c1279dd25
 Patch0:		%{name}-libdts.patch
 Patch1:		%{name}-mfx.patch
+Patch2:		%{name}-fdkaac2.patch
 URL:		https://gstreamer.freedesktop.org/
 BuildRequires:	autoconf >= 2.69
 BuildRequires:	automake >= 1:1.14
@@ -83,7 +85,7 @@ BuildRequires:	gstreamer-devel >= %{gst_req_ver}
 BuildRequires:	gstreamer-gl-devel >= %{gst_req_ver}
 BuildRequires:	gstreamer-plugins-base-devel >= %{gstpb_req_ver}
 BuildRequires:	gtk-doc >= 1.12
-BuildRequires:	libnice-devel
+BuildRequires:	libnice-devel >= 0.1.14
 BuildRequires:	libtool >= 2:2.2.6
 BuildRequires:	orc-devel >= 0.4.17
 BuildRequires:	pkgconfig >= 1:0.9.0
@@ -101,13 +103,13 @@ BuildRequires:	xorg-lib-libXcomposite-devel
 ##
 %{?with_directfb:BuildRequires:	DirectFB-devel >= 1:0.9.24}
 %{?with_egl:BuildRequires:	EGL-devel}
-%{?with_wayland:BuildRequires:	wayland-egl-devel}
 %{?with_openal:BuildRequires:	OpenAL-devel >= 1.14}
 %{?with_openexr:BuildRequires:	OpenEXR-devel}
 %{?with_gles:BuildRequires:	OpenGLESv2-devel}
 %{?with_openni2:BuildRequires:	OpenNI2-devel >= 0.26}
 %{?with_sdl:BuildRequires:	SDL-devel}
 BuildRequires:	alsa-lib-devel >= 0.9.1
+BuildRequires:	aom-devel
 %{?with_bluez:BuildRequires:	bluez-libs-devel >= 5.0}
 BuildRequires:	bzip2-devel
 %{?with_rsvg:BuildRequires:	cairo-devel}
@@ -147,6 +149,7 @@ BuildRequires:	liblrdf-devel
 BuildRequires:	libmodplug-devel
 %{?with_musepack:BuildRequires:	libmpcdec-devel >= 1.2}
 %{?with_ofa:BuildRequires:	libofa-devel >= 0.9.3}
+BuildRequires:	libopenmpt-devel
 %{?with_spc:BuildRequires:	libopenspc-devel >= 0.3.99}
 BuildRequires:	libpng-devel >= 2:1.2.0
 %{?with_rsvg:BuildRequires:	librsvg-devel >= 2.36.2}
@@ -154,6 +157,8 @@ BuildRequires:	librtmp-devel
 BuildRequires:	libssh2-devel >= 1.4.3
 # for decklink, modplug, soundtouch
 %{?with_sndfile:BuildRequires:	libsndfile-devel >= 1.0.16}
+# or srtp, libsrtp2 is preferred
+%{?with_srtp:BuildRequires:	libsrtp2-devel >= 2.1.0}
 BuildRequires:	libstdc++-devel
 BuildRequires:	libtheora-devel >= 1.0
 %{?with_kate:BuildRequires:	libtiger-devel >= 0.3.2}
@@ -189,7 +194,7 @@ BuildRequires:	pango-devel >= 1:1.10
 BuildRequires:	schroedinger-devel >= 1.0.10
 BuildRequires:	soundtouch-devel >= 1.4
 BuildRequires:	spandsp-devel >= 1:0.0.6
-%{?with_srtp:BuildRequires:	libsrtp2-devel}
+BuildRequires:	srt-devel
 %{?with_tinyalsa:BuildRequires:	tinyalsa-devel}
 %{?with_uvch264:BuildRequires:	udev-glib-devel}
 BuildRequires:	vo-aacenc-devel >= 0.1.0
@@ -197,10 +202,11 @@ BuildRequires:	vo-aacenc-devel >= 0.1.0
 %{?with_vulkan:BuildRequires:	vulkan-devel}
 # wayland-client, wayland-cursor, wayland-scanner
 %{?with_wayland:BuildRequires:	wayland-devel >= 1.4.0}
+%{?with_wayland:BuildRequires:	wayland-egl-devel}
 %{?with_wayland:BuildRequires:	wayland-protocols >= 1.4}
 BuildRequires:	webrtc-audio-processing-devel < 0.4
 BuildRequires:	webrtc-audio-processing-devel >= 0.2
-%{?with_wildmidi:BuildRequires:	wildmidi-devel}
+%{?with_wildmidi:BuildRequires:	wildmidi-devel >= 0.4}
 BuildRequires:	xorg-lib-libX11-devel
 %{?with_xvid:BuildRequires:	xvid-devel >= 1.3.0}
 BuildRequires:	zbar-devel >= 0.9
@@ -336,6 +342,20 @@ GStreamer ALSA audio output plugin using tinyalsa library.
 %description -n gstreamer-audiosink-tinyalsa -l pl.UTF-8
 Wtyczka wyjścia dźwięku ALSA dla GStreamera, wykorzystująca bibliotekę
 tinyalsa.
+
+%package -n gstreamer-aom
+Summary:	GStreamer AOM plugin
+Summary(pl.UTF-8):	Wtyczka AOM dla GStreamera
+Group:		Libraries
+Requires:	gstreamer >= %{gst_req_ver}
+Requires:	gstreamer-plugins-base >= %{gstpb_req_ver}
+
+%description -n gstreamer-aom
+GStreamer AV1 encoder/decoder plugin based on AOM library.
+
+%description -n gstreamer-aom -l pl.UTF-8
+Oparta na bibliotece AOM wtyczka GStreamera kodująca/dekodująca format
+AV1.
 
 %package -n gstreamer-bs2b
 Summary:	GStreamer bs2b plugin
@@ -816,6 +836,20 @@ GStreamer OpenJPEG plugin - OpenJPEG-based JPEG2000 decoder/encoder.
 Wtyczka OpenJPEG dla GStreamera - koder/dekoder JPEG2000 oparty na
 bibliotece OpenJPEG.
 
+%package -n gstreamer-openmpt
+Summary:	GStreamer OpenMPT plugin
+Summary(pl.UTF-8):	Wtyczka OpenMPT dla GStreamera
+Group:		Libraries
+Requires:	%{name} = %{version}-%{release}
+Requires:	gstreamer >= %{gst_req_ver}
+Requires:	gstreamer-plugins-base >= %{gstpb_req_ver}
+
+%description -n gstreamer-openmpt
+GStreamer OpenMPT module player plugin.
+
+%description -n gstreamer-openmpt -l pl.UTF-8
+Wtyczka GStreamera OpenMPT do odtwarzania modułów.
+
 %package -n gstreamer-openni2
 Summary:	GStreamer OpenNI2 video input plugin
 Summary(pl.UTF-8):	Wtyczka wejścia obrazu OpenNI2 dla GStreamera
@@ -965,12 +999,25 @@ GStreamer Plugin for playing SPC files using OpenSPC library.
 Wtyczka GStreamera odtwarzająca pliki SPC przy użyciu biblioteki
 OpenSPC.
 
+%package -n gstreamer-srt
+Summary:	GStreamer SRT plugin
+Summary(pl.UTF-8):	Wtyczka SRT dla GStreamera
+Group:		Libraries
+Requires:	gstreamer >= %{gst_req_ver}
+
+%description -n gstreamer-srt
+GStreamer sink plugin to transfer data via SRT.
+
+%description -n gstreamer-srt -l pl.UTF-8
+Wtyczka GStreamera do przesyłania danych przez SRT.
+
 %package -n gstreamer-srtp
 Summary:	GStreamer plugin for encoding/decoding SRTP
 Summary(pl.UTF-8):	Wtyczka GStremaera do kodowania/dekodowania SRTP
 Group:		Libraries
 Requires:	gstreamer >= %{gst_req_ver}
 Requires:	gstreamer-plugins-base >= %{gstpb_req_ver}
+Requires:	libsrtp2-devel >= 2.1.0
 
 %description -n gstreamer-srtp
 GStreamer plugin for encoding/decoding SRTP.
@@ -1147,6 +1194,7 @@ Summary(pl.UTF-8):	Wtyczka WebRTC dla GStreamera
 Group:		Libraries
 Requires:	gstreamer >= %{gst_req_ver}
 Requires:	gstreamer-plugins-base >= %{gstpb_req_ver}
+Requires:	libnice >= 0.1.14
 
 %description -n gstreamer-webrtc
 WebRTC plugin for GStreamer.
@@ -1173,6 +1221,7 @@ Summary:	wildmidi plugin for GStreamer
 Summary(pl.UTF-8):	Wtyczka wildmidi dla GStreamera
 Group:		Libraries
 Requires:	gstreamer >= %{gst_req_ver}
+Requires:	wildmidi >= 0.4
 
 %description -n gstreamer-wildmidi
 wildmidi plugin for GStreamer.
@@ -1225,6 +1274,7 @@ Wtyczka GStreamera skanująca kody kreskowe.
 %setup -q -n %{gstname}-%{version}
 %patch0 -p1
 %patch1 -p1
+%patch2 -p1
 
 %build
 %{__libtoolize}
@@ -1382,7 +1432,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{gstlibdir}/libgstmxf.so
 %attr(755,root,root) %{gstlibdir}/libgstnetsim.so
 %attr(755,root,root) %{gstlibdir}/libgstopenglmixers.so
-%attr(755,root,root) %{gstlibdir}/libgstopenmpt.so
 %attr(755,root,root) %{gstlibdir}/libgstpcapparse.so
 %attr(755,root,root) %{gstlibdir}/libgstpnm.so
 %attr(755,root,root) %{gstlibdir}/libgstproxy.so
@@ -1465,6 +1514,10 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{gstlibdir}/libgstfaac.so
 %attr(755,root,root) %{gstlibdir}/libgstfaad.so
 %endif
+
+%files -n gstreamer-aom
+%defattr(644,root,root,755)
+%attr(755,root,root) %{gstlibdir}/libgstaom.so
 
 %if %{with amr}
 %files -n gstreamer-amrwbenc
@@ -1680,6 +1733,10 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %attr(755,root,root) %{gstlibdir}/libgstopenjpeg.so
 
+%files -n gstreamer-openmpt
+%defattr(644,root,root,755)
+%attr(755,root,root) %{gstlibdir}/libgstopenmpt.so
+
 %if %{with openni2}
 %files -n gstreamer-openni2
 %defattr(644,root,root,755)
@@ -1729,6 +1786,10 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %attr(755,root,root) %{gstlibdir}/libgstspc.so
 %endif
+
+%files -n gstreamer-srt
+%defattr(644,root,root,755)
+%attr(755,root,root) %{gstlibdir}/libgstsrt.so
 
 %if %{with srtp}
 %files -n gstreamer-srtp
