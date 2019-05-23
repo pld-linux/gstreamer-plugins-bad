@@ -66,7 +66,7 @@ Summary:	Bad GStreamer Streaming-media framework plugins
 Summary(pl.UTF-8):	Złe wtyczki do środowiska obróbki strumieni GStreamer
 Name:		gstreamer-plugins-bad
 Version:	1.14.4
-Release:	7
+Release:	8
 License:	LGPL v2+
 Group:		Libraries
 Source0:	https://gstreamer.freedesktop.org/src/gst-plugins-bad/%{gstname}-%{version}.tar.xz
@@ -199,7 +199,7 @@ BuildRequires:	srt-devel
 %{?with_uvch264:BuildRequires:	udev-glib-devel}
 BuildRequires:	vo-aacenc-devel >= 0.1.0
 %{?with_amr:BuildRequires:	vo-amrwbenc-devel >= 0.1.0}
-%{?with_vulkan:BuildRequires:	vulkan-devel}
+%{?with_vulkan:BuildRequires:	Vulkan-Loader-devel}
 # wayland-client, wayland-cursor, wayland-scanner
 %{?with_wayland:BuildRequires:	wayland-devel >= 1.4.0}
 %{?with_wayland:BuildRequires:	wayland-egl-devel}
