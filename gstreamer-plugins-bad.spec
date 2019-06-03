@@ -8,7 +8,7 @@
 %bcond_without	bs2b		# bs2b headphone stereo improvement plugin
 %bcond_without	bluez		# Bluez plugin
 %bcond_without	chromaprint	# chromaprint fingerprint plugin
-%bcond_without	daala		# Daala video encoder/decoder plugin
+%bcond_with	daala		# Daala video encoder/decoder plugin [ unsupported since 1.16.0, removed ]
 %bcond_without	dc1394		# dc1394 input plugin
 %bcond_without	directfb	# DirectFB videosink plugin
 %bcond_without	dts		# DTS audio decoder plugin
@@ -38,7 +38,7 @@
 %bcond_without	sbc		# SBC bluetooth audio codec plugin
 %bcond_with	sdl		# SDL audio/videosink plugin [not ported to 1.0, removed]
 %bcond_without	sndfile		# sndfile audio files encoder/decoder plugin
-%bcond_without	spc		# spc audio decoder plugin
+%bcond_with	spc		# spc audio decoder plugin [ unsupported since 1.16.0, replaced by gme ]
 %bcond_without	srtp		# SRTP decoder/encoder plugin
 %bcond_with	timidity	# timidity MIDI files decoder plugin [not ported to 1.0, removed]
 %bcond_without	tinyalsa	# ALSA audiosink using tinyalsa library
@@ -59,21 +59,20 @@
 
 %define		gstname		gst-plugins-bad
 %define		gst_major_ver	1.0
-%define		gst_req_ver	1.14.4
-%define		gstpb_req_ver	1.14.4
+%define		gst_req_ver	1.16.0
+%define		gstpb_req_ver	1.16.0
 %include	/usr/lib/rpm/macros.gstreamer
 Summary:	Bad GStreamer Streaming-media framework plugins
 Summary(pl.UTF-8):	Złe wtyczki do środowiska obróbki strumieni GStreamer
 Name:		gstreamer-plugins-bad
-Version:	1.14.4
-Release:	8
+Version:	1.16.0
+Release:	1
 License:	LGPL v2+
 Group:		Libraries
 Source0:	https://gstreamer.freedesktop.org/src/gst-plugins-bad/%{gstname}-%{version}.tar.xz
-# Source0-md5:	5d20a91d027708abcf924f6c1279dd25
+# Source0-md5:	e9e562d86c1527c44d904500dd35e326
 Patch0:		%{name}-libdts.patch
 Patch1:		%{name}-mfx.patch
-Patch2:		%{name}-fdkaac2.patch
 URL:		https://gstreamer.freedesktop.org/
 BuildRequires:	autoconf >= 2.69
 BuildRequires:	automake >= 1:1.14
@@ -147,7 +146,7 @@ BuildRequires:	libjpeg-devel
 BuildRequires:	liblrdf-devel
 %{?with_mms:BuildRequires:	libmms-devel >= 0.4}
 BuildRequires:	libmodplug-devel
-%{?with_musepack:BuildRequires:	libmpcdec-devel >= 1.2}
+%{?with_musepack:BuildRequires:	musepack-devel}
 %{?with_ofa:BuildRequires:	libofa-devel >= 0.9.3}
 BuildRequires:	libopenmpt-devel
 %{?with_spc:BuildRequires:	libopenspc-devel >= 0.3.99}
@@ -401,6 +400,20 @@ GStreamer Chromaprint audio fingerprinting plugin.
 %description -n gstreamer-chromaprint -l pl.UTF-8
 Wtyczka GStreamera wykonująca odciski identyfikacyjne dźwięku przy
 użyciu biblioteki Chromaprint.
+
+%package -n gstreamer-closedcaption
+Summary:	GStreamer Closedcaption plugin
+Summary(pl.UTF-8):	Wtyczka Closedcaption dla GStreamera
+Group:		Libraries
+Requires:	gstreamer >= %{gst_req_ver}
+Requires:	gstreamer-plugins-base >= %{gstpb_req_ver}
+
+%description -n gstreamer-closedcaption
+Plugin for Closedcaption support.
+
+%description -n gstreamer-closedcaption -l pl.UTF-8
+Wtyczka GStreamera obsługująca Closedcaption.
+
 
 %package -n gstreamer-curl
 Summary:	GStreamer cURL network sink plugin
@@ -940,6 +953,19 @@ SBC bluetooth audio codec plugin for GStreamer.
 %description -n gstreamer-sbc -l pl.UTF-8
 Wtyczka kodeka dźwięku bluetooth SBC dla GStreamera.
 
+%package -n gstreamer-sctp
+Summary:	GStreamer plugin for encoding/decoding SCTP
+Summary(pl.UTF-8):	Wtyczka GStremaera do kodowania/dekodowania SCTP
+Group:		Libraries
+Requires:	gstreamer >= %{gst_req_ver}
+Requires:	gstreamer-plugins-base >= %{gstpb_req_ver}
+
+%description -n gstreamer-sctp
+GStreamer plugin for encoding/decoding SCTP.
+
+%description -n gstreamer-sctp -l pl.UTF-8
+Wtyczka GStremaera do kodowania/dekodowania SCTP.
+
 %package -n gstreamer-sndfile
 Summary:	GStreamer sndfile plugin
 Summary(pl.UTF-8):	Wtyczka sndfile dla GStreamera
@@ -1274,7 +1300,6 @@ Wtyczka GStreamera skanująca kody kreskowe.
 %setup -q -n %{gstname}-%{version}
 %patch0 -p1
 %patch1 -p1
-%patch2 -p1
 
 %build
 %{__libtoolize}
@@ -1355,8 +1380,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %ghost %{_libdir}/libgstadaptivedemux-%{gst_major_ver}.so.0
 %attr(755,root,root) %{_libdir}/libgstbadaudio-%{gst_major_ver}.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libgstbadaudio-%{gst_major_ver}.so.0
-%attr(755,root,root) %{_libdir}/libgstbadvideo-%{gst_major_ver}.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libgstbadvideo-%{gst_major_ver}.so.0
 %attr(755,root,root) %{_libdir}/libgstbasecamerabinsrc-%{gst_major_ver}.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libgstbasecamerabinsrc-%{gst_major_ver}.so.0
 %attr(755,root,root) %{_libdir}/libgstcodecparsers-%{gst_major_ver}.so.*.*.*
@@ -1371,6 +1394,8 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %ghost %{_libdir}/libgstphotography-%{gst_major_ver}.so.0
 %attr(755,root,root) %{_libdir}/libgstplayer-%{gst_major_ver}.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libgstplayer-%{gst_major_ver}.so.0
+%attr(755,root,root) %{_libdir}/libgstsctp-%{gst_major_ver}.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libgstsctp-%{gst_major_ver}.so.0
 %attr(755,root,root) %{_libdir}/libgsturidownloader-%{gst_major_ver}.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libgsturidownloader-%{gst_major_ver}.so.0
 %attr(755,root,root) %{_libdir}/libgstwayland-%{gst_major_ver}.so.*.*.*
@@ -1397,7 +1422,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{gstlibdir}/libgstcamerabin.so
 %attr(755,root,root) %{gstlibdir}/libgstcoloreffects.so
 %attr(755,root,root) %{gstlibdir}/libgstcolormanagement.so
-%attr(755,root,root) %{gstlibdir}/libgstcompositor.so
 %attr(755,root,root) %{gstlibdir}/libgstdashdemux.so
 %attr(755,root,root) %{gstlibdir}/libgstdebugutilsbad.so
 %attr(755,root,root) %{gstlibdir}/libgstdecklink.so
@@ -1431,7 +1455,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{gstlibdir}/libgstmpegtsmux.so
 %attr(755,root,root) %{gstlibdir}/libgstmxf.so
 %attr(755,root,root) %{gstlibdir}/libgstnetsim.so
-%attr(755,root,root) %{gstlibdir}/libgstopenglmixers.so
 %attr(755,root,root) %{gstlibdir}/libgstpcapparse.so
 %attr(755,root,root) %{gstlibdir}/libgstpnm.so
 %attr(755,root,root) %{gstlibdir}/libgstproxy.so
@@ -1444,10 +1467,8 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{gstlibdir}/libgstsiren.so
 %attr(755,root,root) %{gstlibdir}/libgstsmooth.so
 %attr(755,root,root) %{gstlibdir}/libgstsmoothstreaming.so
-%attr(755,root,root) %{gstlibdir}/libgststereo.so
 %attr(755,root,root) %{gstlibdir}/libgstsubenc.so
 %attr(755,root,root) %{gstlibdir}/libgsttimecode.so
-%attr(755,root,root) %{gstlibdir}/libgstvcdsrc.so
 %attr(755,root,root) %{gstlibdir}/libgstvideofiltersbad.so
 %attr(755,root,root) %{gstlibdir}/libgstvideoframe_audiolevel.so
 %attr(755,root,root) %{gstlibdir}/libgstvideoparsersbad.so
@@ -1465,7 +1486,6 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libgstadaptivedemux-%{gst_major_ver}.so
 %attr(755,root,root) %{_libdir}/libgstbadaudio-%{gst_major_ver}.so
-%attr(755,root,root) %{_libdir}/libgstbadvideo-%{gst_major_ver}.so
 %attr(755,root,root) %{_libdir}/libgstbasecamerabinsrc-%{gst_major_ver}.so
 %attr(755,root,root) %{_libdir}/libgstcodecparsers-%{gst_major_ver}.so
 %attr(755,root,root) %{_libdir}/libgstinsertbin-%{gst_major_ver}.so
@@ -1473,11 +1493,13 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/libgstmpegts-%{gst_major_ver}.so
 %attr(755,root,root) %{_libdir}/libgstphotography-%{gst_major_ver}.so
 %attr(755,root,root) %{_libdir}/libgstplayer-%{gst_major_ver}.so
+%attr(755,root,root) %{_libdir}/libgstsctp-%{gst_major_ver}.so
 %attr(755,root,root) %{_libdir}/libgsturidownloader-%{gst_major_ver}.so
 %attr(755,root,root) %{_libdir}/libgstwayland-%{gst_major_ver}.so
 %attr(755,root,root) %{_libdir}/libgstwebrtc-%{gst_major_ver}.so
 %{_includedir}/gstreamer-%{gst_major_ver}/gst/audio/audio-bad-prelude.h
 %{_includedir}/gstreamer-%{gst_major_ver}/gst/audio/gstnonstreamaudiodecoder.h
+%{_includedir}/gstreamer-%{gst_major_ver}/gst/audio/gstplanaraudioadapter.h
 %{_includedir}/gstreamer-%{gst_major_ver}/gst/basecamerabinsrc
 %{_includedir}/gstreamer-%{gst_major_ver}/gst/codecparsers
 %{_includedir}/gstreamer-%{gst_major_ver}/gst/insertbin
@@ -1485,10 +1507,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/gstreamer-%{gst_major_ver}/gst/isoff
 %{_includedir}/gstreamer-%{gst_major_ver}/gst/mpegts
 %{_includedir}/gstreamer-%{gst_major_ver}/gst/player
+%{_includedir}/gstreamer-%{gst_major_ver}/gst/sctp
 %{_includedir}/gstreamer-%{gst_major_ver}/gst/uridownloader
-%{_includedir}/gstreamer-%{gst_major_ver}/gst/video/gstvideoaggregator.h
-%{_includedir}/gstreamer-%{gst_major_ver}/gst/video/gstvideoaggregatorpad.h
-%{_includedir}/gstreamer-%{gst_major_ver}/gst/video/video-bad-prelude.h
 %{_includedir}/gstreamer-%{gst_major_ver}/gst/webrtc
 %{_datadir}/gir-1.0/GstInsertBin-1.0.gir
 %{_datadir}/gir-1.0/GstMpegts-1.0.gir
@@ -1499,8 +1519,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_pkgconfigdir}/gstreamer-mpegts-%{gst_major_ver}.pc
 %{_pkgconfigdir}/gstreamer-plugins-bad-%{gst_major_ver}.pc
 %{_pkgconfigdir}/gstreamer-bad-audio-%{gst_major_ver}.pc
-%{_pkgconfigdir}/gstreamer-bad-video-%{gst_major_ver}.pc
 %{_pkgconfigdir}/gstreamer-player-%{gst_major_ver}.pc
+%{_pkgconfigdir}/gstreamer-sctp-%{gst_major_ver}.pc
 %{_pkgconfigdir}/gstreamer-webrtc-%{gst_major_ver}.pc
 %{_gtkdocdir}/gst-plugins-bad-libs-%{gst_major_ver}
 
@@ -1563,6 +1583,10 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %attr(755,root,root) %{gstlibdir}/libgstchromaprint.so
 %endif
+
+%files -n gstreamer-closedcaption
+%defattr(644,root,root,755)
+%attr(755,root,root) %{gstlibdir}/libgstclosedcaption.so
 
 %files -n gstreamer-curl
 %defattr(644,root,root,755)
@@ -1766,6 +1790,10 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %attr(755,root,root) %{gstlibdir}/libgstsbc.so
 %endif
+
+%files -n gstreamer-sctp
+%defattr(644,root,root,755)
+%attr(755,root,root) %{gstlibdir}/libgstsctp.so
 
 %if %{with sndfile}
 %files -n gstreamer-sndfile
