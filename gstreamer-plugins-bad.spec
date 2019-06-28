@@ -66,7 +66,7 @@ Summary:	Bad GStreamer Streaming-media framework plugins
 Summary(pl.UTF-8):	Złe wtyczki do środowiska obróbki strumieni GStreamer
 Name:		gstreamer-plugins-bad
 Version:	1.16.0
-Release:	2
+Release:	3
 License:	LGPL v2+
 Group:		Libraries
 Source0:	https://gstreamer.freedesktop.org/src/gst-plugins-bad/%{gstname}-%{version}.tar.xz
@@ -153,6 +153,7 @@ BuildRequires:	libopenmpt-devel
 BuildRequires:	libpng-devel >= 2:1.2.0
 %{?with_rsvg:BuildRequires:	librsvg-devel >= 2.36.2}
 BuildRequires:	librtmp-devel
+BuildRequires:	libsctp-devel
 BuildRequires:	libssh2-devel >= 1.4.3
 # for decklink, modplug, soundtouch
 %{?with_sndfile:BuildRequires:	libsndfile-devel >= 1.0.16}
