@@ -220,6 +220,7 @@ Obsoletes:	gstreamer-cdaudio
 Obsoletes:	gstreamer-quicktime
 Obsoletes:	gstreamer-schroedinger
 Obsoletes:	gstreamer-vcd
+Conflicts:	openwebrtc < 0.3.0-2
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		gstlibdir	%{_libdir}/gstreamer-%{gstmver}
