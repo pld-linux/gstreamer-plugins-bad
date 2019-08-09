@@ -2,6 +2,7 @@
 # - nvenc (BR: cuda >= 6.5, nvEncodeAPI.h >= 5.0, -lnvidia-encode)
 # - nvdec (BR: libnvcuvid)
 # - OpenSLES (when available on pure Linux, not Android)
+# - wpe-webkit, wpebackend-fdo? https://wpewebkit.org/
 #
 # Conditional build:
 %bcond_without	amr		# amrwbenc output plugin
@@ -66,13 +67,14 @@ Summary:	Bad GStreamer Streaming-media framework plugins
 Summary(pl.UTF-8):	Złe wtyczki do środowiska obróbki strumieni GStreamer
 Name:		gstreamer-plugins-bad
 Version:	1.16.0
-Release:	4
+Release:	5
 License:	LGPL v2+
 Group:		Libraries
 Source0:	https://gstreamer.freedesktop.org/src/gst-plugins-bad/%{gstname}-%{version}.tar.xz
 # Source0-md5:	e9e562d86c1527c44d904500dd35e326
 Patch0:		%{name}-libdts.patch
 Patch1:		%{name}-mfx.patch
+Patch2:		%{name}-openh264.patch
 URL:		https://gstreamer.freedesktop.org/
 BuildRequires:	autoconf >= 2.69
 BuildRequires:	automake >= 1:1.14
@@ -107,6 +109,7 @@ BuildRequires:	xorg-lib-libXcomposite-devel
 %{?with_gles:BuildRequires:	OpenGLESv2-devel}
 %{?with_openni2:BuildRequires:	OpenNI2-devel >= 0.26}
 %{?with_sdl:BuildRequires:	SDL-devel}
+%{?with_vulkan:BuildRequires:	Vulkan-Loader-devel}
 BuildRequires:	alsa-lib-devel >= 0.9.1
 BuildRequires:	aom-devel
 %{?with_bluez:BuildRequires:	bluez-libs-devel >= 5.0}
@@ -173,6 +176,7 @@ BuildRequires:	libwebp-devel >= 0.2.1
 %{?with_x265:BuildRequires:	libx265-devel}
 %{?with_vulkan:BuildRequires:	libxcb-devel >= 1.10}
 BuildRequires:	libxml2-devel >= 1:2.9.2
+%{?with_lv2:BuildRequires:	lilv-devel >= 0.22}
 %{?with_mfx:BuildRequires:	mfx_dispatch-devel}
 %{?with_mjpegtools:BuildRequires:	mjpegtools-devel >= 2.0.0}
 %{?with_nas:BuildRequires:	nas-devel}
@@ -186,8 +190,7 @@ BuildRequires:	opencv-devel < 1:4.1.0
 %{?with_openh264:BuildRequires:	openh264-devel >= 1.3.0}
 # or openjpeg >= 1.5, openjpeg2 is preferred
 BuildRequires:	openjpeg2-devel >= 2.1
-# for apexsink (not ported yet) and dtls
-%{?with_lv2:BuildRequires:	lilv-devel >= 0.22}
+# for dtls
 BuildRequires:	openssl-devel >= 1.0.1
 BuildRequires:	opus-devel >= 0.9.4
 BuildRequires:	pango-devel >= 1:1.22.0
@@ -200,7 +203,6 @@ BuildRequires:	srt-devel
 %{?with_uvch264:BuildRequires:	udev-glib-devel}
 BuildRequires:	vo-aacenc-devel >= 0.1.0
 %{?with_amr:BuildRequires:	vo-amrwbenc-devel >= 0.1.0}
-%{?with_vulkan:BuildRequires:	Vulkan-Loader-devel}
 # wayland-client, wayland-cursor, wayland-scanner
 %{?with_wayland:BuildRequires:	wayland-devel >= 1.11.0}
 %{?with_wayland:BuildRequires:	wayland-protocols >= 1.15}
@@ -1305,6 +1307,7 @@ Wtyczka GStreamera skanująca kody kreskowe.
 %setup -q -n %{gstname}-%{version}
 %patch0 -p1
 %patch1 -p1
+%patch2 -p1
 
 %build
 %{__libtoolize}
