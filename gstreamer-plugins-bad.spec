@@ -62,7 +62,6 @@
 %define		gstmver		1.0
 %define		gst_ver		1.16.0
 %define		gstpb_ver	1.16.0
-%include	/usr/lib/rpm/macros.gstreamer
 Summary:	Bad GStreamer Streaming-media framework plugins
 Summary(pl.UTF-8):	Złe wtyczki do środowiska obróbki strumieni GStreamer
 Name:		gstreamer-plugins-bad
