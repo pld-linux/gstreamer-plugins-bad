@@ -2,7 +2,6 @@
 # - nvenc (BR: cuda >= 6.5, nvEncodeAPI.h >= 5.0, -lnvidia-encode)
 # - nvdec (BR: libnvcuvid)
 # - OpenSLES (when available on pure Linux, not Android)
-# - wpe-webkit, wpebackend-fdo? https://wpewebkit.org/
 #
 # Conditional build:
 %bcond_without	amr		# amrwbenc output plugin
@@ -13,7 +12,7 @@
 %bcond_without	dc1394		# dc1394 input plugin
 %bcond_without	directfb	# DirectFB videosink plugin
 %bcond_without	dts		# DTS audio decoder plugin
-%bcond_without	egl		# EGL support in GL output
+%bcond_without	egl		# EGL support in GL output + wayland and wpe elements
 %bcond_without	faad		# faad audio decoder plugin
 %bcond_without	gles		# GLESv2 support in GL output
 %bcond_with	gnustep		# Cocoa support using GNUstep [unsupported since 1.4.5]
@@ -47,6 +46,7 @@
 %bcond_without	vdpau		# VDPAU decoder/videopostprocess/videosink plugin
 %bcond_without	vulkan		# Vulkan videosink/upload plugin
 %bcond_without	wayland		# Wayland videosink plugin, Wayland EGL support, Wayland support in Vulkan plugin
+%bcond_without	wpe		# WebKit based web browser plugin
 %bcond_without	wildmidi	# wildmidi MIDI files decoder plugin
 %bcond_without	x265		# x265 H.265 encoder plugin
 %bcond_with	xvid		# XviD plugin [not ported to 1.0, removed]
@@ -56,24 +56,26 @@
 
 %if %{without egl}
 %undefine with_wayland
+%undefine with_wpe
 %endif
 
 %define		gstname		gst-plugins-bad
 %define		gstmver		1.0
-%define		gst_ver		1.16.0
-%define		gstpb_ver	1.16.0
+%define		gst_ver		1.16.2
+%define		gstpb_ver	1.16.2
 Summary:	Bad GStreamer Streaming-media framework plugins
 Summary(pl.UTF-8):	Złe wtyczki do środowiska obróbki strumieni GStreamer
 Name:		gstreamer-plugins-bad
-Version:	1.16.0
-Release:	6
+Version:	1.16.2
+Release:	1
 License:	LGPL v2+
 Group:		Libraries
 Source0:	https://gstreamer.freedesktop.org/src/gst-plugins-bad/%{gstname}-%{version}.tar.xz
-# Source0-md5:	e9e562d86c1527c44d904500dd35e326
+# Source0-md5:	ccc7404230afddec723bbdb63c89feec
 Patch0:		%{name}-libdts.patch
 Patch1:		%{name}-mfx.patch
-Patch2:		%{name}-openh264.patch
+Patch2:		%{name}-neon.patch
+Patch3:		gstreamer-make.patch
 URL:		https://gstreamer.freedesktop.org/
 BuildRequires:	autoconf >= 2.69
 BuildRequires:	automake >= 1:1.14
@@ -208,7 +210,10 @@ BuildRequires:	vo-aacenc-devel >= 0.1.0
 BuildRequires:	webrtc-audio-processing-devel < 0.4
 BuildRequires:	webrtc-audio-processing-devel >= 0.2
 %{?with_wildmidi:BuildRequires:	wildmidi-devel >= 0.4}
+%{?with_wpe:BuildRequires:	wpe-webkit-devel >= 2.24}
+%{?with_wpe:BuildRequires:	wpebackend-fdo-devel >= 1.0}
 BuildRequires:	xorg-lib-libX11-devel
+%{?with_wpe:BuildRequires:	xorg-lib-libxkbcommon-devel}
 %{?with_xvid:BuildRequires:	xvid-devel >= 1.3.0}
 BuildRequires:	zbar-devel >= 0.9
 %{?with_zvbi:BuildRequires:	zvbi-devel >= 0.2}
@@ -1261,6 +1266,22 @@ wildmidi plugin for GStreamer.
 %description -n gstreamer-wildmidi -l pl.UTF-8
 Wtyczka wildmidi dla GStreamera.
 
+%package -n gstreamer-wpe
+Summary:	GStreamer WPE (WebKit web browser) source plugin
+Summary(pl.UTF-8):	Wtyczka GStreamera ze źródłem WPE (przeglądarki WWW opartej na WebKicie)
+Group:		Libraries
+Requires:	gstreamer >= %{gst_ver}
+Requires:	gstreamer-plugins-base >= %{gstpb_ver}
+Requires:	wpe-webkit >= 2.24
+Requires:	wpebackend-fdo >= 1.0
+
+%description -n gstreamer-wpe
+GStreamer WPE (WebKit web browser) source plugin.
+
+%description -n gstreamer-wpe -l pl.UTF-8
+Wtyczka GStreamera ze źródłem WPE (przeglądarki WWW opartej na
+WebKicie).
+
 %package -n gstreamer-x265
 Summary:	GStreamer x265 encoder plugin
 Summary(pl.UTF-8):	Wtyczka GStreamera kodująca przy użyciu biblioteki x265
@@ -1307,6 +1328,7 @@ Wtyczka GStreamera skanująca kody kreskowe.
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
+%patch3 -p1
 
 %build
 %{__libtoolize}
@@ -1907,6 +1929,12 @@ rm -rf $RPM_BUILD_ROOT
 %files -n gstreamer-wildmidi
 %defattr(644,root,root,755)
 %attr(755,root,root) %{gstlibdir}/libgstwildmidi.so
+%endif
+
+%if %{with wpe}
+%files -n gstreamer-wpe
+%defattr(644,root,root,755)
+%attr(755,root,root) %{gstlibdir}/libgstwpe.so
 %endif
 
 %if %{with x265}

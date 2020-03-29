@@ -1,0 +1,11 @@
+--- gst-plugins-bad-1.16.2/configure.ac.orig	2020-03-29 19:32:56.064354609 +0200
++++ gst-plugins-bad-1.16.2/configure.ac	2020-03-29 20:00:33.358709608 +0200
+@@ -1784,7 +1784,7 @@
+ dnl *** neon ***
+ translit(dnm, m, l) AM_CONDITIONAL(USE_NEON, true)
+ AG_GST_CHECK_FEATURE(NEON, [neon http client plugins], neonhttpsrc, [
+-  PKG_CHECK_MODULES(NEON, neon >= 0.27.0  neon <= 0.30.99, HAVE_NEON="yes", [
++  PKG_CHECK_MODULES(NEON, neon >= 0.27.0  neon <= 0.31.99, HAVE_NEON="yes", [
+     HAVE_NEON="no"
+   ])
+   AC_SUBST(NEON_CFLAGS)
