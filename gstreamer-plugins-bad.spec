@@ -34,7 +34,7 @@
 %bcond_without	openexr		# OpenEXR EXR decoder plugin
 %bcond_without	openh264	# OpenH264 encoder/decoder
 %bcond_without	openni2		# OpenNI2 device source plugin
-%bcond_without	rsvg		# RSVG SVG decoder/overlay plugin
+%bcond_without	librsvg		# RSVG SVG decoder/overlay plugin
 %bcond_without	sbc		# SBC bluetooth audio codec plugin
 %bcond_with	sdl		# SDL audio/videosink plugin [not ported to 1.0, removed]
 %bcond_without	sndfile		# sndfile audio files encoder/decoder plugin
@@ -115,7 +115,7 @@ BuildRequires:	alsa-lib-devel >= 0.9.1
 BuildRequires:	aom-devel
 %{?with_bluez:BuildRequires:	bluez-libs-devel >= 5.0}
 BuildRequires:	bzip2-devel
-%{?with_rsvg:BuildRequires:	cairo-devel}
+%{?with_librsvg:BuildRequires:	cairo-devel}
 BuildRequires:	curl-devel >= 7.35.0
 %{?with_daala:BuildRequires:	daala-devel}
 BuildRequires:	dssim-devel
@@ -156,7 +156,7 @@ BuildRequires:	libmodplug-devel
 BuildRequires:	libopenmpt-devel
 %{?with_spc:BuildRequires:	libopenspc-devel >= 0.3.99}
 BuildRequires:	libpng-devel >= 2:1.2.0
-%{?with_rsvg:BuildRequires:	librsvg-devel >= 2.36.2}
+%{?with_librsvg:BuildRequires:	librsvg-devel >= 1:2.36.2}
 BuildRequires:	librtmp-devel
 BuildRequires:	libssh2-devel >= 1.4.3
 # for decklink, modplug, soundtouch
@@ -923,7 +923,7 @@ Summary(pl.UTF-8):	Wtyczka GStreamera do dekodowania obrazów SVG
 Group:		Libraries
 Requires:	gstreamer >= %{gst_ver}
 Requires:	gstreamer-plugins-base >= %{gstpb_ver}
-Requires:	librsvg >= 2.36.2
+Requires:	librsvg >= 1:2.36.2
 
 %description -n gstreamer-rsvg
 GStreamer plugin for decoding SVG images.
@@ -1807,7 +1807,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %attr(755,root,root) %{gstlibdir}/libgstresindvd.so
 
-%if %{with rsvg}
+%if %{with librsvg}
 %files -n gstreamer-rsvg
 %defattr(644,root,root,755)
 %attr(755,root,root) %{gstlibdir}/libgstrsvg.so
