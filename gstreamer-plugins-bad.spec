@@ -8,7 +8,6 @@
 %bcond_without	bs2b		# bs2b headphone stereo improvement plugin
 %bcond_without	bluez		# Bluez plugin
 %bcond_without	chromaprint	# chromaprint fingerprint plugin
-%bcond_with	daala		# Daala video encoder/decoder plugin [unsupported since 1.16.0, removed]
 %bcond_without	dc1394		# dc1394 input plugin
 %bcond_without	directfb	# DirectFB videosink plugin
 %bcond_without	dts		# DTS audio decoder plugin
@@ -20,13 +19,11 @@
 %bcond_without	kate		# Kate text streams plugin
 %bcond_without	ladspa		# LADSPA plugins bridge plugin
 %bcond_without	libde265	# libde265 H.265 decoder plugin
-%bcond_with	libvisual	# libvisualgl plugin [not ported to 1.0, removed]
 %bcond_without	lv2		# LV2 plugins bridge plugin
 %bcond_without	mfx		# Intel MediaSDK (MFX) plugin
 %bcond_without	mjpegtools	# mpeg2enc video encoder plugin
 %bcond_without	mms		# mms streaming plugin
 %bcond_without	musepack	# musepack audio decoder plugin
-%bcond_with	nas		# NAS audiosink plugin [not ported to 1.0, removed]
 %bcond_without	neon		# neonhttpsrc HTTP client plugin
 %bcond_without	ofa		# OFA fingerprint plugin
 %bcond_without	openal		# OpenAL audiosink plugin
@@ -36,11 +33,8 @@
 %bcond_without	openni2		# OpenNI2 device source plugin
 %bcond_without	librsvg		# RSVG SVG decoder/overlay plugin
 %bcond_without	sbc		# SBC bluetooth audio codec plugin
-%bcond_with	sdl		# SDL audio/videosink plugin [not ported to 1.0, removed]
 %bcond_without	sndfile		# sndfile audio files encoder/decoder plugin
-%bcond_with	spc		# spc audio decoder plugin [ unsupported since 1.16.0, replaced by gme ]
 %bcond_without	srtp		# SRTP decoder/encoder plugin
-%bcond_with	timidity	# timidity MIDI files decoder plugin [not ported to 1.0, removed]
 %bcond_without	tinyalsa	# ALSA audiosink using tinyalsa library
 %bcond_without	uvch264		# uvch264 cameras plugin
 %bcond_without	vdpau		# VDPAU decoder/videopostprocess/videosink plugin
@@ -49,7 +43,6 @@
 %bcond_without	wpe		# WebKit based web browser plugin
 %bcond_without	wildmidi	# wildmidi MIDI files decoder plugin
 %bcond_without	x265		# x265 H.265 encoder plugin
-%bcond_with	xvid		# XviD plugin [not ported to 1.0, removed]
 %bcond_with	yadif		# YADIF deinterlacing filter plugin
 %bcond_without	zvbi		# zvbi-based teletext plugin
 %bcond_without	examples	# examples build
@@ -107,7 +100,6 @@ BuildRequires:	xorg-lib-libXcomposite-devel
 %{?with_openexr:BuildRequires:	OpenEXR-devel}
 %{?with_gles:BuildRequires:	OpenGLESv2-devel}
 %{?with_openni2:BuildRequires:	OpenNI2-devel >= 0.26}
-%{?with_sdl:BuildRequires:	SDL-devel}
 %{?with_vulkan:BuildRequires:	Vulkan-Loader-devel}
 BuildRequires:	alsa-lib-devel >= 0.9.1
 BuildRequires:	aom-devel
@@ -115,7 +107,6 @@ BuildRequires:	aom-devel
 BuildRequires:	bzip2-devel
 %{?with_librsvg:BuildRequires:	cairo-devel}
 BuildRequires:	curl-devel >= 7.35.0
-%{?with_daala:BuildRequires:	daala-devel}
 BuildRequires:	dssim-devel
 BuildRequires:	exempi-devel >= 1.99.5
 BuildRequires:	faac-devel
@@ -152,7 +143,6 @@ BuildRequires:	libmodplug-devel
 BuildRequires:	libnice-devel >= 0.1.14
 %{?with_ofa:BuildRequires:	libofa-devel >= 0.9.3}
 BuildRequires:	libopenmpt-devel
-%{?with_spc:BuildRequires:	libopenspc-devel >= 0.3.99}
 BuildRequires:	libpng-devel >= 2:1.2.0
 %{?with_librsvg:BuildRequires:	librsvg-devel >= 1:2.36.2}
 BuildRequires:	librtmp-devel
@@ -164,12 +154,10 @@ BuildRequires:	libssh2-devel >= 1.4.3
 BuildRequires:	libstdc++-devel
 BuildRequires:	libtheora-devel >= 1.0
 %{?with_kate:BuildRequires:	libtiger-devel >= 0.3.2}
-%{?with_timidity:BuildRequires:	libtimidity-devel}
 %{?with_uvch264:BuildRequires:	libusb-devel >= 1.0}
 BuildRequires:	libusrsctp-devel
 %{?with_mfx:BuildRequires:	libva-drm-devel}
 %{?with_vdpau:BuildRequires:	libvdpau-devel}
-%{?with_libvisual:BuildRequires:	libvisual-devel >= 0.4.0}
 BuildRequires:	libvpx-devel
 BuildRequires:	libwebp-devel >= 0.2.1
 %{?with_x265:BuildRequires:	libx265-devel}
@@ -179,7 +167,6 @@ BuildRequires:	libxml2-devel >= 1:2.9.2
 %{?with_mfx:BuildRequires:	mfx_dispatch-devel}
 %{?with_mjpegtools:BuildRequires:	mjpegtools-devel >= 2.0.0}
 %{?with_musepack:BuildRequires:	musepack-devel}
-%{?with_nas:BuildRequires:	nas-devel}
 %{?with_neon:BuildRequires:	neon-devel >= 0.27.0}
 # for hls, could also use libgcrypt>=1.2.0 or openssl
 BuildRequires:	nettle-devel
@@ -212,7 +199,6 @@ BuildRequires:	webrtc-audio-processing-devel >= 0.2
 %{?with_wpe:BuildRequires:	wpebackend-fdo-devel >= 1.0}
 BuildRequires:	xorg-lib-libX11-devel
 %{?with_wpe:BuildRequires:	xorg-lib-libxkbcommon-devel}
-%{?with_xvid:BuildRequires:	xvid-devel >= 1.3.0}
 BuildRequires:	zbar-devel >= 0.9
 %{?with_zvbi:BuildRequires:	zvbi-devel >= 0.2}
 Requires:	glib2 >= 1:2.40.0
@@ -318,21 +304,6 @@ Bad GStreamer audio effects plugins.
 %description -n gstreamer-audio-effects-bad -l pl.UTF-8
 Złe wtyczki efektów dźwiękowych dla GStreamera.
 
-%package -n gstreamer-audiosink-nas
-Summary:	GStreamer NAS audio output plugin
-Summary(pl.UTF-8):	Wtyczka wyjścia dźwięku NAS dla GStreamera
-Group:		Libraries
-Requires:	gstreamer >= %{gst_ver}
-Requires:	gstreamer-plugins-base >= %{gstpb_ver}
-Provides:	gstreamer-audiosink = %{version}
-Obsoletes:	gstreamer-nas < 0.10
-
-%description -n gstreamer-audiosink-nas
-GStreamer NAS audio output plugin.
-
-%description -n gstreamer-audiosink-nas -l pl.UTF-8
-Wtyczka wyjścia dźwięku NAS dla GStreamera.
-
 %package -n gstreamer-audiosink-tinyalsa
 Summary:	GStreamer ALSA audio output plugin using tinyalsa library
 Summary(pl.UTF-8):	Wtyczka wyjścia dźwięku ALSA dla GStreamera, wykorzystująca bibliotekę tinyalsa
@@ -436,19 +407,6 @@ data to a server (e.g. HTTP or FTP).
 %description -n gstreamer-curl -l pl.UTF-8
 Wtyczka wyjścia sieciowego GStreamera wykorzystująca libcurl jako
 klienta do wysyłania danych na serwer (np. HTTP lub FTP).
-
-%package -n gstreamer-daala
-Summary:	GStreamer Daala video encoder/decoder plugin
-Summary(pl.UTF-8):	Wtyczka kodera/dekodera obrazu Daala GStreamera
-Group:		Libraries
-Requires:	gstreamer >= %{gst_ver}
-Requires:	gstreamer-plugins-base >= %{gstpb_ver}
-
-%description -n gstreamer-daala
-GStreamer Daala video encoder/decoder plugin.
-
-%description -n gstreamer-daala -l pl.UTF-8
-Wtyczka kodera/dekodera obrazu Daala GStreamera.
 
 %package -n gstreamer-dc1394
 Summary:	GStreamer 1394 IIDC (Firewire digital cameras) video source plugin
@@ -1017,21 +975,6 @@ concealment.
 Wtyczka SpanDSP dla GStreamera - efekt dźwiękowy umożliwiający
 ukrywanie strat pakietów.
 
-%package -n gstreamer-spc
-Summary:	GStreamer SPC plugin
-Summary(pl.UTF-8):	Wtyczka SPC dla GStreamera
-Group:		Libraries
-Requires:	gstreamer >= %{gst_ver}
-Requires:	gstreamer-plugins-base >= %{gstpb_ver}
-Requires:	libopenspc >= 0.3.99
-
-%description -n gstreamer-spc
-GStreamer Plugin for playing SPC files using OpenSPC library.
-
-%description -n gstreamer-spc -l pl.UTF-8
-Wtyczka GStreamera odtwarzająca pliki SPC przy użyciu biblioteki
-OpenSPC.
-
 %package -n gstreamer-srt
 Summary:	GStreamer SRT plugin
 Summary(pl.UTF-8):	Wtyczka SRT dla GStreamera
@@ -1069,18 +1012,6 @@ Teletext decoder plugin for GStreamer.
 
 %description -n gstreamer-teletextdec -l pl.UTF-8
 Wtyczka GStreamera dekodująca teletekst.
-
-%package -n gstreamer-timidity
-Summary:	timidity plugin for GStreamer
-Summary(pl.UTF-8):	Wtyczka timidity dla GStreamera
-Group:		Libraries
-Requires:	gstreamer >= %{gst_ver}
-
-%description -n gstreamer-timidity
-timidity plugin for GStreamer.
-
-%description -n gstreamer-timidity -l pl.UTF-8
-Wtyczka timidity dla GStreamera.
 
 %package -n gstreamer-ttml
 Summary:	GStreamer TTML subtitles plugin
@@ -1143,23 +1074,6 @@ GStreamer DirectFB output plugin.
 
 %description -n gstreamer-videosink-directfb -l pl.UTF-8
 Wtyczka wyjścia obrazu DirectFB dla GStreamera.
-
-%package -n gstreamer-videosink-sdl
-Summary:	GStreamer plugin for outputing to SDL
-Summary(pl.UTF-8):	Wtyczka wyjścia SDL dla GStreamera
-Group:		Libraries
-Requires:	gstreamer >= %{gst_ver}
-Requires:	gstreamer-plugins-base >= %{gstpb_ver}
-Provides:	gstreamer-videosink = %{version}
-Obsoletes:	gstreamer-SDL < 0.10
-
-%description -n gstreamer-videosink-sdl
-Plugin for sending output to the Simple Direct Media architecture.
-(http://www.libsdl.org/). Useful for fullscreen playback.
-
-%description -n gstreamer-videosink-sdl -l pl.UTF-8
-Wtyczka przekazująca wyjście do architektury SDL. Użyteczna do
-odtwarzania na pełnym ekranie.
 
 %package -n gstreamer-videosink-wayland
 Summary:	GStreamer plugin for outputing to Wayland
@@ -1293,20 +1207,6 @@ GStreamer x265 encoder plugin.
 %description -n gstreamer-x265 -l pl.UTF-8
 Wtyczka GStreamera kodująca przy użyciu biblioteki x265.
 
-%package -n gstreamer-xvid
-Summary:	GStreamer xvid decoder plugin
-Summary(pl.UTF-8):	Wtyczka GStreamera dekodująca przy użyciu biblioteki xvid
-Group:		Libraries
-Requires:	gstreamer >= %{gst_ver}
-Requires:	gstreamer-plugins-base >= %{gstpb_ver}
-Obsoletes:	gstreamer-divx < 1.0
-
-%description -n gstreamer-xvid
-GStreamer xvid decoder plugin.
-
-%description -n gstreamer-xvid -l pl.UTF-8
-Wtyczka GStreamera dekodująca przy użyciu biblioteki xvid.
-
 %package -n gstreamer-zbar
 Summary:	GStreamer ZBar barcode scanner plugin
 Summary(pl.UTF-8):	Wtyczka GStreamera skanująca kody kreskowe
@@ -1337,7 +1237,6 @@ Wtyczka GStreamera skanująca kody kreskowe.
 	%{!?with_bluez:--disable-bluez} \
 	%{!?with_bs2b:--disable-bs2b} \
 	%{!?with_gnustep:--disable-cocoa} \
-	%{!?with_daala:--disable-daala} \
 	%{!?with_dts:--disable-dts} \
 	%{!?with_egl:--disable-egl} \
 	%{!?with_examples:--disable-examples} \
@@ -1347,7 +1246,6 @@ Wtyczka GStreamera skanująca kody kreskowe.
 	%{!?with_ladspa:--disable-ladspa} \
 	%{!?with_libde265:--disable-libde265} \
 	%{!?with_mms:--disable-libmms} \
-	%{!?with_libvisual:--disable-libvisual} \
 	%{!?with_mjpegtools:--disable-mpeg2enc} \
 	%{!?with_musepack:--disable-musepack} \
 	%{!?with_neon:--disable-neon} \
@@ -1355,9 +1253,6 @@ Wtyczka GStreamera skanująca kody kreskowe.
 	%{!?with_opencv:--disable-opencv} \
 	%{!?with_openh264:--disable-openh264} \
 	%{!?with_openni2:--disable-openni2} \
-	%{!?with_sdl:--disable-sdl} \
-	%{!?with_sdl:--disable-sdltest} \
-	%{!?with_spc:--disable-spc} \
 	%{!?with_zvbi:--disable-teletextdec} \
 	%{!?with_tinyalsa:--disable-tinyalsa} \
 	%{!?with_uvch264:--disable-uvch264} \
@@ -1365,7 +1260,6 @@ Wtyczka GStreamera skanująca kody kreskowe.
 	%{!?with_vulkan:--disable-vulkan} \
 	%{!?with_wayland:--disable-wayland} \
 	%{!?with_x265:--disable-x265} \
-	%{!?with_xvid:--disable-xvid} \
 	%{!?with_yadif:--disable-yadif} \
 	--disable-silent-rules \
 	--disable-static \
@@ -1583,12 +1477,6 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %attr(755,root,root) %{gstlibdir}/libgstspeed.so
 
-%if %{with nas}
-%files -n gstreamer-audiosink-nas
-%defattr(644,root,root,755)
-%attr(755,root,root) %{gstlibdir}/libgstnassink.so
-%endif
-
 %if %{with tinyalsa}
 %files -n gstreamer-audiosink-tinyalsa
 %defattr(644,root,root,755)
@@ -1620,12 +1508,6 @@ rm -rf $RPM_BUILD_ROOT
 %files -n gstreamer-curl
 %defattr(644,root,root,755)
 %attr(755,root,root) %{gstlibdir}/libgstcurl.so
-
-%if %{with daala}
-%files -n gstreamer-daala
-%defattr(644,root,root,755)
-%attr(755,root,root) %{gstlibdir}/libgstdaala.so
-%endif
 
 %if %{with dc1394}
 %files -n gstreamer-dc1394
@@ -1838,12 +1720,6 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %attr(755,root,root) %{gstlibdir}/libgstspandsp.so
 
-%if %{with spc}
-%files -n gstreamer-spc
-%defattr(644,root,root,755)
-%attr(755,root,root) %{gstlibdir}/libgstspc.so
-%endif
-
 %files -n gstreamer-srt
 %defattr(644,root,root,755)
 %attr(755,root,root) %{gstlibdir}/libgstsrt.so
@@ -1858,12 +1734,6 @@ rm -rf $RPM_BUILD_ROOT
 %files -n gstreamer-teletextdec
 %defattr(644,root,root,755)
 %attr(755,root,root) %{gstlibdir}/libgstteletext.so
-%endif
-
-%if %{with timidity}
-%files -n gstreamer-timidity
-%defattr(644,root,root,755)
-%attr(755,root,root) %{gstlibdir}/libgsttimidity.so
 %endif
 
 %files -n gstreamer-ttml
@@ -1886,12 +1756,6 @@ rm -rf $RPM_BUILD_ROOT
 %files -n gstreamer-videosink-directfb
 %defattr(644,root,root,755)
 %attr(755,root,root) %{gstlibdir}/libgstdfbvideosink.so
-%endif
-
-%if %{with sdl}
-%files -n gstreamer-videosink-sdl
-%defattr(644,root,root,755)
-%attr(755,root,root) %{gstlibdir}/libgstsdl.so
 %endif
 
 %if %{with wayland}
@@ -1938,12 +1802,6 @@ rm -rf $RPM_BUILD_ROOT
 %files -n gstreamer-x265
 %defattr(644,root,root,755)
 %attr(755,root,root) %{gstlibdir}/libgstx265.so
-%endif
-
-%if %{with xvid}
-%files -n gstreamer-xvid
-%defattr(644,root,root,755)
-%attr(755,root,root) %{gstlibdir}/libgstxvid.so
 %endif
 
 %files -n gstreamer-zbar
