@@ -61,22 +61,20 @@
 
 %define		gstname		gst-plugins-bad
 %define		gstmver		1.0
-%define		gst_ver		1.16.2
-%define		gstpb_ver	1.16.2
+%define		gst_ver		1.16.3
+%define		gstpb_ver	1.16.3
 Summary:	Bad GStreamer Streaming-media framework plugins
 Summary(pl.UTF-8):	Złe wtyczki do środowiska obróbki strumieni GStreamer
 Name:		gstreamer-plugins-bad
-Version:	1.16.2
-Release:	5
+Version:	1.16.3
+Release:	1
 License:	LGPL v2+
 Group:		Libraries
 Source0:	https://gstreamer.freedesktop.org/src/gst-plugins-bad/%{gstname}-%{version}.tar.xz
-# Source0-md5:	ccc7404230afddec723bbdb63c89feec
+# Source0-md5:	8969ea1aec3411c13d0e7dd27ccaaef1
 Patch0:		%{name}-libdts.patch
 Patch1:		%{name}-mfx.patch
 Patch2:		%{name}-neon.patch
-Patch3:		gstreamer-make.patch
-Patch4:		%{name}-no-common.patch
 URL:		https://gstreamer.freedesktop.org/
 BuildRequires:	autoconf >= 2.69
 BuildRequires:	automake >= 1:1.14
@@ -88,7 +86,6 @@ BuildRequires:	gstreamer-devel >= %{gst_ver}
 BuildRequires:	gstreamer-gl-devel >= %{gst_ver}
 BuildRequires:	gstreamer-plugins-base-devel >= %{gstpb_ver}
 BuildRequires:	gtk-doc >= 1.12
-BuildRequires:	libnice-devel >= 0.1.14
 BuildRequires:	libtool >= 2:2.2.6
 BuildRequires:	orc-devel >= 0.4.17
 BuildRequires:	pkgconfig >= 1:0.9.0
@@ -134,6 +131,7 @@ BuildRequires:	gnustep-gui-devel
 %endif
 BuildRequires:	graphene-devel >= 1.4.0
 %{?with_ladspa:BuildRequires:	ladspa-devel >= 1.12}
+BuildRequires:	lcms2-devel >= 2.7
 BuildRequires:	libass-devel >= 0.10.2
 %{?with_bs2b:BuildRequires:	libbs2b-devel >= 3.1.0}
 %{?with_chromaprint:BuildRequires:	libchromaprint-devel}
@@ -148,11 +146,10 @@ BuildRequires:	libexif-devel >= 1:0.6.16
 BuildRequires:	libiptcdata-devel >= 1.0.2
 BuildRequires:	libjpeg-devel
 %{?with_kate:BuildRequires:	libkate-devel >= 0.1.7}
-BuildRequires:	lcms2-devel >= 2.7
 BuildRequires:	liblrdf-devel
 %{?with_mms:BuildRequires:	libmms-devel >= 0.4}
 BuildRequires:	libmodplug-devel
-%{?with_musepack:BuildRequires:	musepack-devel}
+BuildRequires:	libnice-devel >= 0.1.14
 %{?with_ofa:BuildRequires:	libofa-devel >= 0.9.3}
 BuildRequires:	libopenmpt-devel
 %{?with_spc:BuildRequires:	libopenspc-devel >= 0.3.99}
@@ -181,6 +178,7 @@ BuildRequires:	libxml2-devel >= 1:2.9.2
 %{?with_lv2:BuildRequires:	lilv-devel >= 0.22}
 %{?with_mfx:BuildRequires:	mfx_dispatch-devel}
 %{?with_mjpegtools:BuildRequires:	mjpegtools-devel >= 2.0.0}
+%{?with_musepack:BuildRequires:	musepack-devel}
 %{?with_nas:BuildRequires:	nas-devel}
 %{?with_neon:BuildRequires:	neon-devel >= 0.27.0}
 # for hls, could also use libgcrypt>=1.2.0 or openssl
@@ -197,7 +195,6 @@ BuildRequires:	openssl-devel >= 1.0.1
 BuildRequires:	opus-devel >= 0.9.4
 BuildRequires:	pango-devel >= 1:1.22.0
 %{?with_sbc:BuildRequires:	sbc-devel >= 1.0}
-BuildRequires:	schroedinger-devel >= 1.0.10
 BuildRequires:	soundtouch-devel >= 1.4
 BuildRequires:	spandsp-devel >= 1:0.0.6
 BuildRequires:	srt-devel
@@ -223,10 +220,10 @@ Requires:	gstreamer >= %{gst_ver}
 Requires:	gstreamer-plugins-base >= %{gstpb_ver}
 Requires:	libxml2 >= 1:2.8
 Requires:	orc >= 0.4.17
-Obsoletes:	gstreamer-cdaudio
-Obsoletes:	gstreamer-quicktime
-Obsoletes:	gstreamer-schroedinger
-Obsoletes:	gstreamer-vcd
+Obsoletes:	gstreamer-cdaudio < 1.0
+Obsoletes:	gstreamer-quicktime < 0.10
+Obsoletes:	gstreamer-schroedinger < 1.14
+Obsoletes:	gstreamer-vcd < 0.10
 Conflicts:	openwebrtc < 0.3.0-2
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -313,7 +310,7 @@ Summary(pl.UTF-8):	Złe wtyczki efektów dźwiękowych dla GStreamera
 Group:		Libraries
 Requires:	gstreamer >= %{gst_ver}
 Requires:	gstreamer-plugins-base >= %{gstpb_ver}
-Obsoletes:	gstreamer-audio-effects
+Obsoletes:	gstreamer-audio-effects < 0.10
 
 %description -n gstreamer-audio-effects-bad
 Bad GStreamer audio effects plugins.
@@ -328,7 +325,7 @@ Group:		Libraries
 Requires:	gstreamer >= %{gst_ver}
 Requires:	gstreamer-plugins-base >= %{gstpb_ver}
 Provides:	gstreamer-audiosink = %{version}
-Obsoletes:	gstreamer-nas
+Obsoletes:	gstreamer-nas < 0.10
 
 %description -n gstreamer-audiosink-nas
 GStreamer NAS audio output plugin.
@@ -388,7 +385,7 @@ Group:		Libraries
 Requires:	bluez-libs >= 5.0
 Requires:	gstreamer >= %{gst_ver}
 Requires:	gstreamer-plugins-base >= %{gstpb_ver}
-Obsoletes:	gstreamer-bluetooth
+Obsoletes:	gstreamer-bluetooth < 1.2
 
 %description -n gstreamer-bluez
 GStreamer plugin for Bluez-based bluetooth support.
@@ -541,7 +538,7 @@ Summary(pl.UTF-8):	Wtyczka GStreamera dekodująca dźwięk GME
 Group:		Libraries
 Requires:	game-music-emu >= 0.5.6
 Requires:	gstreamer >= %{gst_ver}
-Obsoletes:	gstreamer-nsf
+Obsoletes:	gstreamer-nsf < 1.6
 Obsoletes:	gstreamer-spc < 1.16.0
 
 %description -n gstreamer-gme
@@ -850,7 +847,7 @@ Summary(pl.UTF-8):	Wtyczka OpenJPEG dla GStreamera
 Group:		Libraries
 Requires:	gstreamer >= %{gst_ver}
 Requires:	gstreamer-plugins-base >= %{gstpb_ver}
-Obsoletes:	gstreamer-jasper
+Obsoletes:	gstreamer-jasper < 1.0
 
 %description -n gstreamer-openjpeg
 GStreamer OpenJPEG plugin - OpenJPEG-based JPEG2000 decoder/encoder.
@@ -895,7 +892,7 @@ Group:		Libraries
 Requires:	gstreamer >= %{gst_ver}
 Requires:	gstreamer-plugins-base >= %{gstpb_ver}
 Requires:	opus >= 0.9.4
-Obsoletes:	gstreamer-celt
+Obsoletes:	gstreamer-celt < 1.2
 
 %description -n gstreamer-opusparse
 GStreamer OPUS audio decoder/encoder plugin.
@@ -1154,7 +1151,7 @@ Group:		Libraries
 Requires:	gstreamer >= %{gst_ver}
 Requires:	gstreamer-plugins-base >= %{gstpb_ver}
 Provides:	gstreamer-videosink = %{version}
-Obsoletes:	gstreamer-SDL
+Obsoletes:	gstreamer-SDL < 0.10
 
 %description -n gstreamer-videosink-sdl
 Plugin for sending output to the Simple Direct Media architecture.
@@ -1302,7 +1299,7 @@ Summary(pl.UTF-8):	Wtyczka GStreamera dekodująca przy użyciu biblioteki xvid
 Group:		Libraries
 Requires:	gstreamer >= %{gst_ver}
 Requires:	gstreamer-plugins-base >= %{gstpb_ver}
-Obsoletes:	gstreamer-divx
+Obsoletes:	gstreamer-divx < 1.0
 
 %description -n gstreamer-xvid
 GStreamer xvid decoder plugin.
@@ -1329,8 +1326,6 @@ Wtyczka GStreamera skanująca kody kreskowe.
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
-%patch3 -p1
-%patch4 -p1
 
 %build
 %{__libtoolize}
