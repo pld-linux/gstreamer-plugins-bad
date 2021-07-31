@@ -1,20 +1,20 @@
 # TODO:
+# - zxing (requires maintained https://github.com/nu-book/zxing-cpp fork)
 # - nvenc (BR: cuda >= 6.5, nvEncodeAPI.h >= 5.0, -lnvidia-encode)
-# - nvdec (BR: libnvcuvid)
+#   nvdec (BR: libnvcuvid)
+#   to replace removed vdpau
 # - OpenSLES (when available on pure Linux, not Android)
 #
 # Conditional build:
 %bcond_without	amr		# amrwbenc output plugin
+%bcond_without	apidocs		# API documentation
 %bcond_without	bs2b		# bs2b headphone stereo improvement plugin
 %bcond_without	bluez		# Bluez plugin
 %bcond_without	chromaprint	# chromaprint fingerprint plugin
 %bcond_without	dc1394		# dc1394 input plugin
 %bcond_without	directfb	# DirectFB videosink plugin
 %bcond_without	dts		# DTS audio decoder plugin
-%bcond_without	egl		# EGL support in GL output + wayland and wpe elements
 %bcond_without	faad		# faad audio decoder plugin
-%bcond_without	gles		# GLESv2 support in GL output
-%bcond_with	gnustep		# Cocoa support using GNUstep [unsupported since 1.4.5]
 %bcond_without	gsm		# gsm audio decoder/encoder plugin
 %bcond_without	kate		# Kate text streams plugin
 %bcond_without	ladspa		# LADSPA plugins bridge plugin
@@ -28,6 +28,7 @@
 %bcond_without	ofa		# OFA fingerprint plugin
 %bcond_without	openal		# OpenAL audiosink plugin
 %bcond_with	opencv		# OpenCV effects plugin
+%bcond_without	opengl		# OpenGL integration (in various plugins)
 %bcond_without	openexr		# OpenEXR EXR decoder plugin
 %bcond_without	openh264	# OpenH264 encoder/decoder
 %bcond_without	openni2		# OpenNI2 device source plugin
@@ -37,7 +38,6 @@
 %bcond_without	srtp		# SRTP decoder/encoder plugin
 %bcond_without	tinyalsa	# ALSA audiosink using tinyalsa library
 %bcond_without	uvch264		# uvch264 cameras plugin
-%bcond_without	vdpau		# VDPAU decoder/videopostprocess/videosink plugin
 %bcond_without	vulkan		# Vulkan videosink/upload plugin
 %bcond_without	wayland		# Wayland videosink plugin, Wayland EGL support, Wayland support in Vulkan plugin
 %bcond_without	wpe		# WebKit based web browser plugin
@@ -47,44 +47,41 @@
 %bcond_without	zvbi		# zvbi-based teletext plugin
 %bcond_without	examples	# examples build
 
-%if %{without egl}
+%if %{without opengl}
 %undefine with_wayland
 %undefine with_wpe
 %endif
 
 %define		gstname		gst-plugins-bad
 %define		gstmver		1.0
-%define		gst_ver		1.16.3
-%define		gstpb_ver	1.16.3
+%define		gst_ver		1.18.4
+%define		gstpb_ver	1.18.4
 Summary:	Bad GStreamer Streaming-media framework plugins
 Summary(pl.UTF-8):	Złe wtyczki do środowiska obróbki strumieni GStreamer
 Name:		gstreamer-plugins-bad
-Version:	1.16.3
-Release:	7
+Version:	1.18.4
+Release:	1
 License:	LGPL v2+
 Group:		Libraries
 Source0:	https://gstreamer.freedesktop.org/src/gst-plugins-bad/%{gstname}-%{version}.tar.xz
-# Source0-md5:	8969ea1aec3411c13d0e7dd27ccaaef1
-Patch0:		%{name}-libdts.patch
-Patch1:		%{name}-mfx.patch
-Patch2:		%{name}-neon.patch
-Patch3:		musepack.patch
+# Source0-md5:	8a73b497613a9f778e880b8a9eb9c1a3
+Patch0:		%{name}-musepack.patch
 URL:		https://gstreamer.freedesktop.org/
-BuildRequires:	autoconf >= 2.69
-BuildRequires:	automake >= 1:1.14
 BuildRequires:	docbook-dtd412-xml
 BuildRequires:	gettext-tools >= 0.17
-BuildRequires:	glib2-devel >= 1:2.40.0
+BuildRequires:	glib2-devel >= 1:2.44.0
 BuildRequires:	gobject-introspection-devel >= 1.31.1
 BuildRequires:	gstreamer-devel >= %{gst_ver}
-BuildRequires:	gstreamer-gl-devel >= %{gst_ver}
+BuildRequires:	gstreamer-gl-devel >= %{gstpb_ver}
 BuildRequires:	gstreamer-plugins-base-devel >= %{gstpb_ver}
-BuildRequires:	gtk-doc >= 1.12
-BuildRequires:	libtool >= 2:2.2.6
+%{?with_apidocs:BuildRequires:	hotdoc >= 0.11.0}
+BuildRequires:	meson >= 0.49
+BuildRequires:	ninja >= 1.5
 BuildRequires:	orc-devel >= 0.4.17
 BuildRequires:	pkgconfig >= 1:0.9.0
-BuildRequires:	python >= 2.1
-BuildRequires:	rpmbuild(macros) >= 1.98
+BuildRequires:	python3 >= 1:3.2
+BuildRequires:	rpm-build >= 4.6
+BuildRequires:	rpmbuild(macros) >= 1.736
 BuildRequires:	xorg-lib-libX11-devel
 %if %{with examples}
 BuildRequires:	SDL-devel >= 1.2.0
@@ -96,10 +93,10 @@ BuildRequires:	xorg-lib-libXcomposite-devel
 ## plugins
 ##
 %{?with_directfb:BuildRequires:	DirectFB-devel >= 1:0.9.24}
-%{?with_egl:BuildRequires:	EGL-devel}
+%{?with_opengl:BuildRequires:	EGL-devel}
 %{?with_openal:BuildRequires:	OpenAL-devel >= 1.14}
 %{?with_openexr:BuildRequires:	OpenEXR-devel}
-%{?with_gles:BuildRequires:	OpenGLESv2-devel}
+%{?with_opengl:BuildRequires:	OpenGLESv2-devel}
 %{?with_openni2:BuildRequires:	OpenNI2-devel >= 0.26}
 %{?with_vulkan:BuildRequires:	Vulkan-Loader-devel}
 BuildRequires:	alsa-lib-devel >= 0.9.1
@@ -117,10 +114,6 @@ BuildRequires:	flite-devel
 BuildRequires:	fluidsynth-devel >= 1.0
 BuildRequires:	game-music-emu-devel >= 0.5.6
 BuildRequires:	gnutls-devel >= 2.11.3
-%if %{with gnustep}
-BuildRequires:	gnustep-base-devel
-BuildRequires:	gnustep-gui-devel
-%endif
 BuildRequires:	graphene-devel >= 1.4.0
 %{?with_ladspa:BuildRequires:	ladspa-devel >= 1.12}
 BuildRequires:	lcms2-devel >= 2.7
@@ -157,8 +150,7 @@ BuildRequires:	libtheora-devel >= 1.0
 %{?with_kate:BuildRequires:	libtiger-devel >= 0.3.2}
 %{?with_uvch264:BuildRequires:	libusb-devel >= 1.0}
 BuildRequires:	libusrsctp-devel
-%{?with_mfx:BuildRequires:	libva-drm-devel}
-%{?with_vdpau:BuildRequires:	libvdpau-devel}
+BuildRequires:	libva-drm-devel >= 1.6
 BuildRequires:	libvpx-devel
 BuildRequires:	libwebp-devel >= 0.2.1
 %{?with_x265:BuildRequires:	libx265-devel}
@@ -187,7 +179,7 @@ BuildRequires:	soundtouch-devel >= 1.4
 BuildRequires:	spandsp-devel >= 1:0.0.6
 BuildRequires:	srt-devel
 %{?with_tinyalsa:BuildRequires:	tinyalsa-devel}
-%{?with_uvch264:BuildRequires:	udev-glib-devel}
+BuildRequires:	udev-glib-devel
 BuildRequires:	vo-aacenc-devel >= 0.1.0
 %{?with_amr:BuildRequires:	vo-amrwbenc-devel >= 0.1.0}
 # wayland-client, wayland-cursor, wayland-scanner
@@ -202,7 +194,7 @@ BuildRequires:	xorg-lib-libX11-devel
 %{?with_wpe:BuildRequires:	xorg-lib-libxkbcommon-devel}
 BuildRequires:	zbar-devel >= 0.9
 %{?with_zvbi:BuildRequires:	zvbi-devel >= 0.2}
-Requires:	glib2 >= 1:2.40.0
+Requires:	glib2 >= 1:2.44.0
 Requires:	gstreamer >= %{gst_ver}
 Requires:	gstreamer-plugins-base >= %{gstpb_ver}
 Requires:	libxml2 >= 1:2.8
@@ -211,6 +203,7 @@ Obsoletes:	gstreamer-cdaudio < 1.0
 Obsoletes:	gstreamer-quicktime < 0.10
 Obsoletes:	gstreamer-schroedinger < 1.14
 Obsoletes:	gstreamer-vcd < 0.10
+Obsoletes:	gstreamer-vdpau < 1.18
 Conflicts:	openwebrtc < 0.3.0-2
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -245,6 +238,59 @@ Header files and API documentation for gstapp library.
 
 %description devel -l pl.UTF-8
 Pliki nagłówkowe i dokumentacja API biblioteki gstapp.
+
+%package apidocs
+Summary:	Bad GStreamer streaming-media framework plugins API documentation
+Summary(pl.UTF-8):	Dokumentacja API złych wtyczek środowiska obróbki strumieni GStreamer
+Group:		Documentation
+BuildArch:	noarch
+
+%description apidocs
+Bad GStreamer streaming-media framework plugins API documentation.
+
+%description apidocs -l pl.UTF-8
+Dokumentacja API złych wtyczek środowiska obróbki strumieni
+GStreamer.
+
+%package -n gstreamer-transcoder
+Summary:	High level API to do media transcoding with GStreamer
+Summary(pl.UTF-8):	Wysokopoziomowe API do przekodowywania multimediów przy użyciu GSteamera
+Group:		Libraries
+Requires:	gstreamer >= %{gst_ver}
+Requires:	gstreamer-plugins-base >= %{gstpb_ver}
+
+%description -n gstreamer-transcoder
+High level API to do media transcoding with GStreamer.
+
+%description -n gstreamer-transcoder -l pl.UTF-8
+Wysokopoziomowe API do przekodowywania multimediów przy użyciu
+GSteamera.
+
+%package -n gstreamer-transcoder-devel
+Summary:	Header files for gst-transcoder library
+Summary(pl.UTF-8):	Pliki nagłówkowe biblioteki gst-transcoder
+Group:		Development/Libraries
+Requires:	gstreamer-transcoder = %{version}-%{release}
+Requires:	gstreamer-devel >= %{gst_ver}
+Requires:	gstreamer-plugins-base-devel >= %{gstpb_ver}
+
+%description -n gstreamer-transcoder-devel
+Header files for gst-transcoder library.
+
+%description -n gstreamer-transcoder-devel -l pl.UTF-8
+Pliki nagłówkowe biblioteki gst-transcoder.
+
+%package -n gstreamer-transcoder-apidocs
+Summary:	API documentation for gst-transcoder library
+Summary(pl.UTF-8):	Dokumentacja API biblioteki gst-transcoder
+Group:		Documentation
+BuildArch:	noarch
+
+%description -n gstreamer-transcoder-apidocs
+API documentation for gst-transcoder library.
+
+%description -n gstreamer-transcoder-apidocs -l pl.UTF-8
+Dokumentacja API biblioteki gst-transcoder.
 
 ## Plugins ##
 
@@ -510,7 +556,7 @@ Wtyczka GStreamera dekodująca dźwięk GME.
 Summary:	GStreamer GSettings plugin
 Summary(pl.UTF-8):	Wtyczka GSettings dla GStreamera
 Group:		Libraries
-Requires:	glib2 >= 1:2.40.0
+Requires:	glib2 >= 1:2.44.0
 Requires:	gstreamer >= %{gst_ver}
 
 %description -n gstreamer-gsettings
@@ -1044,23 +1090,20 @@ GStreamer plugin for UVC compliant H264 encoding cameras.
 %description -n gstreamer-uvch264 -l pl.UTF-8
 Wtyczka GStreamera do kamer kodujących w H264 zgodnych z UVC.
 
-%package -n gstreamer-vdpau
-Summary:	GStreamer VDPAU plugin
-Summary(pl.UTF-8):	Wtyczka GStreamera VDPAU
+%package -n gstreamer-va
+Summary:	GStreamer VA-API codecs plugin
+Summary(pl.UTF-8):	Wtyczka kodeków VA-API dla GSteamera
 Group:		Libraries
-# for libgstcodecparsers
 Requires:	%{name} = %{version}-%{release}
 Requires:	gstreamer >= %{gst_ver}
 Requires:	gstreamer-plugins-base >= %{gstpb_ver}
-# videosink commented out in gstvdpau.c?
-#Provides:	gstreamer-videosink = %{version}
+Requires:	libva-drm >= 1.6
 
-%description -n gstreamer-vdpau
-GStreamer VDPAU plugin. It currently implements MPEG decoding.
+%description -n gstreamer-va
+GStreamer VA-API codecs plugin.
 
-%description -n gstreamer-vdpau -l pl.UTF-8
-Wtyczka GStreamera VDPAU. Obecnie ma zaimplementowane dekodowanie
-obrazu MPEG.
+%description -n gstreamer-va -l pl.UTF-8
+Wtyczka kodeków VA-API dla GSteamera.
 
 %package -n gstreamer-videosink-directfb
 Summary:	GStreamer DirectFB output plugin
@@ -1225,64 +1268,64 @@ Wtyczka GStreamera skanująca kody kreskowe.
 %prep
 %setup -q -n %{gstname}-%{version}
 %patch0 -p1
-%patch1 -p1
-%patch2 -p1
-%patch3 -p1
 
 %build
-%{__libtoolize}
-%{__aclocal} -I m4 -I common/m4
-%{__autoconf}
-%{__autoheader}
-%{__automake}
-%configure \
-	%{!?with_bluez:--disable-bluez} \
-	%{!?with_bs2b:--disable-bs2b} \
-	%{!?with_gnustep:--disable-cocoa} \
-	%{!?with_dts:--disable-dts} \
-	%{!?with_egl:--disable-egl} \
-	%{!?with_examples:--disable-examples} \
-	%{!?with_faad:--disable-faad} \
-	%{!?with_gles:--disable-gles2} \
-	%{!?with_gsm:--disable-gsm} \
-	%{!?with_ladspa:--disable-ladspa} \
-	%{!?with_libde265:--disable-libde265} \
-	%{!?with_mms:--disable-libmms} \
-	%{!?with_mjpegtools:--disable-mpeg2enc} \
-	%{!?with_musepack:--disable-musepack} \
-	%{!?with_neon:--disable-neon} \
-	%{!?with_ofa:--disable-ofa} \
-	%{!?with_opencv:--disable-opencv} \
-	%{!?with_openh264:--disable-openh264} \
-	%{!?with_openni2:--disable-openni2} \
-	%{!?with_zvbi:--disable-teletextdec} \
-	%{!?with_tinyalsa:--disable-tinyalsa} \
-	%{!?with_uvch264:--disable-uvch264} \
-	%{!?with_amr:--disable-voamrwbenc} \
-	%{!?with_vulkan:--disable-vulkan} \
-	%{!?with_wayland:--disable-wayland} \
-	%{!?with_x265:--disable-x265} \
-	%{!?with_yadif:--disable-yadif} \
-	--disable-silent-rules \
-	--disable-static \
-	--enable-experimental \
-	--enable-gtk-doc \
-	--with-egl-window-system=x11 \
-	--with-gtk=3.0 \
-	--with-html-dir=%{_gtkdocdir}
+%meson build \
+	--default-library=shared \
+	%{!?with_bluez:-Dbluez=disabled} \
+	%{!?with_bs2b:-Dbs2b=disabled} \
+	%{!?with_apidocs:-Ddoc=disabled} \
+	%{!?with_dts:-Ddts=disabled} \
+	%{!?with_examples:-Dexamples=disabled} \
+	%{!?with_faad:-Dfaad=disabled} \
+	%{!?with_opengl:-Dgl=disabled} \
+	%{!?with_gsm:-Dgsm=disabled} \
+	%{!?with_ladspa:-Dladspa=disabled} \
+	%{!?with_libde265:-Dlibde265=disabled} \
+	%{!?with_mms:-Dlibmms=disabled} \
+	%{!?with_mjpegtools:-Dmpeg2enc=disabled} \
+	%{!?with_musepack:-Dmusepack=disabled} \
+	%{!?with_neon:-Dneon=disabled} \
+	%{!?with_ofa:-Dofa=disabled} \
+	%{!?with_openal:-Dopenal=disabled} \
+	%{!?with_opencv:-Dopencv=disabled} \
+	%{!?with_openh264:-Dopenh264=disabled} \
+	%{!?with_openni2:-Dopenni2=disabled} \
+	%{!?with_zvbi:-Dteletext=disabled} \
+	%{!?with_tinyalsa:-Dtinyalsa=disabled} \
+	%{!?with_uvch264:-Duvch264=disabled} \
+	%{!?with_amr:-Dvoamrwbenc=disabled} \
+	%{!?with_vulkan:-Dvulkan=disabled} \
+	%{!?with_wayland:-Dwayland=disabled} \
+	%{!?with_x265:-Dx265=disabled} \
+	%{!?with_yadif:-Dyadif=disabled} \
+	-Dzxing=disabled
 
-%{__make} -j1
+%ninja_build -C build
+
+%if %{with apidocs}
+cd build/docs
+# hotdoc crashes on these:
+#   File "/usr/lib/python3.8/site-packages/hotdoc/extensions/gi/node_cache.py", line 101, in __get_parent_link_recurse
+#    ctype_name = ALL_GI_TYPES[gi_name]
+# KeyError: 'GstVulkan.VulkanDisplay'
+# An unknown error happened while building the documentation and hotdoc cannot recover from it. Please report a bug with this error message and the steps to reproduce it
+%{__rm} vulkan-wayland-doc.json vulkan-xcb-doc.json
+
+for config in *-doc.json ; do
+	LC_ALL=C.UTF-8 hotdoc run --conf-file "$config"
+done
+%endif
 
 %install
 rm -rf $RPM_BUILD_ROOT
 
-%{__make} install \
-	DESTDIR=$RPM_BUILD_ROOT
+%ninja_install -C build
 
-# We don't need plugins' *.la files
-%{__rm} $RPM_BUILD_ROOT%{gstlibdir}/*.la
-# obsoleted by pkg-config
-%{__rm} $RPM_BUILD_ROOT%{_libdir}/libgst*.la
+%if %{with apidocs}
+install -d $RPM_BUILD_ROOT%{_docdir}/gstreamer-%{gstmver}
+cp -pr build/docs/*-doc $RPM_BUILD_ROOT%{_docdir}/gstreamer-%{gstmver}
+%endif
 
 %find_lang %{gstname}-%{gstmver}
 
@@ -1292,12 +1335,16 @@ rm -rf $RPM_BUILD_ROOT
 %post	-p /sbin/ldconfig
 %postun	-p /sbin/ldconfig
 
+%post	-n gstreamer-transcoder -p /sbin/ldconfig
+%postun	-n gstreamer-transcoder -p /sbin/ldconfig
+
 %post	-n gstreamer-opencv-libs -p /sbin/ldconfig
 %postun	-n gstreamer-opencv-libs -p /sbin/ldconfig
 
 %files -f %{gstname}-%{gstmver}.lang
 %defattr(644,root,root,755)
 %doc AUTHORS ChangeLog NEWS README RELEASE
+%attr(755,root,root) %{_bindir}/playout
 %attr(755,root,root) %{_libdir}/libgstadaptivedemux-%{gstmver}.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libgstadaptivedemux-%{gstmver}.so.0
 %attr(755,root,root) %{_libdir}/libgstbadaudio-%{gstmver}.so.*.*.*
@@ -1306,6 +1353,8 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %ghost %{_libdir}/libgstbasecamerabinsrc-%{gstmver}.so.0
 %attr(755,root,root) %{_libdir}/libgstcodecparsers-%{gstmver}.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libgstcodecparsers-%{gstmver}.so.0
+%attr(755,root,root) %{_libdir}/libgstcodecs-%{gstmver}.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libgstcodecs-%{gstmver}.so.0
 %attr(755,root,root) %{_libdir}/libgstinsertbin-%{gstmver}.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libgstinsertbin-%{gstmver}.so.0
 %attr(755,root,root) %{_libdir}/libgstisoff-%{gstmver}.so.*.*.*
@@ -1320,13 +1369,20 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %ghost %{_libdir}/libgstsctp-%{gstmver}.so.0
 %attr(755,root,root) %{_libdir}/libgsturidownloader-%{gstmver}.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libgsturidownloader-%{gstmver}.so.0
+%attr(755,root,root) %{_libdir}/libgstvulkan-%{gstmver}.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libgstvulkan-%{gstmver}.so.0
 %attr(755,root,root) %{_libdir}/libgstwayland-%{gstmver}.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libgstwayland-%{gstmver}.so.0
 %attr(755,root,root) %{_libdir}/libgstwebrtc-%{gstmver}.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libgstwebrtc-%{gstmver}.so.0
+%{_libdir}/girepository-1.0/GstBadAudio-1.0.typelib
+%{_libdir}/girepository-1.0/GstCodecs-1.0.typelib
 %{_libdir}/girepository-1.0/GstInsertBin-1.0.typelib
 %{_libdir}/girepository-1.0/GstMpegts-1.0.typelib
 %{_libdir}/girepository-1.0/GstPlayer-1.0.typelib
+%{_libdir}/girepository-1.0/GstVulkan-1.0.typelib
+%{_libdir}/girepository-1.0/GstVulkanWayland-1.0.typelib
+%{_libdir}/girepository-1.0/GstVulkanXCB-1.0.typelib
 %{_libdir}/girepository-1.0/GstWebRTC-1.0.typelib
 %attr(755,root,root) %{gstlibdir}/libgstaccurip.so
 %attr(755,root,root) %{gstlibdir}/libgstadpcmdec.so
@@ -1345,10 +1401,12 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{gstlibdir}/libgstcoloreffects.so
 # R: lcms2
 %attr(755,root,root) %{gstlibdir}/libgstcolormanagement.so
-%attr(755,root,root) %{gstlibdir}/libgstdashdemux.so
+# R: libxml2
+%attr(755,root,root) %{gstlibdir}/libgstdash.so
 %attr(755,root,root) %{gstlibdir}/libgstdebugutilsbad.so
 %attr(755,root,root) %{gstlibdir}/libgstdecklink.so
 %attr(755,root,root) %{gstlibdir}/libgstdvb.so
+%attr(755,root,root) %{gstlibdir}/libgstdvbsubenc.so
 %attr(755,root,root) %{gstlibdir}/libgstdvbsuboverlay.so
 %attr(755,root,root) %{gstlibdir}/libgstdvdspu.so
 %attr(755,root,root) %{gstlibdir}/libgstfaceoverlay.so
@@ -1371,6 +1429,8 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{gstlibdir}/libgstjp2kdecimator.so
 %attr(755,root,root) %{gstlibdir}/libgstjpegformat.so
 %attr(755,root,root) %{gstlibdir}/libgstlegacyrawparse.so
+# R: libmicrodns
+%attr(755,root,root) %{gstlibdir}/libgstmicrodns.so
 %attr(755,root,root) %{gstlibdir}/libgstmidi.so
 # R: libmodplug
 %attr(755,root,root) %{gstlibdir}/libgstmodplug.so
@@ -1380,11 +1440,15 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{gstlibdir}/libgstmpegtsmux.so
 %attr(755,root,root) %{gstlibdir}/libgstmxf.so
 %attr(755,root,root) %{gstlibdir}/libgstnetsim.so
+%attr(755,root,root) %{gstlibdir}/libgstnvcodec.so
 %attr(755,root,root) %{gstlibdir}/libgstpcapparse.so
 %attr(755,root,root) %{gstlibdir}/libgstpnm.so
 %attr(755,root,root) %{gstlibdir}/libgstproxy.so
 %attr(755,root,root) %{gstlibdir}/libgstremovesilence.so
 %attr(755,root,root) %{gstlibdir}/libgstrfbsrc.so
+%attr(755,root,root) %{gstlibdir}/libgstrist.so
+%attr(755,root,root) %{gstlibdir}/libgstrtmp2.so
+%attr(755,root,root) %{gstlibdir}/libgstrtpmanagerbad.so
 %attr(755,root,root) %{gstlibdir}/libgstrtponvif.so
 %attr(755,root,root) %{gstlibdir}/libgstsdpelem.so
 %attr(755,root,root) %{gstlibdir}/libgstsegmentclip.so
@@ -1393,7 +1457,10 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{gstlibdir}/libgstsmooth.so
 %attr(755,root,root) %{gstlibdir}/libgstsmoothstreaming.so
 %attr(755,root,root) %{gstlibdir}/libgstsubenc.so
+%attr(755,root,root) %{gstlibdir}/libgstswitchbin.so
 %attr(755,root,root) %{gstlibdir}/libgsttimecode.so
+# R: libgudev
+%attr(755,root,root) %{gstlibdir}/libgstv4l2codecs.so
 %attr(755,root,root) %{gstlibdir}/libgstvideofiltersbad.so
 %attr(755,root,root) %{gstlibdir}/libgstvideoframe_audiolevel.so
 %attr(755,root,root) %{gstlibdir}/libgstvideoparsersbad.so
@@ -1401,11 +1468,8 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{gstlibdir}/libgstvmnc.so
 %attr(755,root,root) %{gstlibdir}/libgsty4mdec.so
 %{?with_yadif:%attr(755,root,root) %{gstlibdir}/libgstyadif.so}
-# dirs should belong to gstreamer or gstreamer-pb?
-%dir %{gstdatadir}
 %dir %{gstdatadir}/presets
 %{gstdatadir}/presets/GstFreeverb.prs
-%{_gtkdocdir}/gst-plugins-bad-plugins-%{gstmver}
 
 %files devel
 %defattr(644,root,root,755)
@@ -1413,6 +1477,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/libgstbadaudio-%{gstmver}.so
 %attr(755,root,root) %{_libdir}/libgstbasecamerabinsrc-%{gstmver}.so
 %attr(755,root,root) %{_libdir}/libgstcodecparsers-%{gstmver}.so
+%attr(755,root,root) %{_libdir}/libgstcodecs-%{gstmver}.so
 %attr(755,root,root) %{_libdir}/libgstinsertbin-%{gstmver}.so
 %attr(755,root,root) %{_libdir}/libgstisoff-%{gstmver}.so
 %attr(755,root,root) %{_libdir}/libgstmpegts-%{gstmver}.so
@@ -1420,6 +1485,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/libgstplayer-%{gstmver}.so
 %attr(755,root,root) %{_libdir}/libgstsctp-%{gstmver}.so
 %attr(755,root,root) %{_libdir}/libgsturidownloader-%{gstmver}.so
+%attr(755,root,root) %{_libdir}/libgstvulkan-%{gstmver}.so
 %attr(755,root,root) %{_libdir}/libgstwayland-%{gstmver}.so
 %attr(755,root,root) %{_libdir}/libgstwebrtc-%{gstmver}.so
 %{_includedir}/gstreamer-%{gstmver}/gst/audio/audio-bad-prelude.h
@@ -1434,20 +1500,230 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/gstreamer-%{gstmver}/gst/player
 %{_includedir}/gstreamer-%{gstmver}/gst/sctp
 %{_includedir}/gstreamer-%{gstmver}/gst/uridownloader
+%{_includedir}/gstreamer-%{gstmver}/gst/vulkan
 %{_includedir}/gstreamer-%{gstmver}/gst/webrtc
+%{_datadir}/gir-1.0/GstBadAudio-1.0.gir
+%{_datadir}/gir-1.0/GstCodecs-1.0.gir
 %{_datadir}/gir-1.0/GstInsertBin-1.0.gir
 %{_datadir}/gir-1.0/GstMpegts-1.0.gir
 %{_datadir}/gir-1.0/GstPlayer-1.0.gir
+%{_datadir}/gir-1.0/GstVulkan-1.0.gir
+%{_datadir}/gir-1.0/GstVulkanWayland-1.0.gir
+%{_datadir}/gir-1.0/GstVulkanXCB-1.0.gir
 %{_datadir}/gir-1.0/GstWebRTC-1.0.gir
+%{_pkgconfigdir}/gstreamer-bad-audio-%{gstmver}.pc
 %{_pkgconfigdir}/gstreamer-codecparsers-%{gstmver}.pc
 %{_pkgconfigdir}/gstreamer-insertbin-%{gstmver}.pc
 %{_pkgconfigdir}/gstreamer-mpegts-%{gstmver}.pc
-%{_pkgconfigdir}/gstreamer-plugins-bad-%{gstmver}.pc
-%{_pkgconfigdir}/gstreamer-bad-audio-%{gstmver}.pc
+%{_pkgconfigdir}/gstreamer-photography-%{gstmver}.pc
 %{_pkgconfigdir}/gstreamer-player-%{gstmver}.pc
+%{_pkgconfigdir}/gstreamer-plugins-bad-%{gstmver}.pc
 %{_pkgconfigdir}/gstreamer-sctp-%{gstmver}.pc
+%{_pkgconfigdir}/gstreamer-vulkan-%{gstmver}.pc
+%{_pkgconfigdir}/gstreamer-vulkan-wayland-%{gstmver}.pc
+%{_pkgconfigdir}/gstreamer-vulkan-xcb-%{gstmver}.pc
 %{_pkgconfigdir}/gstreamer-webrtc-%{gstmver}.pc
-%{_gtkdocdir}/gst-plugins-bad-libs-%{gstmver}
+
+%if %{with apidocs}
+%files apidocs
+%defattr(644,root,root,755)
+%{_docdir}/gstreamer-%{gstmver}/accurip-doc
+%{_docdir}/gstreamer-%{gstmver}/adpcmdec-doc
+%{_docdir}/gstreamer-%{gstmver}/adpcmenc-doc
+%{_docdir}/gstreamer-%{gstmver}/aiff-doc
+%{_docdir}/gstreamer-%{gstmver}/aom-doc
+%{_docdir}/gstreamer-%{gstmver}/asfmux-doc
+%{_docdir}/gstreamer-%{gstmver}/assrender-doc
+%{_docdir}/gstreamer-%{gstmver}/audiobuffersplit-doc
+%{_docdir}/gstreamer-%{gstmver}/audiofxbad-doc
+%{_docdir}/gstreamer-%{gstmver}/audiolatency-doc
+%{_docdir}/gstreamer-%{gstmver}/audiomixmatrix-doc
+%{_docdir}/gstreamer-%{gstmver}/audiovisualizers-doc
+%{_docdir}/gstreamer-%{gstmver}/autoconvert-doc
+%{_docdir}/gstreamer-%{gstmver}/avtp-doc
+%{_docdir}/gstreamer-%{gstmver}/bad-audio-doc
+%{_docdir}/gstreamer-%{gstmver}/basecamerabinsrc-doc
+%{_docdir}/gstreamer-%{gstmver}/bayer-doc
+%{_docdir}/gstreamer-%{gstmver}/bluez-doc
+%{_docdir}/gstreamer-%{gstmver}/bs2b-doc
+%{_docdir}/gstreamer-%{gstmver}/bz2-doc
+%{_docdir}/gstreamer-%{gstmver}/camerabin-doc
+%{_docdir}/gstreamer-%{gstmver}/chromaprint-doc
+%{_docdir}/gstreamer-%{gstmver}/closedcaption-doc
+%{_docdir}/gstreamer-%{gstmver}/codecs-doc
+%{_docdir}/gstreamer-%{gstmver}/coloreffects-doc
+%{_docdir}/gstreamer-%{gstmver}/colormanagement-doc
+%{_docdir}/gstreamer-%{gstmver}/curl-doc
+%{_docdir}/gstreamer-%{gstmver}/d3d-doc
+%{_docdir}/gstreamer-%{gstmver}/d3d11-doc
+%{_docdir}/gstreamer-%{gstmver}/dash-doc
+%{_docdir}/gstreamer-%{gstmver}/dc1394-doc
+%{_docdir}/gstreamer-%{gstmver}/de265-doc
+%{_docdir}/gstreamer-%{gstmver}/debugutilsbad-doc
+%{_docdir}/gstreamer-%{gstmver}/decklink-doc
+%{_docdir}/gstreamer-%{gstmver}/directfb-doc
+%{_docdir}/gstreamer-%{gstmver}/directsoundsrc-doc
+%{_docdir}/gstreamer-%{gstmver}/dtls-doc
+%{_docdir}/gstreamer-%{gstmver}/dtsdec-doc
+%{_docdir}/gstreamer-%{gstmver}/dvb-doc
+%{_docdir}/gstreamer-%{gstmver}/dvbsubenc-doc
+%{_docdir}/gstreamer-%{gstmver}/dvbsuboverlay-doc
+%{_docdir}/gstreamer-%{gstmver}/dvdspu-doc
+%{_docdir}/gstreamer-%{gstmver}/faac-doc
+%{_docdir}/gstreamer-%{gstmver}/faad-doc
+%{_docdir}/gstreamer-%{gstmver}/faceoverlay-doc
+%{_docdir}/gstreamer-%{gstmver}/fbdevsink-doc
+%{_docdir}/gstreamer-%{gstmver}/fdkaac-doc
+%{_docdir}/gstreamer-%{gstmver}/festival-doc
+%{_docdir}/gstreamer-%{gstmver}/fieldanalysis-doc
+%{_docdir}/gstreamer-%{gstmver}/flite-doc
+%{_docdir}/gstreamer-%{gstmver}/fluidsynthmidi-doc
+%{_docdir}/gstreamer-%{gstmver}/freeverb-doc
+%{_docdir}/gstreamer-%{gstmver}/frei0r-doc
+%{_docdir}/gstreamer-%{gstmver}/gaudieffects-doc
+%{_docdir}/gstreamer-%{gstmver}/gdp-doc
+%{_docdir}/gstreamer-%{gstmver}/geometrictransform-doc
+%{_docdir}/gstreamer-%{gstmver}/gme-doc
+%{_docdir}/gstreamer-%{gstmver}/gsm-doc
+%{_docdir}/gstreamer-%{gstmver}/gst-plugins-bad-adaptivedemux-doc
+%{_docdir}/gstreamer-%{gstmver}/gst-plugins-bad-codecparsers-doc
+%{_docdir}/gstreamer-%{gstmver}/hls-doc
+%{_docdir}/gstreamer-%{gstmver}/id3tag-doc
+%{_docdir}/gstreamer-%{gstmver}/insertbin-doc
+%{_docdir}/gstreamer-%{gstmver}/inter-doc
+%{_docdir}/gstreamer-%{gstmver}/interlace-doc
+%{_docdir}/gstreamer-%{gstmver}/ipcpipeline-doc
+%{_docdir}/gstreamer-%{gstmver}/iqa-doc
+%{_docdir}/gstreamer-%{gstmver}/ivfparse-doc
+%{_docdir}/gstreamer-%{gstmver}/ivtc-doc
+%{_docdir}/gstreamer-%{gstmver}/jp2kdecimator-doc
+%{_docdir}/gstreamer-%{gstmver}/jpegformat-doc
+%{_docdir}/gstreamer-%{gstmver}/kate-doc
+%{_docdir}/gstreamer-%{gstmver}/kms-doc
+%{_docdir}/gstreamer-%{gstmver}/ladspa-doc
+%{_docdir}/gstreamer-%{gstmver}/legacyrawparse-doc
+%{_docdir}/gstreamer-%{gstmver}/lv2-doc
+%{_docdir}/gstreamer-%{gstmver}/mediafoundation-doc
+%{_docdir}/gstreamer-%{gstmver}/microdns-doc
+%{_docdir}/gstreamer-%{gstmver}/midi-doc
+%{_docdir}/gstreamer-%{gstmver}/mms-doc
+%{_docdir}/gstreamer-%{gstmver}/modplug-doc
+%{_docdir}/gstreamer-%{gstmver}/mpeg2enc-doc
+%{_docdir}/gstreamer-%{gstmver}/mpegpsdemux-doc
+%{_docdir}/gstreamer-%{gstmver}/mpegpsmux-doc
+%{_docdir}/gstreamer-%{gstmver}/mpegts-doc
+%{_docdir}/gstreamer-%{gstmver}/mpegtsdemux-doc
+%{_docdir}/gstreamer-%{gstmver}/mpegtsmux-doc
+%{_docdir}/gstreamer-%{gstmver}/mplex-doc
+%{_docdir}/gstreamer-%{gstmver}/musepack-doc
+%{_docdir}/gstreamer-%{gstmver}/mxf-doc
+%{_docdir}/gstreamer-%{gstmver}/neonhttpsrc-doc
+%{_docdir}/gstreamer-%{gstmver}/netsim-doc
+%{_docdir}/gstreamer-%{gstmver}/nvcodec-doc
+%{_docdir}/gstreamer-%{gstmver}/ofa-doc
+%{_docdir}/gstreamer-%{gstmver}/openal-doc
+%{_docdir}/gstreamer-%{gstmver}/opencv-doc
+%{_docdir}/gstreamer-%{gstmver}/openexr-doc
+%{_docdir}/gstreamer-%{gstmver}/openh264-doc
+%{_docdir}/gstreamer-%{gstmver}/openjpeg-doc
+%{_docdir}/gstreamer-%{gstmver}/openmpt-doc
+%{_docdir}/gstreamer-%{gstmver}/openni2-doc
+%{_docdir}/gstreamer-%{gstmver}/opusparse-doc
+%{_docdir}/gstreamer-%{gstmver}/pcapparse-doc
+%{_docdir}/gstreamer-%{gstmver}/player-doc
+%{_docdir}/gstreamer-%{gstmver}/pnm-doc
+%{_docdir}/gstreamer-%{gstmver}/proxy-doc
+%{_docdir}/gstreamer-%{gstmver}/removesilence-doc
+%{_docdir}/gstreamer-%{gstmver}/resindvd-doc
+%{_docdir}/gstreamer-%{gstmver}/rfbsrc-doc
+%{_docdir}/gstreamer-%{gstmver}/rist-doc
+%{_docdir}/gstreamer-%{gstmver}/rsvg-doc
+%{_docdir}/gstreamer-%{gstmver}/rtmp-doc
+%{_docdir}/gstreamer-%{gstmver}/rtmp2-doc
+%{_docdir}/gstreamer-%{gstmver}/rtpmanagerbad-doc
+%{_docdir}/gstreamer-%{gstmver}/rtponvif-doc
+%{_docdir}/gstreamer-%{gstmver}/sbc-doc
+%{_docdir}/gstreamer-%{gstmver}/sctp-doc
+%{_docdir}/gstreamer-%{gstmver}/sdpelem-doc
+%{_docdir}/gstreamer-%{gstmver}/segmentclip-doc
+%{_docdir}/gstreamer-%{gstmver}/shm-doc
+%{_docdir}/gstreamer-%{gstmver}/siren-doc
+%{_docdir}/gstreamer-%{gstmver}/smooth-doc
+%{_docdir}/gstreamer-%{gstmver}/smoothstreaming-doc
+%{_docdir}/gstreamer-%{gstmver}/sndfile-doc
+%{_docdir}/gstreamer-%{gstmver}/soundtouch-doc
+%{_docdir}/gstreamer-%{gstmver}/spandsp-doc
+%{_docdir}/gstreamer-%{gstmver}/speed-doc
+%{_docdir}/gstreamer-%{gstmver}/srt-doc
+%{_docdir}/gstreamer-%{gstmver}/srtp-doc
+%{_docdir}/gstreamer-%{gstmver}/subenc-doc
+%{_docdir}/gstreamer-%{gstmver}/switchbin-doc
+%{_docdir}/gstreamer-%{gstmver}/teletext-doc
+%{_docdir}/gstreamer-%{gstmver}/timecode-doc
+%{_docdir}/gstreamer-%{gstmver}/tinyalsa-doc
+%{_docdir}/gstreamer-%{gstmver}/ttmlsubs-doc
+%{_docdir}/gstreamer-%{gstmver}/uvch264-doc
+%{_docdir}/gstreamer-%{gstmver}/v4l2codecs-doc
+%{_docdir}/gstreamer-%{gstmver}/va-doc
+%{_docdir}/gstreamer-%{gstmver}/videofiltersbad-doc
+%{_docdir}/gstreamer-%{gstmver}/videoframe_audiolevel-doc
+%{_docdir}/gstreamer-%{gstmver}/videoparsersbad-doc
+%{_docdir}/gstreamer-%{gstmver}/videosignal-doc
+%{_docdir}/gstreamer-%{gstmver}/vmnc-doc
+%{_docdir}/gstreamer-%{gstmver}/voaacenc-doc
+%{_docdir}/gstreamer-%{gstmver}/voamrwbenc-doc
+%{_docdir}/gstreamer-%{gstmver}/vulkan-doc
+#%{_docdir}/gstreamer-%{gstmver}/vulkan-wayland-doc
+#%{_docdir}/gstreamer-%{gstmver}/vulkan-xcb-doc
+%{_docdir}/gstreamer-%{gstmver}/vulkanlib-doc
+%{_docdir}/gstreamer-%{gstmver}/wasapi-doc
+%{_docdir}/gstreamer-%{gstmver}/wasapi2-doc
+%{_docdir}/gstreamer-%{gstmver}/waylandsink-doc
+%{_docdir}/gstreamer-%{gstmver}/webp-doc
+%{_docdir}/gstreamer-%{gstmver}/webrtc-doc
+%{_docdir}/gstreamer-%{gstmver}/webrtcdsp-doc
+%{_docdir}/gstreamer-%{gstmver}/webrtclib-doc
+%{_docdir}/gstreamer-%{gstmver}/wildmidi-doc
+%{_docdir}/gstreamer-%{gstmver}/winks-doc
+%{_docdir}/gstreamer-%{gstmver}/winscreencap-doc
+%{_docdir}/gstreamer-%{gstmver}/wpe-doc
+%{_docdir}/gstreamer-%{gstmver}/x265-doc
+%{_docdir}/gstreamer-%{gstmver}/y4mdec-doc
+%{_docdir}/gstreamer-%{gstmver}/zbar-doc
+%endif
+
+%files -n gstreamer-transcoder
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_bindir}/gst-transcoder-1.0
+%attr(755,root,root) %{_libdir}/libgsttranscoder-%{gstmver}.so.0
+%{_libdir}/girepository-1.0/GstTranscoder-1.0.typelib
+%attr(755,root,root) %{gstlibdir}/libgsttranscode.so
+%dir %{gstdatadir}/encoding-profiles
+%dir %{gstdatadir}/encoding-profiles/device
+%{gstdatadir}/encoding-profiles/device/dvd.gep
+%dir %{gstdatadir}/encoding-profiles/file-extension
+%{gstdatadir}/encoding-profiles/file-extension/avi.gep
+%{gstdatadir}/encoding-profiles/file-extension/flv.gep
+%{gstdatadir}/encoding-profiles/file-extension/mkv.gep
+%{gstdatadir}/encoding-profiles/file-extension/mp3.gep
+%{gstdatadir}/encoding-profiles/file-extension/mp4.gep
+%{gstdatadir}/encoding-profiles/file-extension/oga.gep
+%{gstdatadir}/encoding-profiles/file-extension/ogv.gep
+%{gstdatadir}/encoding-profiles/file-extension/webm.gep
+%dir %{gstdatadir}/encoding-profiles/online-services
+%{gstdatadir}/encoding-profiles/online-services/youtube.gep
+
+%files -n gstreamer-transcoder-devel
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/libgsttranscoder-%{gstmver}.so
+%{_datadir}/gir-1.0/GstTranscoder-1.0.gir
+%{_includedir}/gstreamer-%{gstmver}/gst/transcoder
+%{_pkgconfigdir}/gstreamer-transcoder-%{gstmver}.pc
+
+%files -n gstreamer-transcoder-apidocs
+%defattr(644,root,root,755)
+%{_docdir}/gstreamer-%{gstmver}/transcode-doc
+%{_docdir}/gstreamer-%{gstmver}/transcoder-doc
 
 ##
 ## Plugins
@@ -1748,16 +2024,14 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{gstlibdir}/libgstuvch264.so
 %endif
 
-%if %{with vdpau}
-%files -n gstreamer-vdpau
+%files -n gstreamer-va
 %defattr(644,root,root,755)
-%attr(755,root,root) %{gstlibdir}/libgstvdpau.so
-%endif
+%attr(755,root,root) %{gstlibdir}/libgstva.so
 
 %if %{with directfb}
 %files -n gstreamer-videosink-directfb
 %defattr(644,root,root,755)
-%attr(755,root,root) %{gstlibdir}/libgstdfbvideosink.so
+%attr(755,root,root) %{gstlibdir}/libgstdirectfb.so
 %endif
 
 %if %{with wayland}
