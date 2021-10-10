@@ -54,17 +54,17 @@
 
 %define		gstname		gst-plugins-bad
 %define		gstmver		1.0
-%define		gst_ver		1.18.4
-%define		gstpb_ver	1.18.4
+%define		gst_ver		1.18.5
+%define		gstpb_ver	1.18.5
 Summary:	Bad GStreamer Streaming-media framework plugins
 Summary(pl.UTF-8):	Złe wtyczki do środowiska obróbki strumieni GStreamer
 Name:		gstreamer-plugins-bad
-Version:	1.18.4
+Version:	1.18.5
 Release:	1
 License:	LGPL v2+
 Group:		Libraries
 Source0:	https://gstreamer.freedesktop.org/src/gst-plugins-bad/%{gstname}-%{version}.tar.xz
-# Source0-md5:	8a73b497613a9f778e880b8a9eb9c1a3
+# Source0-md5:	4ab1c19c3cf1ba79c20c65f6be78e7fd
 Patch0:		%{name}-musepack.patch
 URL:		https://gstreamer.freedesktop.org/
 BuildRequires:	docbook-dtd412-xml
