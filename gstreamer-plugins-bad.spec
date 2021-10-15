@@ -166,7 +166,7 @@ BuildRequires:	libxml2-devel >= 1:2.9.2
 %{?with_lv2:BuildRequires:	lilv-devel >= 0.22}
 %{?with_mfx:BuildRequires:	mfx_dispatch-devel}
 %{?with_mjpegtools:BuildRequires:	mjpegtools-devel >= 2.0.0}
-%{?with_musepack:BuildRequires:	libmpcdec-devel}
+%{?with_musepack:BuildRequires:	musepack-devel}
 %{?with_neon:BuildRequires:	neon-devel >= 0.27.0}
 # for hls, could also use libgcrypt>=1.2.0 or openssl
 BuildRequires:	nettle-devel
