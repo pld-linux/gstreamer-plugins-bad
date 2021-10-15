@@ -68,6 +68,7 @@ Source0:	https://gstreamer.freedesktop.org/src/gst-plugins-bad/%{gstname}-%{vers
 Patch0:		%{name}-libdts.patch
 Patch1:		%{name}-mfx.patch
 Patch2:		%{name}-neon.patch
+Patch3:		musepack.patch
 URL:		https://gstreamer.freedesktop.org/
 BuildRequires:	autoconf >= 2.69
 BuildRequires:	automake >= 1:1.14
@@ -1226,6 +1227,7 @@ Wtyczka GStreamera skanująca kody kreskowe.
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
+%patch3 -p1
 
 %build
 %{__libtoolize}

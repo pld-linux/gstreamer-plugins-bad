@@ -1,0 +1,11 @@
+--- gst-plugins-bad-1.16.3/configure.ac.orig	2021-10-15 12:52:01.804215859 +0200
++++ gst-plugins-bad-1.16.3/configure.ac	2021-10-15 12:51:22.824978823 +0200
+@@ -1776,7 +1776,7 @@
+ AG_GST_CHECK_FEATURE(MUSEPACK, [musepackdec], musepack, [
+   AC_CHECK_HEADER([mpc/mpcdec.h], [
+     HAVE_MUSEPACK="yes"
+-    MUSEPACK_LIBS="-lmpcdec"
++    MUSEPACK_LIBS="-lmpcdecsv8"
+     AC_SUBST(MUSEPACK_LIBS)
+     ], [HAVE_MUSEPACK="no"])
+ ])
