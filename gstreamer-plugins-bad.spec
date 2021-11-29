@@ -22,10 +22,8 @@
 %bcond_without	lv2		# LV2 plugins bridge plugin
 %bcond_without	mfx		# Intel MediaSDK (MFX) plugin
 %bcond_without	mjpegtools	# mpeg2enc video encoder plugin
-%bcond_without	mms		# mms streaming plugin
 %bcond_without	musepack	# musepack audio decoder plugin
 %bcond_without	neon		# neonhttpsrc HTTP client plugin
-%bcond_without	ofa		# OFA fingerprint plugin
 %bcond_without	openal		# OpenAL audiosink plugin
 %bcond_with	opencv		# OpenCV effects plugin
 %bcond_without	opengl		# OpenGL integration (in various plugins)
@@ -54,18 +52,18 @@
 
 %define		gstname		gst-plugins-bad
 %define		gstmver		1.0
-%define		gst_ver		1.18.5
-%define		gstpb_ver	1.18.5
+%define		gst_ver		1.19.3
+%define		gstpb_ver	1.19.3
 Summary:	Bad GStreamer Streaming-media framework plugins
 Summary(pl.UTF-8):	Złe wtyczki do środowiska obróbki strumieni GStreamer
 Name:		gstreamer-plugins-bad
-Version:	1.18.5
-Release:	1
+Version:	1.19.3
+Release:	0.1
 License:	LGPL v2+
 Group:		Libraries
 Source0:	https://gstreamer.freedesktop.org/src/gst-plugins-bad/%{gstname}-%{version}.tar.xz
-# Source0-md5:	4ab1c19c3cf1ba79c20c65f6be78e7fd
-Patch0:		%{name}-musepack.patch
+# Source0-md5:	6950bd5b0131feead8f632d61e89c932
+Patch0:		musepack.patch
 URL:		https://gstreamer.freedesktop.org/
 BuildRequires:	docbook-dtd412-xml
 BuildRequires:	gettext-tools >= 0.17
@@ -132,10 +130,8 @@ BuildRequires:	libiptcdata-devel >= 1.0.2
 BuildRequires:	libjpeg-devel
 %{?with_kate:BuildRequires:	libkate-devel >= 0.1.7}
 BuildRequires:	liblrdf-devel
-%{?with_mms:BuildRequires:	libmms-devel >= 0.4}
 BuildRequires:	libmodplug-devel
 BuildRequires:	libnice-devel >= 0.1.14
-%{?with_ofa:BuildRequires:	libofa-devel >= 0.9.3}
 BuildRequires:	libopenmpt-devel
 BuildRequires:	libpng-devel >= 2:1.2.0
 %{?with_librsvg:BuildRequires:	librsvg-devel >= 1:2.36.2}
@@ -200,6 +196,8 @@ Requires:	gstreamer-plugins-base >= %{gstpb_ver}
 Requires:	libxml2 >= 1:2.8
 Requires:	orc >= 0.4.17
 Obsoletes:	gstreamer-cdaudio < 1.0
+Obsoletes:	gstreamer-mms < 1.19.3
+Obsoletes:	gstreamer-ofa < 1.19.3
 Obsoletes:	gstreamer-quicktime < 0.10
 Obsoletes:	gstreamer-schroedinger < 1.14
 Obsoletes:	gstreamer-vcd < 0.10
@@ -683,20 +681,6 @@ GStreamer mpeg2enc plugin (based on mjpegtools libraries).
 %description -n gstreamer-mjpegtools -l pl.UTF-8
 Wtyczka mpeg2enc dla GStreamera (oparta na bibliotekach mjpegtools).
 
-%package -n gstreamer-mms
-Summary:	GStreamer mms plugin
-Summary(pl.UTF-8):	Wtyczka mms dla GStreamera
-Group:		Libraries
-Requires:	gstreamer >= %{gst_ver}
-Requires:	gstreamer-plugins-base >= %{gstpb_ver}
-Requires:	libmms >= 0.4
-
-%description -n gstreamer-mms
-GStreamer mms plugin.
-
-%description -n gstreamer-mms -l pl.UTF-8
-Wtyczka mms dla GStreamera.
-
 %package -n gstreamer-msdk
 Summary:	Intel MediaSDK (MFX) plugin for GStreamer
 Summary(pl.UTF-8):	Wtyczka MediaSDK (MFX) dla GStreamera
@@ -735,22 +719,6 @@ GStreamer neon HTTP source plugin.
 
 %description -n gstreamer-neon -l pl.UTF-8
 Wtyczka źródła HTTP neon dla GStreamera.
-
-%package -n gstreamer-ofa
-Summary:	GStreamer OFA fingerprint plugin
-Summary(pl.UTF-8):	Wtyczka odcisków OFA dla GStreamera
-Group:		Libraries
-Requires:	gstreamer >= %{gst_ver}
-Requires:	gstreamer-plugins-base >= %{gstpb_ver}
-Requires:	libofa >= 0.9.3
-
-%description -n gstreamer-ofa
-GStreamer OFA plugin to calculate MusicIP fingerprints from audio
-files.
-
-%description -n gstreamer-ofa -l pl.UTF-8
-Wtyczka OFA dla GStreamera, służąca do obliczania odcisków MusicIP
-plików dźwiękowych.
 
 %package -n gstreamer-openal
 Summary:	GStreamer OpenAL audio input/output plugin
@@ -1270,6 +1238,7 @@ Wtyczka GStreamera skanująca kody kreskowe.
 %patch0 -p1
 
 %build
+export CXXFLAGS="%{rpmcxxflags} -std=c++11"
 %meson build \
 	--default-library=shared \
 	%{!?with_bluez:-Dbluez=disabled} \
@@ -1282,11 +1251,9 @@ Wtyczka GStreamera skanująca kody kreskowe.
 	%{!?with_gsm:-Dgsm=disabled} \
 	%{!?with_ladspa:-Dladspa=disabled} \
 	%{!?with_libde265:-Dlibde265=disabled} \
-	%{!?with_mms:-Dlibmms=disabled} \
 	%{!?with_mjpegtools:-Dmpeg2enc=disabled} \
 	%{!?with_musepack:-Dmusepack=disabled} \
 	%{!?with_neon:-Dneon=disabled} \
-	%{!?with_ofa:-Dofa=disabled} \
 	%{!?with_openal:-Dopenal=disabled} \
 	%{!?with_opencv:-Dopencv=disabled} \
 	%{!?with_openh264:-Dopenh264=disabled} \
@@ -1299,6 +1266,7 @@ Wtyczka GStreamera skanująca kody kreskowe.
 	%{!?with_wayland:-Dwayland=disabled} \
 	%{!?with_x265:-Dx265=disabled} \
 	%{!?with_yadif:-Dyadif=disabled} \
+	-Dgpl=enabled \
 	-Dzxing=disabled
 
 %ninja_build -C build
@@ -1606,7 +1574,6 @@ rm -rf $RPM_BUILD_ROOT
 %{_docdir}/gstreamer-%{gstmver}/mediafoundation-doc
 %{_docdir}/gstreamer-%{gstmver}/microdns-doc
 %{_docdir}/gstreamer-%{gstmver}/midi-doc
-%{_docdir}/gstreamer-%{gstmver}/mms-doc
 %{_docdir}/gstreamer-%{gstmver}/modplug-doc
 %{_docdir}/gstreamer-%{gstmver}/mpeg2enc-doc
 %{_docdir}/gstreamer-%{gstmver}/mpegpsdemux-doc
@@ -1620,7 +1587,6 @@ rm -rf $RPM_BUILD_ROOT
 %{_docdir}/gstreamer-%{gstmver}/neonhttpsrc-doc
 %{_docdir}/gstreamer-%{gstmver}/netsim-doc
 %{_docdir}/gstreamer-%{gstmver}/nvcodec-doc
-%{_docdir}/gstreamer-%{gstmver}/ofa-doc
 %{_docdir}/gstreamer-%{gstmver}/openal-doc
 %{_docdir}/gstreamer-%{gstmver}/opencv-doc
 %{_docdir}/gstreamer-%{gstmver}/openexr-doc
@@ -1874,12 +1840,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{gstlibdir}/libgstmplex.so
 %endif
 
-%if %{with mms}
-%files -n gstreamer-mms
-%defattr(644,root,root,755)
-%attr(755,root,root) %{gstlibdir}/libgstmms.so
-%endif
-
 %if %{with mfx}
 %files -n gstreamer-msdk
 %defattr(644,root,root,755)
@@ -1896,12 +1856,6 @@ rm -rf $RPM_BUILD_ROOT
 %files -n gstreamer-neon
 %defattr(644,root,root,755)
 %attr(755,root,root) %{gstlibdir}/libgstneonhttpsrc.so
-%endif
-
-%if %{with ofa}
-%files -n gstreamer-ofa
-%defattr(644,root,root,755)
-%attr(755,root,root) %{gstlibdir}/libgstofa.so
 %endif
 
 %if %{with openal}
