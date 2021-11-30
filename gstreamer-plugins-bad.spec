@@ -247,8 +247,7 @@ BuildArch:	noarch
 Bad GStreamer streaming-media framework plugins API documentation.
 
 %description apidocs -l pl.UTF-8
-Dokumentacja API złych wtyczek środowiska obróbki strumieni
-GStreamer.
+Dokumentacja API złych wtyczek środowiska obróbki strumieni GStreamer.
 
 %package -n gstreamer-transcoder
 Summary:	High level API to do media transcoding with GStreamer
@@ -268,9 +267,9 @@ GSteamera.
 Summary:	Header files for gst-transcoder library
 Summary(pl.UTF-8):	Pliki nagłówkowe biblioteki gst-transcoder
 Group:		Development/Libraries
-Requires:	gstreamer-transcoder = %{version}-%{release}
 Requires:	gstreamer-devel >= %{gst_ver}
 Requires:	gstreamer-plugins-base-devel >= %{gstpb_ver}
+Requires:	gstreamer-transcoder = %{version}-%{release}
 
 %description -n gstreamer-transcoder-devel
 Header files for gst-transcoder library.
@@ -1331,12 +1330,16 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %ghost %{_libdir}/libgstmpegts-%{gstmver}.so.0
 %attr(755,root,root) %{_libdir}/libgstphotography-%{gstmver}.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libgstphotography-%{gstmver}.so.0
+%attr(755,root,root)  %{_libdir}/libgstplay-%{gstmver}.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libgstplay-%{gstmver}.so.0
 %attr(755,root,root) %{_libdir}/libgstplayer-%{gstmver}.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libgstplayer-%{gstmver}.so.0
 %attr(755,root,root) %{_libdir}/libgstsctp-%{gstmver}.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libgstsctp-%{gstmver}.so.0
 %attr(755,root,root) %{_libdir}/libgsturidownloader-%{gstmver}.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libgsturidownloader-%{gstmver}.so.0
+%attr(755,root,root) %{_libdir}/libgstva-%{gstmver}.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libgstva-%{gstmver}.so.0
 %attr(755,root,root) %{_libdir}/libgstvulkan-%{gstmver}.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libgstvulkan-%{gstmver}.so.0
 %attr(755,root,root) %{_libdir}/libgstwayland-%{gstmver}.so.*.*.*
@@ -1347,11 +1350,13 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/girepository-1.0/GstCodecs-1.0.typelib
 %{_libdir}/girepository-1.0/GstInsertBin-1.0.typelib
 %{_libdir}/girepository-1.0/GstMpegts-1.0.typelib
+%{_libdir}/girepository-1.0/GstPlay-1.0.typelib
 %{_libdir}/girepository-1.0/GstPlayer-1.0.typelib
 %{_libdir}/girepository-1.0/GstVulkan-1.0.typelib
 %{_libdir}/girepository-1.0/GstVulkanWayland-1.0.typelib
 %{_libdir}/girepository-1.0/GstVulkanXCB-1.0.typelib
 %{_libdir}/girepository-1.0/GstWebRTC-1.0.typelib
+%attr(755,root,root) %{gstlibdir}/libgstaes.so
 %attr(755,root,root) %{gstlibdir}/libgstaccurip.so
 %attr(755,root,root) %{gstlibdir}/libgstadpcmdec.so
 %attr(755,root,root) %{gstlibdir}/libgstadpcmenc.so
@@ -1366,7 +1371,9 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{gstlibdir}/libgstbayer.so
 %attr(755,root,root) %{gstlibdir}/libgstbz2.so
 %attr(755,root,root) %{gstlibdir}/libgstcamerabin.so
+%attr(755,root,root) %{gstlibdir}/libgstcodecalpha.so
 %attr(755,root,root) %{gstlibdir}/libgstcoloreffects.so
+%attr(755,root,root) %{gstlibdir}/libgstqroverlay.so
 # R: lcms2
 %attr(755,root,root) %{gstlibdir}/libgstcolormanagement.so
 # R: libxml2
@@ -1450,9 +1457,11 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/libgstisoff-%{gstmver}.so
 %attr(755,root,root) %{_libdir}/libgstmpegts-%{gstmver}.so
 %attr(755,root,root) %{_libdir}/libgstphotography-%{gstmver}.so
+%attr(755,root,root) %{_libdir}/libgstplay-%{gstmver}.so
 %attr(755,root,root) %{_libdir}/libgstplayer-%{gstmver}.so
 %attr(755,root,root) %{_libdir}/libgstsctp-%{gstmver}.so
 %attr(755,root,root) %{_libdir}/libgsturidownloader-%{gstmver}.so
+%attr(755,root,root) %{_libdir}/libgstva-%{gstmver}.so
 %attr(755,root,root) %{_libdir}/libgstvulkan-%{gstmver}.so
 %attr(755,root,root) %{_libdir}/libgstwayland-%{gstmver}.so
 %attr(755,root,root) %{_libdir}/libgstwebrtc-%{gstmver}.so
@@ -1465,15 +1474,18 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/gstreamer-%{gstmver}/gst/interfaces
 %{_includedir}/gstreamer-%{gstmver}/gst/isoff
 %{_includedir}/gstreamer-%{gstmver}/gst/mpegts
+%{_includedir}/gstreamer-%{gstmver}/gst/play
 %{_includedir}/gstreamer-%{gstmver}/gst/player
 %{_includedir}/gstreamer-%{gstmver}/gst/sctp
 %{_includedir}/gstreamer-%{gstmver}/gst/uridownloader
 %{_includedir}/gstreamer-%{gstmver}/gst/vulkan
+%{_includedir}/gstreamer-%{gstmver}/gst/wayland
 %{_includedir}/gstreamer-%{gstmver}/gst/webrtc
 %{_datadir}/gir-1.0/GstBadAudio-1.0.gir
 %{_datadir}/gir-1.0/GstCodecs-1.0.gir
 %{_datadir}/gir-1.0/GstInsertBin-1.0.gir
 %{_datadir}/gir-1.0/GstMpegts-1.0.gir
+%{_datadir}/gir-1.0/GstPlay-1.0.gir
 %{_datadir}/gir-1.0/GstPlayer-1.0.gir
 %{_datadir}/gir-1.0/GstVulkan-1.0.gir
 %{_datadir}/gir-1.0/GstVulkanWayland-1.0.gir
@@ -1484,12 +1496,15 @@ rm -rf $RPM_BUILD_ROOT
 %{_pkgconfigdir}/gstreamer-insertbin-%{gstmver}.pc
 %{_pkgconfigdir}/gstreamer-mpegts-%{gstmver}.pc
 %{_pkgconfigdir}/gstreamer-photography-%{gstmver}.pc
+%{_pkgconfigdir}/gstreamer-play-1.0.pc
 %{_pkgconfigdir}/gstreamer-player-%{gstmver}.pc
 %{_pkgconfigdir}/gstreamer-plugins-bad-%{gstmver}.pc
 %{_pkgconfigdir}/gstreamer-sctp-%{gstmver}.pc
+%{_pkgconfigdir}/gstreamer-va-1.0.pc
 %{_pkgconfigdir}/gstreamer-vulkan-%{gstmver}.pc
 %{_pkgconfigdir}/gstreamer-vulkan-wayland-%{gstmver}.pc
 %{_pkgconfigdir}/gstreamer-vulkan-xcb-%{gstmver}.pc
+%{_pkgconfigdir}/gstreamer-wayland-1.0.pc
 %{_pkgconfigdir}/gstreamer-webrtc-%{gstmver}.pc
 
 %if %{with apidocs}
@@ -1498,6 +1513,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_docdir}/gstreamer-%{gstmver}/accurip-doc
 %{_docdir}/gstreamer-%{gstmver}/adpcmdec-doc
 %{_docdir}/gstreamer-%{gstmver}/adpcmenc-doc
+%{_docdir}/gstreamer-%{gstmver}/aes-doc
 %{_docdir}/gstreamer-%{gstmver}/aiff-doc
 %{_docdir}/gstreamer-%{gstmver}/aom-doc
 %{_docdir}/gstreamer-%{gstmver}/asfmux-doc
@@ -1518,6 +1534,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_docdir}/gstreamer-%{gstmver}/camerabin-doc
 %{_docdir}/gstreamer-%{gstmver}/chromaprint-doc
 %{_docdir}/gstreamer-%{gstmver}/closedcaption-doc
+%{_docdir}/gstreamer-%{gstmver}/codecalpha-doc
 %{_docdir}/gstreamer-%{gstmver}/codecs-doc
 %{_docdir}/gstreamer-%{gstmver}/coloreffects-doc
 %{_docdir}/gstreamer-%{gstmver}/colormanagement-doc
@@ -1552,6 +1569,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_docdir}/gstreamer-%{gstmver}/gdp-doc
 %{_docdir}/gstreamer-%{gstmver}/geometrictransform-doc
 %{_docdir}/gstreamer-%{gstmver}/gme-doc
+%{_docdir}/gstreamer-%{gstmver}/gs-doc
 %{_docdir}/gstreamer-%{gstmver}/gsm-doc
 %{_docdir}/gstreamer-%{gstmver}/gst-plugins-bad-adaptivedemux-doc
 %{_docdir}/gstreamer-%{gstmver}/gst-plugins-bad-codecparsers-doc
@@ -1582,6 +1600,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_docdir}/gstreamer-%{gstmver}/mpegtsdemux-doc
 %{_docdir}/gstreamer-%{gstmver}/mpegtsmux-doc
 %{_docdir}/gstreamer-%{gstmver}/mplex-doc
+%{_docdir}/gstreamer-%{gstmver}/msdk-doc
 %{_docdir}/gstreamer-%{gstmver}/musepack-doc
 %{_docdir}/gstreamer-%{gstmver}/mxf-doc
 %{_docdir}/gstreamer-%{gstmver}/neonhttpsrc-doc
@@ -1596,9 +1615,11 @@ rm -rf $RPM_BUILD_ROOT
 %{_docdir}/gstreamer-%{gstmver}/openni2-doc
 %{_docdir}/gstreamer-%{gstmver}/opusparse-doc
 %{_docdir}/gstreamer-%{gstmver}/pcapparse-doc
+%{_docdir}/gstreamer-%{gstmver}/play-doc
 %{_docdir}/gstreamer-%{gstmver}/player-doc
 %{_docdir}/gstreamer-%{gstmver}/pnm-doc
 %{_docdir}/gstreamer-%{gstmver}/proxy-doc
+%{_docdir}/gstreamer-%{gstmver}/qroverlay-doc
 %{_docdir}/gstreamer-%{gstmver}/removesilence-doc
 %{_docdir}/gstreamer-%{gstmver}/resindvd-doc
 %{_docdir}/gstreamer-%{gstmver}/rfbsrc-doc
@@ -1675,6 +1696,7 @@ rm -rf $RPM_BUILD_ROOT
 %{gstdatadir}/encoding-profiles/file-extension/mp4.gep
 %{gstdatadir}/encoding-profiles/file-extension/oga.gep
 %{gstdatadir}/encoding-profiles/file-extension/ogv.gep
+%{gstdatadir}/encoding-profiles/file-extension/ts.gep
 %{gstdatadir}/encoding-profiles/file-extension/webm.gep
 %dir %{gstdatadir}/encoding-profiles/online-services
 %{gstdatadir}/encoding-profiles/online-services/youtube.gep
@@ -2026,6 +2048,8 @@ rm -rf $RPM_BUILD_ROOT
 %files -n gstreamer-wpe
 %defattr(644,root,root,755)
 %attr(755,root,root) %{gstlibdir}/libgstwpe.so
+%dir %{gstlibdir}/wpe-extension
+%{gstlibdir}/wpe-extension/libgstwpeextension.so
 %endif
 
 %if %{with x265}
