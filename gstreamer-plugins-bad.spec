@@ -41,7 +41,6 @@
 %bcond_without	wpe		# WebKit based web browser plugin
 %bcond_without	wildmidi	# wildmidi MIDI files decoder plugin
 %bcond_without	x265		# x265 H.265 encoder plugin
-%bcond_with	yadif		# YADIF deinterlacing filter plugin
 %bcond_without	zvbi		# zvbi-based teletext plugin
 %bcond_without	examples	# examples build
 
@@ -1264,7 +1263,6 @@ export CXXFLAGS="%{rpmcxxflags} -std=c++11"
 	%{!?with_vulkan:-Dvulkan=disabled} \
 	%{!?with_wayland:-Dwayland=disabled} \
 	%{!?with_x265:-Dx265=disabled} \
-	%{!?with_yadif:-Dyadif=disabled} \
 	-Dgpl=enabled \
 	-Dzxing=disabled
 
@@ -1442,7 +1440,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{gstlibdir}/libgstvideosignal.so
 %attr(755,root,root) %{gstlibdir}/libgstvmnc.so
 %attr(755,root,root) %{gstlibdir}/libgsty4mdec.so
-%{?with_yadif:%attr(755,root,root) %{gstlibdir}/libgstyadif.so}
 %dir %{gstdatadir}/presets
 %{gstdatadir}/presets/GstFreeverb.prs
 
