@@ -1,5 +1,5 @@
 # TODO:
-# - zxing (requires maintained https://github.com/nu-book/zxing-cpp fork)
+# - zxing (BR: zxing-cpp-nu-devel)
 # - nvenc (BR: cuda >= 6.5, nvEncodeAPI.h >= 5.0, -lnvidia-encode)
 #   nvdec (BR: libnvcuvid)
 #   to replace removed vdpau
@@ -51,28 +51,28 @@
 
 %define		gstname		gst-plugins-bad
 %define		gstmver		1.0
-%define		gst_ver		1.19.3
-%define		gstpb_ver	1.19.3
+%define		gst_ver		1.20.0
+%define		gstpb_ver	1.20.0
 Summary:	Bad GStreamer Streaming-media framework plugins
 Summary(pl.UTF-8):	Złe wtyczki do środowiska obróbki strumieni GStreamer
 Name:		gstreamer-plugins-bad
-Version:	1.19.3
-Release:	4
+Version:	1.20.0
+Release:	1
 License:	LGPL v2+
 Group:		Libraries
 Source0:	https://gstreamer.freedesktop.org/src/gst-plugins-bad/%{gstname}-%{version}.tar.xz
-# Source0-md5:	6950bd5b0131feead8f632d61e89c932
+# Source0-md5:	00dade0bc7b2b54643db92c8f4bdd4ab
 Patch0:		musepack.patch
 URL:		https://gstreamer.freedesktop.org/
 BuildRequires:	docbook-dtd412-xml
 BuildRequires:	gettext-tools >= 0.17
-BuildRequires:	glib2-devel >= 1:2.44.0
+BuildRequires:	glib2-devel >= 1:2.56.0
 BuildRequires:	gobject-introspection-devel >= 1.31.1
 BuildRequires:	gstreamer-devel >= %{gst_ver}
 BuildRequires:	gstreamer-gl-devel >= %{gstpb_ver}
 BuildRequires:	gstreamer-plugins-base-devel >= %{gstpb_ver}
 %{?with_apidocs:BuildRequires:	hotdoc >= 0.11.0}
-BuildRequires:	meson >= 0.49
+BuildRequires:	meson >= 0.59
 BuildRequires:	ninja >= 1.5
 BuildRequires:	orc-devel >= 0.4.17
 BuildRequires:	pkgconfig >= 1:0.9.0
@@ -189,7 +189,7 @@ BuildRequires:	xorg-lib-libX11-devel
 %{?with_wpe:BuildRequires:	xorg-lib-libxkbcommon-devel}
 BuildRequires:	zbar-devel >= 0.9
 %{?with_zvbi:BuildRequires:	zvbi-devel >= 0.2}
-Requires:	glib2 >= 1:2.44.0
+Requires:	glib2 >= 1:2.56.0
 Requires:	gstreamer >= %{gst_ver}
 Requires:	gstreamer-plugins-base >= %{gstpb_ver}
 Requires:	libxml2 >= 1:2.8
@@ -552,7 +552,7 @@ Wtyczka GStreamera dekodująca dźwięk GME.
 Summary:	GStreamer GSettings plugin
 Summary(pl.UTF-8):	Wtyczka GSettings dla GStreamera
 Group:		Libraries
-Requires:	glib2 >= 1:2.44.0
+Requires:	glib2 >= 1:2.56.0
 Requires:	gstreamer >= %{gst_ver}
 
 %description -n gstreamer-gsettings
@@ -2045,8 +2045,9 @@ rm -rf $RPM_BUILD_ROOT
 %files -n gstreamer-wpe
 %defattr(644,root,root,755)
 %attr(755,root,root) %{gstlibdir}/libgstwpe.so
-%dir %{gstlibdir}/wpe-extension
-%{gstlibdir}/wpe-extension/libgstwpeextension.so
+%dir %{_libdir}/gst-plugins-bad
+%dir %{_libdir}/gst-plugins-bad/wpe-extension
+%{_libdir}/gst-plugins-bad/wpe-extension/libgstwpeextension.so
 %endif
 
 %if %{with x265}
