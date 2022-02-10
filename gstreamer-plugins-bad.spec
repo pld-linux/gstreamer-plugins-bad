@@ -1309,7 +1309,7 @@ rm -rf $RPM_BUILD_ROOT
 %files -f %{gstname}-%{gstmver}.lang
 %defattr(644,root,root,755)
 %doc AUTHORS ChangeLog NEWS README RELEASE
-%attr(755,root,root) %{_bindir}/playout
+%{?with_examples:%attr(755,root,root) %{_bindir}/playout}
 %attr(755,root,root) %{_libdir}/libgstadaptivedemux-%{gstmver}.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libgstadaptivedemux-%{gstmver}.so.0
 %attr(755,root,root) %{_libdir}/libgstbadaudio-%{gstmver}.so.*.*.*
@@ -1705,10 +1705,12 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/gstreamer-%{gstmver}/gst/transcoder
 %{_pkgconfigdir}/gstreamer-transcoder-%{gstmver}.pc
 
+%if %{with apidocs}
 %files -n gstreamer-transcoder-apidocs
 %defattr(644,root,root,755)
 %{_docdir}/gstreamer-%{gstmver}/transcode-doc
 %{_docdir}/gstreamer-%{gstmver}/transcoder-doc
+%endif
 
 ##
 ## Plugins
