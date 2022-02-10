@@ -1249,6 +1249,7 @@ export CXXFLAGS="%{rpmcxxflags} -std=c++11"
 	%{!?with_gsm:-Dgsm=disabled} \
 	%{!?with_ladspa:-Dladspa=disabled} \
 	%{!?with_libde265:-Dlibde265=disabled} \
+	%{!?with_lv2:-Dlv2=disabled} \
 	%{!?with_mjpegtools:-Dmpeg2enc=disabled} \
 	%{!?with_musepack:-Dmusepack=disabled} \
 	%{!?with_neon:-Dneon=disabled} \
