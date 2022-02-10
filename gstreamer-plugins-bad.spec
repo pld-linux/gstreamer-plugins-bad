@@ -18,6 +18,7 @@
 %bcond_without	gsm		# gsm audio decoder/encoder plugin
 %bcond_without	kate		# Kate text streams plugin
 %bcond_without	ladspa		# LADSPA plugins bridge plugin
+%bcond_without	ldac		# LDAC bluetooth audio codec plugin
 %bcond_without	libde265	# libde265 H.265 decoder plugin
 %bcond_without	lv2		# LV2 plugins bridge plugin
 %bcond_without	mfx		# Intel MediaSDK (MFX) plugin
@@ -114,6 +115,7 @@ BuildRequires:	gnutls-devel >= 2.11.3
 BuildRequires:	graphene-devel >= 1.4.0
 %{?with_ladspa:BuildRequires:	ladspa-devel >= 1.12}
 BuildRequires:	lcms2-devel >= 2.7
+%{?with_ldac:BuildRequires:	ldacBT-devel}
 BuildRequires:	libass-devel >= 0.10.2
 %{?with_bs2b:BuildRequires:	libbs2b-devel >= 3.1.0}
 %{?with_chromaprint:BuildRequires:	libchromaprint-devel}
@@ -633,6 +635,19 @@ Plugin which wraps LADSPA plugins for use by GStreamer applications.
 %description -n gstreamer-ladspa -l pl.UTF-8
 Wtyczka pozwalająca na używanie wtyczek LADSPA przez aplikacje
 GStreamera.
+
+%package -n gstreamer-ldac
+Summary:	GStreamer LDAC plugin
+Summary(pl.UTF-8):	Wtyczka LDAC dla GStreamera
+Group:		Libraries
+Requires:	gstreamer >= %{gst_ver}
+Requires:	gstreamer-plugins-base >= %{gstpb_ver}
+
+%description -n gstreamer-ldac
+LDAC bluetooth audio codec plugin for GStreamer.
+
+%description -n gstreamer-ldac -l pl.UTF-8
+Wtyczka kodeka dźwięku bluetooth LDAC dla GStreamera.
 
 %package -n gstreamer-libde265
 Summary:	GStreamer libde265 H.265 decoder plugin
@@ -1248,6 +1263,7 @@ export CXXFLAGS="%{rpmcxxflags} -std=c++11"
 	%{!?with_opengl:-Dgl=disabled} \
 	%{!?with_gsm:-Dgsm=disabled} \
 	%{!?with_ladspa:-Dladspa=disabled} \
+	%{!?with_ldac:-Dldac=disabled} \
 	%{!?with_libde265:-Dlibde265=disabled} \
 	%{!?with_lv2:-Dlv2=disabled} \
 	%{!?with_mjpegtools:-Dmpeg2enc=disabled} \
@@ -1840,6 +1856,12 @@ rm -rf $RPM_BUILD_ROOT
 %files -n gstreamer-ladspa
 %defattr(644,root,root,755)
 %attr(755,root,root) %{gstlibdir}/libgstladspa.so
+%endif
+
+%if %{with ldac}
+%files -n gstreamer-ldac
+%defattr(644,root,root,755)
+%attr(755,root,root) %{gstlibdir}/libgstldac.so
 %endif
 
 %if %{with libde265}
