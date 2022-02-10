@@ -80,6 +80,7 @@ BuildRequires:	pkgconfig >= 1:0.9.0
 BuildRequires:	python3 >= 1:3.2
 BuildRequires:	rpm-build >= 4.6
 BuildRequires:	rpmbuild(macros) >= 1.736
+BuildRequires:	tar >= 1:1.22
 BuildRequires:	xorg-lib-libX11-devel
 %if %{with examples}
 BuildRequires:	SDL-devel >= 1.2.0
@@ -189,6 +190,7 @@ BuildRequires:	webrtc-audio-processing-devel >= 0.2
 %{?with_wpe:BuildRequires:	wpebackend-fdo-devel >= 1.0}
 BuildRequires:	xorg-lib-libX11-devel
 %{?with_wpe:BuildRequires:	xorg-lib-libxkbcommon-devel}
+BuildRequires:	xz
 BuildRequires:	zbar-devel >= 0.9
 %{?with_zvbi:BuildRequires:	zvbi-devel >= 0.2}
 Requires:	glib2 >= 1:2.56.0
