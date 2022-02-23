@@ -104,7 +104,7 @@ BuildRequires:	aom-devel
 BuildRequires:	bzip2-devel
 %{?with_librsvg:BuildRequires:	cairo-devel}
 BuildRequires:	curl-devel >= 7.35.0
-BuildRequires:	dssim-devel
+BuildRequires:	dssim2-devel
 BuildRequires:	exempi-devel >= 1.99.5
 BuildRequires:	faac-devel
 %{?with_faad:BuildRequires:	faad2-devel >= 2.7}
