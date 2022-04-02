@@ -1,5 +1,12 @@
 # TODO:
-# - zxing (BR: zxing-cpp-nu-devel)
+# - avtp (BR avtp.pc)
+# - gs (BR -storage_client.pc- google_cloud_cpp_storage.pc >= 1.25.0)
+# - isac (BR: webrtc-audio-processing1-devel >= 1.0)
+# - onnx (BR: libonnxruntime.pc)
+# - svthevcenc (BR: SvtHevcEnc.pc >= 1.4.1)
+# - optional ltc (BR: ltc.pc >= 1.1.4) for timecode plugin
+# - optional vpl (BR: vpl.pc) for msdk plugin
+# - subpackage new plugins with additional dependencies
 # - nvenc (BR: cuda >= 6.5, nvEncodeAPI.h >= 5.0, -lnvidia-encode)
 #   nvdec (BR: libnvcuvid)
 #   to replace removed vdpau
@@ -37,12 +44,13 @@
 %bcond_without	srtp		# SRTP decoder/encoder plugin
 %bcond_without	tinyalsa	# ALSA audiosink using tinyalsa library
 %bcond_without	uvch264		# uvch264 cameras plugin
-%bcond_without	vulkan		# Vulkan videosink/upload plugin
-%bcond_without	wayland		# Wayland videosink plugin, Wayland EGL support, Wayland support in Vulkan plugin
+%bcond_without	vulkan		# Vulkan library and videosink/upload plugin
+%bcond_without	wayland		# Wayland videosink plugin, Wayland EGL support
 %bcond_without	wpe		# WebKit based web browser plugin
 %bcond_without	wildmidi	# wildmidi MIDI files decoder plugin
 %bcond_without	x265		# x265 H.265 encoder plugin
 %bcond_without	zvbi		# zvbi-based teletext plugin
+%bcond_without	zxing		# zxing plugin
 %bcond_without	examples	# examples build
 
 %if %{without opengl}
@@ -57,18 +65,18 @@
 Summary:	Bad GStreamer Streaming-media framework plugins
 Summary(pl.UTF-8):	Złe wtyczki do środowiska obróbki strumieni GStreamer
 Name:		gstreamer-plugins-bad
-Version:	1.20.0
+Version:	1.20.1
 Release:	1
 License:	LGPL v2+
 Group:		Libraries
 Source0:	https://gstreamer.freedesktop.org/src/gst-plugins-bad/%{gstname}-%{version}.tar.xz
-# Source0-md5:	00dade0bc7b2b54643db92c8f4bdd4ab
+# Source0-md5:	946db437adc958914b981726639640e5
 Patch0:		musepack.patch
 URL:		https://gstreamer.freedesktop.org/
 BuildRequires:	docbook-dtd412-xml
 BuildRequires:	gettext-tools >= 0.17
 BuildRequires:	glib2-devel >= 1:2.56.0
-BuildRequires:	gobject-introspection-devel >= 1.31.1
+BuildRequires:	gobject-introspection-devel >= 1.61.1
 BuildRequires:	gstreamer-devel >= %{gst_ver}
 BuildRequires:	gstreamer-gl-devel >= %{gstpb_ver}
 BuildRequires:	gstreamer-plugins-base-devel >= %{gstpb_ver}
@@ -103,7 +111,7 @@ BuildRequires:	aom-devel
 %{?with_bluez:BuildRequires:	bluez-libs-devel >= 5.0}
 BuildRequires:	bzip2-devel
 %{?with_librsvg:BuildRequires:	cairo-devel}
-BuildRequires:	curl-devel >= 7.35.0
+BuildRequires:	curl-devel >= 7.55.0
 BuildRequires:	dssim-devel
 BuildRequires:	exempi-devel >= 1.99.5
 BuildRequires:	faac-devel
@@ -114,6 +122,7 @@ BuildRequires:	fluidsynth-devel >= 1.0
 BuildRequires:	game-music-emu-devel >= 0.5.6
 BuildRequires:	gnutls-devel >= 2.11.3
 BuildRequires:	graphene-devel >= 1.4.0
+BuildRequires:	json-glib-devel
 %{?with_ladspa:BuildRequires:	ladspa-devel >= 1.12}
 BuildRequires:	lcms2-devel >= 2.7
 %{?with_ldac:BuildRequires:	ldacBT-devel}
@@ -122,18 +131,19 @@ BuildRequires:	libass-devel >= 0.10.2
 %{?with_chromaprint:BuildRequires:	libchromaprint-devel}
 %{?with_dc1394:BuildRequires:	libdc1394-devel >= 2.0.0}
 %{?with_libde265:BuildRequires:	libde265-devel >= 0.9}
-BuildRequires:	libdrm-devel >= 2.4.55
+BuildRequires:	libdrm-devel >= 2.4.98
 %{?with_dts:BuildRequires:	libdts-devel}
 BuildRequires:	libdvdnav-devel >= 4.1.2
 BuildRequires:	libdvdread-devel >= 4.1.2
 BuildRequires:	libexif-devel >= 1:0.6.16
+BuildRequires:	libfreeaptx-devel >= 0.1.1
 %{?with_gsm:BuildRequires:	libgsm-devel}
 BuildRequires:	libiptcdata-devel >= 1.0.2
 BuildRequires:	libjpeg-devel
 %{?with_kate:BuildRequires:	libkate-devel >= 0.1.7}
 BuildRequires:	liblrdf-devel
 BuildRequires:	libmodplug-devel
-BuildRequires:	libnice-devel >= 0.1.14
+BuildRequires:	libnice-devel >= 0.1.17
 BuildRequires:	libopenmpt-devel
 BuildRequires:	libpng-devel >= 2:1.2.0
 %{?with_librsvg:BuildRequires:	librsvg-devel >= 1:2.36.2}
@@ -143,11 +153,12 @@ BuildRequires:	libssh2-devel >= 1.4.3
 %{?with_sndfile:BuildRequires:	libsndfile-devel >= 1.0.16}
 # or srtp, libsrtp2 is preferred
 %{?with_srtp:BuildRequires:	libsrtp2-devel >= 2.1.0}
-BuildRequires:	libstdc++-devel
+BuildRequires:	libstdc++-devel >= 6:4.7
 BuildRequires:	libtheora-devel >= 1.0
 %{?with_kate:BuildRequires:	libtiger-devel >= 0.3.2}
 %{?with_uvch264:BuildRequires:	libusb-devel >= 1.0}
 BuildRequires:	libusrsctp-devel
+BuildRequires:	libva-devel >= 1.8
 BuildRequires:	libva-drm-devel >= 1.6
 BuildRequires:	libvpx-devel
 BuildRequires:	libwebp-devel >= 0.2.1
@@ -155,27 +166,31 @@ BuildRequires:	libwebp-devel >= 0.2.1
 %{?with_vulkan:BuildRequires:	libxcb-devel >= 1.10}
 BuildRequires:	libxml2-devel >= 1:2.9.2
 %{?with_lv2:BuildRequires:	lilv-devel >= 0.22}
-%{?with_mfx:BuildRequires:	mfx_dispatch-devel}
+%{?with_mfx:BuildRequires:	mfx_dispatch-devel >= 1.0}
+%{?with_mfx:BuildRequires:	mfx_dispatch-devel < 2}
 %{?with_mjpegtools:BuildRequires:	mjpegtools-devel >= 2.0.0}
+# libmpcdecsv8
 %{?with_musepack:BuildRequires:	musepack-devel}
 %{?with_neon:BuildRequires:	neon-devel >= 0.27.0}
+%{?with_neon:BuildRequires:	neon-devel < 0.33}
 # for hls, could also use libgcrypt>=1.2.0 or openssl
 BuildRequires:	nettle-devel
 %if %{with opencv}
 BuildRequires:	opencv-devel >= 1:3.0.0
-BuildRequires:	opencv-devel < 1:4.2.0
+BuildRequires:	opencv-devel < 1:4.6.0
 %endif
 %{?with_openh264:BuildRequires:	openh264-devel >= 1.3.0}
 # or openjpeg >= 1.5, openjpeg2 is preferred
-BuildRequires:	openjpeg2-devel >= 2.1
-# for dtls
-BuildRequires:	openssl-devel >= 1.0.1
+BuildRequires:	openjpeg2-devel >= 2.2
+# for dtls, aes
+BuildRequires:	openssl-devel >= 1.1.0
 BuildRequires:	opus-devel >= 0.9.4
 BuildRequires:	pango-devel >= 1:1.22.0
+BuildRequires:	qrencode-devel
 %{?with_sbc:BuildRequires:	sbc-devel >= 1.0}
 BuildRequires:	soundtouch-devel >= 1.4
 BuildRequires:	spandsp-devel >= 1:0.0.6
-BuildRequires:	srt-devel
+BuildRequires:	srt-devel >= 1.3.0
 %{?with_tinyalsa:BuildRequires:	tinyalsa-devel}
 BuildRequires:	udev-glib-devel
 BuildRequires:	vo-aacenc-devel >= 0.1.0
@@ -186,16 +201,20 @@ BuildRequires:	vo-aacenc-devel >= 0.1.0
 BuildRequires:	webrtc-audio-processing-devel < 0.4
 BuildRequires:	webrtc-audio-processing-devel >= 0.2
 %{?with_wildmidi:BuildRequires:	wildmidi-devel >= 0.4}
-%{?with_wpe:BuildRequires:	wpe-webkit-devel >= 2.24}
-%{?with_wpe:BuildRequires:	wpebackend-fdo-devel >= 1.0}
+%{?with_wpe:BuildRequires:	wpe-webkit-devel >= 2.28}
+%{?with_wpe:BuildRequires:	wpebackend-fdo-devel >= 1.8}
 BuildRequires:	xorg-lib-libX11-devel
-%{?with_wpe:BuildRequires:	xorg-lib-libxkbcommon-devel}
+%{?with_wpe:BuildRequires:	xorg-lib-libxkbcommon-devel >= 0.8}
+%{?with_vulkan:BuildRequires:	xorg-lib-libxkbcommon-x11-devel}
 BuildRequires:	xz
 BuildRequires:	zbar-devel >= 0.9
 %{?with_zvbi:BuildRequires:	zvbi-devel >= 0.2}
+%{?with_zxing:BuildRequires:	zxing-cpp-nu-devel >= 1.1.1}
 Requires:	glib2 >= 1:2.56.0
 Requires:	gstreamer >= %{gst_ver}
 Requires:	gstreamer-plugins-base >= %{gstpb_ver}
+# for libgstva
+Requires:	libva >= 1.8
 Requires:	libxml2 >= 1:2.8
 Requires:	orc >= 0.4.17
 Obsoletes:	gstreamer-cdaudio < 1.0
@@ -443,7 +462,7 @@ Wtyczka GStreamera obsługująca Closedcaption.
 Summary:	GStreamer cURL network sink plugin
 Summary(pl.UTF-8):	Wtyczka wyjścia sieciowego cURL dla GStreamera
 Group:		Libraries
-Requires:	curl-libs >= 7.35.0
+Requires:	curl-libs >= 7.55.0
 Requires:	gstreamer >= %{gst_ver}
 Requires:	libssh2 >= 1.4.3
 
@@ -615,7 +634,7 @@ Summary(pl.UTF-8):	Wtyczka wyjścia obrazu KMS dla GStreamera
 Group:		Libraries
 Requires:	gstreamer >= %{gst_ver}
 Requires:	gstreamer-plugins-base >= %{gstpb_ver}
-Requires:	libdrm >= 2.4.55
+Requires:	libdrm >= 2.4.98
 Provides:	gstreamer-videosink = %{version}
 
 %description -n gstreamer-videosink-kms
@@ -1010,6 +1029,7 @@ Summary:	GStreamer SRT plugin
 Summary(pl.UTF-8):	Wtyczka SRT dla GStreamera
 Group:		Libraries
 Requires:	gstreamer >= %{gst_ver}
+Requires:	srt >= 1.3.0
 
 %description -n gstreamer-srt
 GStreamer sink plugin to transfer data via SRT.
@@ -1141,7 +1161,6 @@ Summary(pl.UTF-8):	Wtyczka GStreamera Vulkan
 Group:		Libraries
 Requires:	gstreamer >= %{gst_ver}
 Requires:	gstreamer-plugins-base >= %{gstpb_ver}
-Requires:	libxcb >= 1.10
 Provides:	gstreamer-videosink = %{version}
 
 %description -n gstreamer-vulkan
@@ -1170,7 +1189,7 @@ Summary(pl.UTF-8):	Wtyczka WebRTC dla GStreamera
 Group:		Libraries
 Requires:	gstreamer >= %{gst_ver}
 Requires:	gstreamer-plugins-base >= %{gstpb_ver}
-Requires:	libnice >= 0.1.14
+Requires:	libnice >= 0.1.17
 
 %description -n gstreamer-webrtc
 WebRTC plugin for GStreamer.
@@ -1211,8 +1230,9 @@ Summary(pl.UTF-8):	Wtyczka GStreamera ze źródłem WPE (przeglądarki WWW opart
 Group:		Libraries
 Requires:	gstreamer >= %{gst_ver}
 Requires:	gstreamer-plugins-base >= %{gstpb_ver}
-Requires:	wpe-webkit >= 2.24
-Requires:	wpebackend-fdo >= 1.0
+Requires:	wpe-webkit >= 2.28
+Requires:	wpebackend-fdo >= 1.8
+Requires:	xorg-lib-libxkbcommon >= 0.8
 
 %description -n gstreamer-wpe
 GStreamer WPE (WebKit web browser) source plugin.
@@ -1263,6 +1283,7 @@ export CXXFLAGS="%{rpmcxxflags} -std=c++11"
 	%{!?with_examples:-Dexamples=disabled} \
 	%{!?with_faad:-Dfaad=disabled} \
 	%{!?with_opengl:-Dgl=disabled} \
+	-Dgpl=enabled \
 	%{!?with_gsm:-Dgsm=disabled} \
 	%{!?with_ladspa:-Dladspa=disabled} \
 	%{!?with_ldac:-Dldac=disabled} \
@@ -1275,6 +1296,7 @@ export CXXFLAGS="%{rpmcxxflags} -std=c++11"
 	%{!?with_opencv:-Dopencv=disabled} \
 	%{!?with_openh264:-Dopenh264=disabled} \
 	%{!?with_openni2:-Dopenni2=disabled} \
+	-Dsctp-internal-usrsctp=disabled \
 	%{!?with_zvbi:-Dteletext=disabled} \
 	%{!?with_tinyalsa:-Dtinyalsa=disabled} \
 	%{!?with_uvch264:-Duvch264=disabled} \
@@ -1282,8 +1304,7 @@ export CXXFLAGS="%{rpmcxxflags} -std=c++11"
 	%{!?with_vulkan:-Dvulkan=disabled} \
 	%{!?with_wayland:-Dwayland=disabled} \
 	%{!?with_x265:-Dx265=disabled} \
-	-Dgpl=enabled \
-	-Dzxing=disabled
+	%{!?with_zxing:-Dzxing=disabled}
 
 %ninja_build -C build
 
@@ -1294,7 +1315,8 @@ cd build/docs
 #    ctype_name = ALL_GI_TYPES[gi_name]
 # KeyError: 'GstVulkan.VulkanDisplay'
 # An unknown error happened while building the documentation and hotdoc cannot recover from it. Please report a bug with this error message and the steps to reproduce it
-%{__rm} vulkan-wayland-doc.json vulkan-xcb-doc.json
+%{__mv} vulkan-wayland-doc.json{,.disabled}
+%{__rm} vulkan-xcb-doc.json{,.disabled}
 
 for config in *-doc.json ; do
 	LC_ALL=C.UTF-8 hotdoc run --conf-file "$config"
@@ -1327,7 +1349,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files -f %{gstname}-%{gstmver}.lang
 %defattr(644,root,root,755)
-%doc AUTHORS ChangeLog NEWS README RELEASE
+%doc AUTHORS ChangeLog NEWS README.md RELEASE
 %{?with_examples:%attr(755,root,root) %{_bindir}/playout}
 %attr(755,root,root) %{_libdir}/libgstadaptivedemux-%{gstmver}.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libgstadaptivedemux-%{gstmver}.so.0
@@ -1373,6 +1395,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/girepository-1.0/GstVulkanWayland-1.0.typelib
 %{_libdir}/girepository-1.0/GstVulkanXCB-1.0.typelib
 %{_libdir}/girepository-1.0/GstWebRTC-1.0.typelib
+# R: openssl >= 1.1.0
 %attr(755,root,root) %{gstlibdir}/libgstaes.so
 %attr(755,root,root) %{gstlibdir}/libgstaccurip.so
 %attr(755,root,root) %{gstlibdir}/libgstadpcmdec.so
@@ -1390,6 +1413,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{gstlibdir}/libgstcamerabin.so
 %attr(755,root,root) %{gstlibdir}/libgstcodecalpha.so
 %attr(755,root,root) %{gstlibdir}/libgstcoloreffects.so
+# R: qrencode json-glib
 %attr(755,root,root) %{gstlibdir}/libgstqroverlay.so
 # R: lcms2
 %attr(755,root,root) %{gstlibdir}/libgstcolormanagement.so
@@ -1433,6 +1457,8 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{gstlibdir}/libgstmxf.so
 %attr(755,root,root) %{gstlibdir}/libgstnetsim.so
 %attr(755,root,root) %{gstlibdir}/libgstnvcodec.so
+# R: libfreeaptx >= 0.1.1
+%attr(755,root,root) %{gstlibdir}/libgstopenaptx.so
 %attr(755,root,root) %{gstlibdir}/libgstpcapparse.so
 %attr(755,root,root) %{gstlibdir}/libgstpnm.so
 %attr(755,root,root) %{gstlibdir}/libgstproxy.so
@@ -1459,6 +1485,8 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{gstlibdir}/libgstvideosignal.so
 %attr(755,root,root) %{gstlibdir}/libgstvmnc.so
 %attr(755,root,root) %{gstlibdir}/libgsty4mdec.so
+# R: zxing-cpp-nu >= 1.1.1
+%attr(755,root,root) %{gstlibdir}/libgstzxing.so
 %dir %{gstdatadir}/presets
 %{gstdatadir}/presets/GstFreeverb.prs
 
@@ -1516,7 +1544,6 @@ rm -rf $RPM_BUILD_ROOT
 %{_pkgconfigdir}/gstreamer-player-%{gstmver}.pc
 %{_pkgconfigdir}/gstreamer-plugins-bad-%{gstmver}.pc
 %{_pkgconfigdir}/gstreamer-sctp-%{gstmver}.pc
-%{_pkgconfigdir}/gstreamer-va-1.0.pc
 %{_pkgconfigdir}/gstreamer-vulkan-%{gstmver}.pc
 %{_pkgconfigdir}/gstreamer-vulkan-wayland-%{gstmver}.pc
 %{_pkgconfigdir}/gstreamer-vulkan-xcb-%{gstmver}.pc
@@ -1532,6 +1559,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_docdir}/gstreamer-%{gstmver}/aes-doc
 %{_docdir}/gstreamer-%{gstmver}/aiff-doc
 %{_docdir}/gstreamer-%{gstmver}/aom-doc
+%{_docdir}/gstreamer-%{gstmver}/applemedia-doc
 %{_docdir}/gstreamer-%{gstmver}/asfmux-doc
 %{_docdir}/gstreamer-%{gstmver}/assrender-doc
 %{_docdir}/gstreamer-%{gstmver}/audiobuffersplit-doc
