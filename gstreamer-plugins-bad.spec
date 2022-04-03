@@ -1,12 +1,10 @@
 # TODO:
-# - avtp (BR avtp.pc)
-# - gs (BR -storage_client.pc- google_cloud_cpp_storage.pc >= 1.25.0)
-# - isac (BR: webrtc-audio-processing1-devel >= 1.0)
-# - onnx (BR: libonnxruntime.pc)
-# - svthevcenc (BR: SvtHevcEnc.pc >= 1.4.1)
-# - optional ltc (BR: ltc.pc >= 1.1.4) for timecode plugin
-# - optional vpl (BR: vpl.pc) for msdk plugin
 # - subpackage new plugins with additional dependencies
+# - gs (BR -storage_client.pc- google_cloud_cpp_storage.pc >= 1.25.0 [https://github.com/googleapis/google-cloud-cpp])
+# - onnx (BR: libonnxruntime.pc [https://github.com/microsoft/onnxruntime])
+# - svthevcenc (BR: SvtHevcEnc.pc >= 1.4.1 [https://github.com/OpenVisualCloud/SVT-HEVC])
+# - optional ltc (BR: ltc.pc >= 1.1.4 [https://github.com/x42/libltc]) for timecode plugin
+# - optional vpl (BR: vpl.pc [https://github.com/oneapi-src/onevpl]) for msdk plugin
 # - nvenc (BR: cuda >= 6.5, nvEncodeAPI.h >= 5.0, -lnvidia-encode)
 #   nvdec (BR: libnvcuvid)
 #   to replace removed vdpau
@@ -127,6 +125,7 @@ BuildRequires:	json-glib-devel
 BuildRequires:	lcms2-devel >= 2.7
 %{?with_ldac:BuildRequires:	ldacBT-devel}
 BuildRequires:	libass-devel >= 0.10.2
+BuildRequires:	libavtp-devel
 %{?with_bs2b:BuildRequires:	libbs2b-devel >= 3.1.0}
 %{?with_chromaprint:BuildRequires:	libchromaprint-devel}
 %{?with_dc1394:BuildRequires:	libdc1394-devel >= 2.0.0}
@@ -200,6 +199,7 @@ BuildRequires:	vo-aacenc-devel >= 0.1.0
 %{?with_wayland:BuildRequires:	wayland-protocols >= 1.15}
 BuildRequires:	webrtc-audio-processing-devel < 0.4
 BuildRequires:	webrtc-audio-processing-devel >= 0.2
+BuildRequires:	webrtc-audio-processing1-devel >= 1.0
 %{?with_wildmidi:BuildRequires:	wildmidi-devel >= 0.4}
 %{?with_wpe:BuildRequires:	wpe-webkit-devel >= 2.28}
 %{?with_wpe:BuildRequires:	wpebackend-fdo-devel >= 1.8}
@@ -1404,6 +1404,8 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{gstlibdir}/libgstaudiomixmatrix.so
 %attr(755,root,root) %{gstlibdir}/libgstaudiovisualizers.so
 %attr(755,root,root) %{gstlibdir}/libgstautoconvert.so
+# R: libavtp
+%attr(755,root,root) %{gstlibdir}/libgstavtp.so
 %attr(755,root,root) %{gstlibdir}/libgstbayer.so
 %attr(755,root,root) %{gstlibdir}/libgstbz2.so
 %attr(755,root,root) %{gstlibdir}/libgstcamerabin.so
@@ -1436,6 +1438,8 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{gstlibdir}/libgstinterlace.so
 %attr(755,root,root) %{gstlibdir}/libgstinter.so
 %attr(755,root,root) %{gstlibdir}/libgstipcpipeline.so
+# R: webrtc-audio-processing1 >= 1.0
+%attr(755,root,root) %{gstlibdir}/libgstisac.so
 %attr(755,root,root) %{gstlibdir}/libgstivfparse.so
 %attr(755,root,root) %{gstlibdir}/libgstivtc.so
 %attr(755,root,root) %{gstlibdir}/libgstjp2kdecimator.so
