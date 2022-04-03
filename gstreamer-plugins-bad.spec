@@ -1272,6 +1272,10 @@ Wtyczka GStreamera skanująca kody kreskowe.
 %setup -q -n %{gstname}-%{version}
 %patch0 -p1
 
+# disable SCTP debugging (even though gst_debug is enabled by default)
+# (SCTP_DEBUG requires libusrsctp built with debugging)
+%{__sed} -i -e "s/'-DSCTP_DEBUG'//" ext/sctp/meson.build
+
 %build
 export CXXFLAGS="%{rpmcxxflags} -std=c++11"
 %meson build \
@@ -1310,14 +1314,6 @@ export CXXFLAGS="%{rpmcxxflags} -std=c++11"
 
 %if %{with apidocs}
 cd build/docs
-# hotdoc crashes on these:
-#   File "/usr/lib/python3.8/site-packages/hotdoc/extensions/gi/node_cache.py", line 101, in __get_parent_link_recurse
-#    ctype_name = ALL_GI_TYPES[gi_name]
-# KeyError: 'GstVulkan.VulkanDisplay'
-# An unknown error happened while building the documentation and hotdoc cannot recover from it. Please report a bug with this error message and the steps to reproduce it
-%{__mv} vulkan-wayland-doc.json{,.disabled}
-%{__rm} vulkan-xcb-doc.json{,.disabled}
-
 for config in *-doc.json ; do
 	LC_ALL=C.UTF-8 hotdoc run --conf-file "$config"
 done
@@ -1704,8 +1700,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_docdir}/gstreamer-%{gstmver}/voaacenc-doc
 %{_docdir}/gstreamer-%{gstmver}/voamrwbenc-doc
 %{_docdir}/gstreamer-%{gstmver}/vulkan-doc
-#%{_docdir}/gstreamer-%{gstmver}/vulkan-wayland-doc
-#%{_docdir}/gstreamer-%{gstmver}/vulkan-xcb-doc
+%{_docdir}/gstreamer-%{gstmver}/vulkan-wayland-doc
+%{_docdir}/gstreamer-%{gstmver}/vulkan-xcb-doc
 %{_docdir}/gstreamer-%{gstmver}/vulkanlib-doc
 %{_docdir}/gstreamer-%{gstmver}/wasapi-doc
 %{_docdir}/gstreamer-%{gstmver}/wasapi2-doc
