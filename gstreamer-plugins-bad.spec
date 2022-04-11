@@ -715,6 +715,20 @@ GStreamer mpeg2enc plugin (based on mjpegtools libraries).
 %description -n gstreamer-mjpegtools -l pl.UTF-8
 Wtyczka mpeg2enc dla GStreamera (oparta na bibliotekach mjpegtools).
 
+%package -n gstreamer-modplug
+Summary:	GStreamer .MOD audio decoding plugin
+Summary(pl.UTF-8):	Wtyczka GStreamera dekodująca dźwięk .MOD
+Group:		Libraries
+Requires:	gstreamer >= %{gst_ver}
+Requires:	gstreamer-plugins-base >= %{gstpb_ver}
+Conflicts:	gstreamer-plugins-bad < 1.20.1-2
+
+%description -n gstreamer-modplug
+GStreamer GME Audio Decoder plugin.
+
+%description -n gstreamer-modplug -l pl.UTF-8
+Wtyczka GStreamera dekodująca dźwięk GME.
+
 %package -n gstreamer-msdk
 Summary:	Intel MediaSDK (MFX) plugin for GStreamer
 Summary(pl.UTF-8):	Wtyczka MediaSDK (MFX) dla GStreamera
@@ -769,6 +783,21 @@ GStreamer OpenAL support plugin, providing audio sink and source.
 %description -n gstreamer-openal -l pl.UTF-8
 Wtyczka GStreamera obsługująca OpenAL, zapewniająca wyjście i źródło
 dźwięku.
+
+%package -n gstreamer-openaptx
+Summary:	GStreamer aptX codec plugin
+Summary(pl.UTF-8):	Wtyczka kodeka aptX dla GStreamera
+Group:		Libraries
+Requires:	gstreamer >= %{gst_ver}
+Requires:	gstreamer-plugins-base >= %{gstpb_ver}
+Conflicts:	gstreamer-plugins-bad < 1.20.1-2
+
+%description -n gstreamer-openaptx
+GStreamer OpenEXR plugin - Audio Processing Technology codec (aptX).
+
+%description -n gstreamer-openaptx -l pl.UTF-8
+Wtyczka OpenEXR dla GStreamera - kodek Audio Processing Technology
+(aptX).
 
 %package -n gstreamer-opencv
 Summary:	GStreamer OpenCV plugin
@@ -1256,7 +1285,7 @@ Wtyczka GStreamera kodująca przy użyciu biblioteki x265.
 
 %package -n gstreamer-zbar
 Summary:	GStreamer ZBar barcode scanner plugin
-Summary(pl.UTF-8):	Wtyczka GStreamera skanująca kody kreskowe
+Summary(pl.UTF-8):	Wtyczka GStreamera ZBar skanująca kody kreskowe
 Group:		Libraries
 Requires:	gstreamer >= %{gst_ver}
 Requires:	gstreamer-plugins-base >= %{gstpb_ver}
@@ -1266,7 +1295,22 @@ Requires:	zbar >= 0.9
 GStreamer ZBar barcode scanner plugin.
 
 %description -n gstreamer-zbar -l pl.UTF-8
-Wtyczka GStreamera skanująca kody kreskowe.
+Wtyczka GStreamera ZBar skanująca kody kreskowe.
+
+%package -n gstreamer-zxing
+Summary:	GStreamer ZXing barcode detector plugin
+Summary(pl.UTF-8):	Wtyczka GStreamera ZXing wykrywająca kody kreskowe
+Group:		Libraries
+Requires:	gstreamer >= %{gst_ver}
+Requires:	gstreamer-plugins-base >= %{gstpb_ver}
+Requires:	zxing-cpp-nu >= 1.1.1
+Conflicts:	gstreamer-plugins-bad < 1.20.1-2
+
+%description -n gstreamer-zxing
+GStreamer ZXing barcode detector plugin.
+
+%description -n gstreamer-zxing -l pl.UTF-8
+Wtyczka GStreamera ZXing wykrywająca kody kreskowe.
 
 %prep
 %setup -q -n %{gstname}-%{version}
@@ -1448,8 +1492,6 @@ rm -rf $RPM_BUILD_ROOT
 # R: libmicrodns
 %attr(755,root,root) %{gstlibdir}/libgstmicrodns.so
 %attr(755,root,root) %{gstlibdir}/libgstmidi.so
-# R: libmodplug
-%attr(755,root,root) %{gstlibdir}/libgstmodplug.so
 %attr(755,root,root) %{gstlibdir}/libgstmpegpsdemux.so
 %attr(755,root,root) %{gstlibdir}/libgstmpegpsmux.so
 %attr(755,root,root) %{gstlibdir}/libgstmpegtsdemux.so
@@ -1457,8 +1499,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{gstlibdir}/libgstmxf.so
 %attr(755,root,root) %{gstlibdir}/libgstnetsim.so
 %attr(755,root,root) %{gstlibdir}/libgstnvcodec.so
-# R: libfreeaptx >= 0.1.1
-%attr(755,root,root) %{gstlibdir}/libgstopenaptx.so
 %attr(755,root,root) %{gstlibdir}/libgstpcapparse.so
 %attr(755,root,root) %{gstlibdir}/libgstpnm.so
 %attr(755,root,root) %{gstlibdir}/libgstproxy.so
@@ -1485,8 +1525,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{gstlibdir}/libgstvideosignal.so
 %attr(755,root,root) %{gstlibdir}/libgstvmnc.so
 %attr(755,root,root) %{gstlibdir}/libgsty4mdec.so
-# R: zxing-cpp-nu >= 1.1.1
-%attr(755,root,root) %{gstlibdir}/libgstzxing.so
 %dir %{gstdatadir}/presets
 %{gstdatadir}/presets/GstFreeverb.prs
 
@@ -1914,6 +1952,11 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{gstlibdir}/libgstmplex.so
 %endif
 
+%files -n gstreamer-modplug
+%defattr(644,root,root,755)
+# R: libmodplug
+%attr(755,root,root) %{gstlibdir}/libgstmodplug.so
+
 %if %{with mfx}
 %files -n gstreamer-msdk
 %defattr(644,root,root,755)
@@ -1937,6 +1980,11 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %attr(755,root,root) %{gstlibdir}/libgstopenal.so
 %endif
+
+%files -n gstreamer-openaptx
+%defattr(644,root,root,755)
+# R: libfreeaptx >= 0.1.1
+%attr(755,root,root) %{gstlibdir}/libgstopenaptx.so
 
 %if %{with opencv}
 %files -n gstreamer-opencv
@@ -2114,3 +2162,8 @@ rm -rf $RPM_BUILD_ROOT
 %files -n gstreamer-zbar
 %defattr(644,root,root,755)
 %attr(755,root,root) %{gstlibdir}/libgstzbar.so
+
+%files -n gstreamer-zxing
+%defattr(644,root,root,755)
+# R: zxing-cpp-nu >= 1.1.1
+%attr(755,root,root) %{gstlibdir}/libgstzxing.so
