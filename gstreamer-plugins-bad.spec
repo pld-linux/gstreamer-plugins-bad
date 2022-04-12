@@ -173,7 +173,7 @@ BuildRequires:	libxml2-devel >= 1:2.9.2
 %{?with_neon:BuildRequires:	neon-devel >= 0.27.0}
 %{?with_neon:BuildRequires:	neon-devel < 0.33}
 # for hls, could also use libgcrypt>=1.2.0 or openssl
-BuildRequires:	nettle-devel
+BuildRequires:	nettle-devel >= 3.0
 %if %{with opencv}
 BuildRequires:	opencv-devel >= 1:3.0.0
 BuildRequires:	opencv-devel < 1:4.6.0
@@ -327,6 +327,21 @@ GStreamer plugin for AAC audio encoding and decoding.
 %description -n gstreamer-aac -l pl.UTF-8
 Wtyczka GStreamera do kodowania i dekodowania plików audio AAC.
 
+%package -n gstreamer-aes
+Summary:	GStreamer AES plugin
+Summary(pl.UTF-8):	Wtyczka AES dla GStreamera
+Group:		Libraries
+Requires:	gstreamer >= %{gst_ver}
+Requires:	gstreamer-plugins-base >= %{gstpb_ver}
+Requires:	openssl >= 1.1.0
+Conflicts:	gstreamer-plugins-bad < 1.20.1-2
+
+%description -n gstreamer-aes
+GStreamer AES encryption/decryption plugin.
+
+%description -n gstreamer-aes -l pl.UTF-8
+Wtyczka szyfrująca/odszyfrowująca AES dla GStreamera.
+
 %package -n gstreamer-amrwbenc
 Summary:	GStreamer plugin for AMR-WB audio encoding
 Summary(pl.UTF-8):	Wtyczka GStreamera do kodowania dźwięku w formacie AMR-WB
@@ -414,6 +429,21 @@ records using the b2sb library.
 %description -n gstreamer-bs2b -l pl.UTF-8
 Wtyczka GStreamera poprawiająca odsłuchiwanie nagrań stereofonicznych
 przez słuchawki przy użyciu biblioteki bs2b.
+
+%package -n gstreamer-avtp
+Summary:	GStreamer AVTP (Audio/Video Transport Protocol) plugin
+Summary(pl.UTF-8):	Wtyczka protokołu AVTP (Audio/Video Transport Protocol) dla GStreamera
+Group:		Libraries
+Requires:	gstreamer >= %{gst_ver}
+Requires:	gstreamer-plugins-base >= %{gstpb_ver}
+Conflicts:	gstreamer-plugins-bad < 1.20.1-2
+
+%description -n gstreamer-avtp
+GStreamer AVTP (Audio/Video Transport Protocol) plugin.
+
+%description -n gstreamer-avtp -l pl.UTF-8
+Wtyczka protokołu AVTP (Audio/Video Transport Protocol) dla
+GStreamera.
 
 %package -n gstreamer-bluez
 Summary:	GStreamer plugin for Bluez-based bluetooth support
@@ -598,6 +628,21 @@ Output plugin for GStreamer to convert to GSM lossy audio format.
 Wtyczka wyjścia dźwięku GSteamera konwertująca do stratnego formatu
 GSM.
 
+%package -n gstreamer-hls
+Summary:	GStreamer HLS (HTTP Live Streaming) plugin
+Summary(pl.UTF-8):	Wtyczka HLS (HTTP Live Streaming) dla GStreamera
+Group:		Libraries
+Requires:	gstreamer >= %{gst_ver}
+Requires:	gstreamer-plugins-base >= %{gstpb_ver}
+Requires:	nettle >= 3.0
+Conflicts:	gstreamer-plugins-bad < 1.20.1-2
+
+%description -n gstreamer-hls
+GStreamer HLS (HTTP Live Streaming) plugin.
+
+%description -n gstreamer-hls -l pl.UTF-8
+Wtyczka HLS (HTTP Live Streaming) dla GStreamera.
+
 %package -n gstreamer-iqa
 Summary:	GStreamer analyzer plugin to provide various Image Quality Assessment metrics
 Summary(pl.UTF-8):	Wtyczka analizująca GStreamera zapewniająca różne wskaźniki oceny jakości obrazu
@@ -612,6 +657,22 @@ metrics.
 %description -n gstreamer-iqa -l pl.UTF-8
 Wtyczka analizująca GStreamera zapewniająca różne wskaźniki oceny
 jakości obrazu.
+
+%package -n gstreamer-isac
+Summary:	GStreamer iSAC codec plugin
+Summary(pl.UTF-8):	Wtyczka kodeka iSAC dla GStreamera
+Group:		Libraries
+Requires:	gstreamer >= %{gst_ver}
+Requires:	gstreamer-plugins-base >= %{gstpb_ver}
+Requires:	webrtc-audio-processing1 >= 1.0
+Conflicts:	gstreamer-plugins-bad < 1.20.1-2
+
+%description -n gstreamer-isac
+GStreamer plugin to encode and decode audio using iSAC codec.
+
+%description -n gstreamer-isac -l pl.UTF-8
+Wtyczka GStreamera do kodowania i dekodowania dźwięku przy użyciu
+kodeka iSAC.
 
 %package -n gstreamer-kate
 Summary:	GStreamer plugin for Kate text streams
@@ -700,6 +761,21 @@ Plugin which wraps LV2 plugins for use by GStreamer applications.
 %description -n gstreamer-lv2 -l pl.UTF-8
 Wtyczka pozwalająca na używanie wtyczek LV2 przez aplikacje
 GStreamera.
+
+%package -n gstreamer-microdns
+Summary:	GStreamer microdns MDNS Device Provider plugin
+Summary(pl.UTF-8):	Wtyczka microdns dla GStreamera udostępniająca urządzania MDNS
+Group:		Libraries
+Requires:	gstreamer >= %{gst_ver}
+Requires:	gstreamer-plugins-base >= %{gstpb_ver}
+Conflicts:	gstreamer-plugins-bad < 1.20.1-2
+
+%description -n gstreamer-microdns
+GStreamer plugin to list and provide MDNS-advertised source devices.
+
+%description -n gstreamer-microdns -l pl.UTF-8
+Wtyczka GStreamera pokazująca listę i udostępniająca urządzenia
+źródłowe rozgłaszające się przez MDNS.
 
 %package -n gstreamer-mjpegtools
 Summary:	GStreamer mpeg2enc plugin
@@ -1435,8 +1511,6 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/girepository-1.0/GstVulkanWayland-1.0.typelib
 %{_libdir}/girepository-1.0/GstVulkanXCB-1.0.typelib
 %{_libdir}/girepository-1.0/GstWebRTC-1.0.typelib
-# R: openssl >= 1.1.0
-%attr(755,root,root) %{gstlibdir}/libgstaes.so
 %attr(755,root,root) %{gstlibdir}/libgstaccurip.so
 %attr(755,root,root) %{gstlibdir}/libgstadpcmdec.so
 %attr(755,root,root) %{gstlibdir}/libgstadpcmenc.so
@@ -1448,15 +1522,11 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{gstlibdir}/libgstaudiomixmatrix.so
 %attr(755,root,root) %{gstlibdir}/libgstaudiovisualizers.so
 %attr(755,root,root) %{gstlibdir}/libgstautoconvert.so
-# R: libavtp
-%attr(755,root,root) %{gstlibdir}/libgstavtp.so
 %attr(755,root,root) %{gstlibdir}/libgstbayer.so
 %attr(755,root,root) %{gstlibdir}/libgstbz2.so
 %attr(755,root,root) %{gstlibdir}/libgstcamerabin.so
 %attr(755,root,root) %{gstlibdir}/libgstcodecalpha.so
 %attr(755,root,root) %{gstlibdir}/libgstcoloreffects.so
-# R: qrencode json-glib
-%attr(755,root,root) %{gstlibdir}/libgstqroverlay.so
 # R: lcms2
 %attr(755,root,root) %{gstlibdir}/libgstcolormanagement.so
 # R: libxml2
@@ -1476,21 +1546,15 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{gstlibdir}/libgstgaudieffects.so
 %attr(755,root,root) %{gstlibdir}/libgstgdp.so
 %attr(755,root,root) %{gstlibdir}/libgstgeometrictransform.so
-# R: nettle
-%attr(755,root,root) %{gstlibdir}/libgsthls.so
 %attr(755,root,root) %{gstlibdir}/libgstid3tag.so
 %attr(755,root,root) %{gstlibdir}/libgstinterlace.so
 %attr(755,root,root) %{gstlibdir}/libgstinter.so
 %attr(755,root,root) %{gstlibdir}/libgstipcpipeline.so
-# R: webrtc-audio-processing1 >= 1.0
-%attr(755,root,root) %{gstlibdir}/libgstisac.so
 %attr(755,root,root) %{gstlibdir}/libgstivfparse.so
 %attr(755,root,root) %{gstlibdir}/libgstivtc.so
 %attr(755,root,root) %{gstlibdir}/libgstjp2kdecimator.so
 %attr(755,root,root) %{gstlibdir}/libgstjpegformat.so
 %attr(755,root,root) %{gstlibdir}/libgstlegacyrawparse.so
-# R: libmicrodns
-%attr(755,root,root) %{gstlibdir}/libgstmicrodns.so
 %attr(755,root,root) %{gstlibdir}/libgstmidi.so
 %attr(755,root,root) %{gstlibdir}/libgstmpegpsdemux.so
 %attr(755,root,root) %{gstlibdir}/libgstmpegpsmux.so
@@ -1502,6 +1566,8 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{gstlibdir}/libgstpcapparse.so
 %attr(755,root,root) %{gstlibdir}/libgstpnm.so
 %attr(755,root,root) %{gstlibdir}/libgstproxy.so
+# R: qrencode json-glib
+%attr(755,root,root) %{gstlibdir}/libgstqroverlay.so
 %attr(755,root,root) %{gstlibdir}/libgstremovesilence.so
 %attr(755,root,root) %{gstlibdir}/libgstrfbsrc.so
 %attr(755,root,root) %{gstlibdir}/libgstrist.so
@@ -1808,6 +1874,11 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{gstlibdir}/libgstfaad.so
 %endif
 
+%files -n gstreamer-aes
+%defattr(644,root,root,755)
+# R: openssl >= 1.1.0
+%attr(755,root,root) %{gstlibdir}/libgstaes.so
+
 %files -n gstreamer-aom
 %defattr(644,root,root,755)
 %attr(755,root,root) %{gstlibdir}/libgstaom.so
@@ -1832,6 +1903,11 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %attr(755,root,root) %{gstlibdir}/libgsttinyalsa.so
 %endif
+
+%files -n gstreamer-avtp
+%defattr(644,root,root,755)
+# R: libavtp
+%attr(755,root,root) %{gstlibdir}/libgstavtp.so
 
 %if %{with bluez}
 %files -n gstreamer-bluez
@@ -1905,9 +1981,19 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{gstlibdir}/libgstgsm.so
 %endif
 
+%files -n gstreamer-hls
+%defattr(644,root,root,755)
+# R: nettle >= 3.0
+%attr(755,root,root) %{gstlibdir}/libgsthls.so
+
 %files -n gstreamer-iqa
 %defattr(644,root,root,755)
 %attr(755,root,root) %{gstlibdir}/libgstiqa.so
+
+%files -n gstreamer-isac
+%defattr(644,root,root,755)
+# R: webrtc-audio-processing1 >= 1.0
+%attr(755,root,root) %{gstlibdir}/libgstisac.so
 
 %if %{with kate}
 %files -n gstreamer-kate
@@ -1944,6 +2030,11 @@ rm -rf $RPM_BUILD_ROOT
 %doc ext/lv2/README
 %attr(755,root,root) %{gstlibdir}/libgstlv2.so
 %endif
+
+%files -n gstreamer-microdns
+%defattr(644,root,root,755)
+# R: libmicrodns
+%attr(755,root,root) %{gstlibdir}/libgstmicrodns.so
 
 %if %{with mjpegtools}
 %files -n gstreamer-mjpegtools
