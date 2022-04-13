@@ -215,7 +215,6 @@ Requires:	gstreamer >= %{gst_ver}
 Requires:	gstreamer-plugins-base >= %{gstpb_ver}
 # for libgstva
 Requires:	libva >= 1.8
-Requires:	libxml2 >= 1:2.8
 Requires:	orc >= 0.4.17
 Obsoletes:	gstreamer-cdaudio < 1.0
 Obsoletes:	gstreamer-mms < 1.19.3
@@ -488,6 +487,21 @@ Plugin for Closedcaption support.
 %description -n gstreamer-closedcaption -l pl.UTF-8
 Wtyczka GStreamera obsługująca Closedcaption.
 
+%package -n gstreamer-colormanagement
+Summary:	GStreamer color management correction plugin
+Summary(pl.UTF-8):	Wtyczka korekt zarządzania kolorami dla GStreamera
+Group:		Libraries
+Requires:	gstreamer >= %{gst_ver}
+Requires:	gstreamer-plugins-base >= %{gstpb_ver}
+Requires:	lcms2 >= 2.7
+Conflicts:	gstreamer-plugins-bad < 1.20.1-2
+
+%description -n gstreamer-colormanagement
+GStreamer color management correction plugin.
+
+%description -n gstreamer-colormanagement -l pl.UTF-8
+Wtyczka korekt zarządzania kolorami dla GStreamera.
+
 %package -n gstreamer-curl
 Summary:	GStreamer cURL network sink plugin
 Summary(pl.UTF-8):	Wtyczka wyjścia sieciowego cURL dla GStreamera
@@ -503,6 +517,21 @@ data to a server (e.g. HTTP or FTP).
 %description -n gstreamer-curl -l pl.UTF-8
 Wtyczka wyjścia sieciowego GStreamera wykorzystująca libcurl jako
 klienta do wysyłania danych na serwer (np. HTTP lub FTP).
+
+%package -n gstreamer-dash
+Summary:	GStreamer DASH demuxer plugin
+Summary(pl.UTF-8):	Wtyczka demuksera DASH dla GStreamera
+Group:		Libraries
+Requires:	gstreamer >= %{gst_ver}
+Requires:	gstreamer-plugins-base >= %{gstpb_ver}
+Requires:	libxml2 >= 1:2.8
+Conflicts:	gstreamer-plugins-bad < 1.20.1-2
+
+%description -n gstreamer-dash
+GStreamer DASH demuxer plugin.
+
+%description -n gstreamer-dash -l pl.UTF-8
+Wtyczka demuksera DASH dla GStreamera.
 
 %package -n gstreamer-dc1394
 Summary:	GStreamer 1394 IIDC (Firewire digital cameras) video source plugin
@@ -1012,6 +1041,20 @@ GStreamer OPUS audio decoder/encoder plugin.
 %description -n gstreamer-opusparse -l pl.UTF-8
 Wtyczka GStreamera kodująca/dekodująca dźwięk w formacie OPUS.
 
+%package -n gstreamer-qroverlay
+Summary:	GStreamer QR overlay plugin
+Summary(pl.UTF-8):	Wtyczka nakładki QR dla GStreamera
+Group:		Libraries
+Requires:	gstreamer >= %{gst_ver}
+Requires:	gstreamer-plugins-base >= %{gstpb_ver}
+Conflicts:	gstreamer-plugins-bad < 0.10.22
+
+%description -n gstreamer-qroverlay
+GStreamer element to set random data on a QR overlay.
+
+%description -n gstreamer-qroverlay -l pl.UTF-8
+Element GStreamera do ustawiania dowolnych danych na nakładce QR.
+
 %package -n gstreamer-resindvd
 Summary:	GStreamer Resin DVD playback plugin
 Summary(pl.UTF-8):	Wtyczka odtwarzania Resin DVD dla GStreamera
@@ -1197,6 +1240,20 @@ GStreamer plugin for UVC compliant H264 encoding cameras.
 
 %description -n gstreamer-uvch264 -l pl.UTF-8
 Wtyczka GStreamera do kamer kodujących w H264 zgodnych z UVC.
+
+%package -n gstreamer-v4l2codecs
+Summary:	GStreamer Video4Linux stateless codecs plugin
+Summary(pl.UTF-8):	Wtyczka bezstanowych kodeków Video4Linux dla GSteamera
+Group:		Libraries
+Requires:	gstreamer >= %{gst_ver}
+Requires:	gstreamer-plugins-base >= %{gstpb_ver}
+Conflicts:	gstreamer-plugins-bad < 0.10.22
+
+%description -n gstreamer-v4l2codecs
+GStreamer Video4Linux stateless codecs plugin.
+
+%description -n gstreamer-v4l2codecs -l pl.UTF-8
+Wtyczka bezstanowych kodeków Video4Linux dla GSteamera.
 
 %package -n gstreamer-va
 Summary:	GStreamer VA-API codecs plugin
@@ -1527,10 +1584,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{gstlibdir}/libgstcamerabin.so
 %attr(755,root,root) %{gstlibdir}/libgstcodecalpha.so
 %attr(755,root,root) %{gstlibdir}/libgstcoloreffects.so
-# R: lcms2
-%attr(755,root,root) %{gstlibdir}/libgstcolormanagement.so
-# R: libxml2
-%attr(755,root,root) %{gstlibdir}/libgstdash.so
 %attr(755,root,root) %{gstlibdir}/libgstdebugutilsbad.so
 %attr(755,root,root) %{gstlibdir}/libgstdecklink.so
 %attr(755,root,root) %{gstlibdir}/libgstdvb.so
@@ -1566,8 +1619,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{gstlibdir}/libgstpcapparse.so
 %attr(755,root,root) %{gstlibdir}/libgstpnm.so
 %attr(755,root,root) %{gstlibdir}/libgstproxy.so
-# R: qrencode json-glib
-%attr(755,root,root) %{gstlibdir}/libgstqroverlay.so
 %attr(755,root,root) %{gstlibdir}/libgstremovesilence.so
 %attr(755,root,root) %{gstlibdir}/libgstrfbsrc.so
 %attr(755,root,root) %{gstlibdir}/libgstrist.so
@@ -1583,8 +1634,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{gstlibdir}/libgstsubenc.so
 %attr(755,root,root) %{gstlibdir}/libgstswitchbin.so
 %attr(755,root,root) %{gstlibdir}/libgsttimecode.so
-# R: libgudev
-%attr(755,root,root) %{gstlibdir}/libgstv4l2codecs.so
 %attr(755,root,root) %{gstlibdir}/libgstvideofiltersbad.so
 %attr(755,root,root) %{gstlibdir}/libgstvideoframe_audiolevel.so
 %attr(755,root,root) %{gstlibdir}/libgstvideoparsersbad.so
@@ -1931,9 +1980,19 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %attr(755,root,root) %{gstlibdir}/libgstclosedcaption.so
 
+%files -n gstreamer-colormanagement
+%defattr(644,root,root,755)
+# R: lcms2
+%attr(755,root,root) %{gstlibdir}/libgstcolormanagement.so
+
 %files -n gstreamer-curl
 %defattr(644,root,root,755)
 %attr(755,root,root) %{gstlibdir}/libgstcurl.so
+
+%files -n gstreamer-dash
+%defattr(644,root,root,755)
+# R: libxml2
+%attr(755,root,root) %{gstlibdir}/libgstdash.so
 
 %if %{with dc1394}
 %files -n gstreamer-dc1394
@@ -2127,6 +2186,11 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %attr(755,root,root) %{gstlibdir}/libgstopusparse.so
 
+%files -n gstreamer-qroverlay
+%defattr(644,root,root,755)
+# R: qrencode json-glib
+%attr(755,root,root) %{gstlibdir}/libgstqroverlay.so
+
 %files -n gstreamer-resindvd
 %defattr(644,root,root,755)
 %attr(755,root,root) %{gstlibdir}/libgstresindvd.so
@@ -2190,6 +2254,11 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %attr(755,root,root) %{gstlibdir}/libgstuvch264.so
 %endif
+
+%files -n gstreamer-v4l2codecs
+%defattr(644,root,root,755)
+# R: libgudev
+%attr(755,root,root) %{gstlibdir}/libgstv4l2codecs.so
 
 %files -n gstreamer-va
 %defattr(644,root,root,755)
