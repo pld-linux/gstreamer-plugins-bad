@@ -1,9 +1,7 @@
 # TODO:
-# - subpackage new plugins with additional dependencies
 # - gs (BR -storage_client.pc- google_cloud_cpp_storage.pc >= 1.25.0 [https://github.com/googleapis/google-cloud-cpp])
 # - onnx (BR: libonnxruntime.pc [https://github.com/microsoft/onnxruntime])
 # - svthevcenc (BR: SvtHevcEnc.pc >= 1.4.1 [https://github.com/OpenVisualCloud/SVT-HEVC])
-# - optional ltc (BR: ltc.pc >= 1.1.4 [https://github.com/x42/libltc]) for timecode plugin
 # - optional vpl (BR: vpl.pc [https://github.com/oneapi-src/onevpl]) for msdk plugin
 # - nvenc (BR: cuda >= 6.5, nvEncodeAPI.h >= 5.0, -lnvidia-encode)
 #   nvdec (BR: libnvcuvid)
@@ -64,7 +62,7 @@ Summary:	Bad GStreamer Streaming-media framework plugins
 Summary(pl.UTF-8):	Złe wtyczki do środowiska obróbki strumieni GStreamer
 Name:		gstreamer-plugins-bad
 Version:	1.20.1
-Release:	1
+Release:	2
 License:	LGPL v2+
 Group:		Libraries
 Source0:	https://gstreamer.freedesktop.org/src/gst-plugins-bad/%{gstname}-%{version}.tar.xz
@@ -141,6 +139,7 @@ BuildRequires:	libiptcdata-devel >= 1.0.2
 BuildRequires:	libjpeg-devel
 %{?with_kate:BuildRequires:	libkate-devel >= 0.1.7}
 BuildRequires:	liblrdf-devel
+BuildRequires:	libltc-devel >= 1.1.4
 BuildRequires:	libmodplug-devel
 BuildRequires:	libnice-devel >= 0.1.17
 BuildRequires:	libopenmpt-devel
@@ -1047,7 +1046,7 @@ Summary(pl.UTF-8):	Wtyczka nakładki QR dla GStreamera
 Group:		Libraries
 Requires:	gstreamer >= %{gst_ver}
 Requires:	gstreamer-plugins-base >= %{gstpb_ver}
-Conflicts:	gstreamer-plugins-bad < 0.10.22
+Conflicts:	gstreamer-plugins-bad < 1.20.1-2
 
 %description -n gstreamer-qroverlay
 GStreamer element to set random data on a QR overlay.
@@ -1211,6 +1210,21 @@ Teletext decoder plugin for GStreamer.
 %description -n gstreamer-teletextdec -l pl.UTF-8
 Wtyczka GStreamera dekodująca teletekst.
 
+%package -n gstreamer-timecode
+Summary:	GStreamer timecode plugin
+Summary(pl.UTF-8):	Wtyczka kodów czasowych dla GStreamera
+Group:		Libraries
+Requires:	gstreamer >= %{gst_ver}
+Requires:	gstreamer-plugins-base >= %{gstpb_ver}
+Requires:	libltc >= 1.1.3
+Conflicts:	gstreamer-plugins-bad < 1.20.1-2
+
+%description -n gstreamer-timecode
+GStreamer elements related to timecode.
+
+%description -n gstreamer-timecode -l pl.UTF-8
+Elementy GStremera związane z kodami czasowymi.
+
 %package -n gstreamer-ttml
 Summary:	GStreamer TTML subtitles plugin
 Summary(pl.UTF-8):	Wtyczka podpisów TTML dla GStreamera
@@ -1247,7 +1261,7 @@ Summary(pl.UTF-8):	Wtyczka bezstanowych kodeków Video4Linux dla GSteamera
 Group:		Libraries
 Requires:	gstreamer >= %{gst_ver}
 Requires:	gstreamer-plugins-base >= %{gstpb_ver}
-Conflicts:	gstreamer-plugins-bad < 0.10.22
+Conflicts:	gstreamer-plugins-bad < 1.20.1-2
 
 %description -n gstreamer-v4l2codecs
 GStreamer Video4Linux stateless codecs plugin.
@@ -1633,7 +1647,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{gstlibdir}/libgstsmoothstreaming.so
 %attr(755,root,root) %{gstlibdir}/libgstsubenc.so
 %attr(755,root,root) %{gstlibdir}/libgstswitchbin.so
-%attr(755,root,root) %{gstlibdir}/libgsttimecode.so
 %attr(755,root,root) %{gstlibdir}/libgstvideofiltersbad.so
 %attr(755,root,root) %{gstlibdir}/libgstvideoframe_audiolevel.so
 %attr(755,root,root) %{gstlibdir}/libgstvideoparsersbad.so
@@ -2244,6 +2257,11 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %attr(755,root,root) %{gstlibdir}/libgstteletext.so
 %endif
+
+%files -n gstreamer-timecode
+%defattr(644,root,root,755)
+# R: libltc
+%attr(755,root,root) %{gstlibdir}/libgsttimecode.so
 
 %files -n gstreamer-ttml
 %defattr(644,root,root,755)
