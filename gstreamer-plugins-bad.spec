@@ -1,8 +1,6 @@
 # TODO:
 # - gs (BR -storage_client.pc- google_cloud_cpp_storage.pc >= 1.25.0 [https://github.com/googleapis/google-cloud-cpp])
 # - onnx (BR: libonnxruntime.pc [https://github.com/microsoft/onnxruntime])
-# - svthevcenc (BR: SvtHevcEnc.pc >= 1.4.1 [https://github.com/OpenVisualCloud/SVT-HEVC])
-# - optional vpl (BR: vpl.pc [https://github.com/oneapi-src/onevpl]) for msdk plugin
 # - nvenc (BR: cuda >= 6.5, nvEncodeAPI.h >= 5.0, -lnvidia-encode)
 #   nvdec (BR: libnvcuvid)
 #   to replace removed vdpau
@@ -24,7 +22,8 @@
 %bcond_without	ldac		# LDAC bluetooth audio codec plugin
 %bcond_without	libde265	# libde265 H.265 decoder plugin
 %bcond_without	lv2		# LV2 plugins bridge plugin
-%bcond_without	mfx		# Intel MediaSDK (MFX) plugin
+%bcond_without	mfx		# MFX support in Intel MediaSDK plugin
+%bcond_without	msdk		# Intel MediaSDK plugin (MFX or oneAPI based)
 %bcond_without	mjpegtools	# mpeg2enc video encoder plugin
 %bcond_without	musepack	# musepack audio decoder plugin
 %bcond_without	neon		# neonhttpsrc HTTP client plugin
@@ -38,8 +37,10 @@
 %bcond_without	sbc		# SBC bluetooth audio codec plugin
 %bcond_without	sndfile		# sndfile audio files encoder/decoder plugin
 %bcond_without	srtp		# SRTP decoder/encoder plugin
+%bcond_without	svthevc		# SvtHevc encoder plugin
 %bcond_without	tinyalsa	# ALSA audiosink using tinyalsa library
 %bcond_without	uvch264		# uvch264 cameras plugin
+%bcond_with	vpl		# oneVPL instead of MFX in Intel MediaSDK plugin (x86_64 only)
 %bcond_without	vulkan		# Vulkan library and videosink/upload plugin
 %bcond_without	wayland		# Wayland videosink plugin, Wayland EGL support
 %bcond_without	wpe		# WebKit based web browser plugin
@@ -52,6 +53,19 @@
 %if %{without opengl}
 %undefine with_wayland
 %undefine with_wpe
+%endif
+%ifnarch %{x8664}
+%undefine	with_vpl
+%endif
+%if %{without mfx} && %{without vpl}
+%undefine	with_msdk
+%endif
+%if %{without msdk}
+%undefine	with_mfx
+%undefine	with_vpl
+%endif
+%ifnarch %{x8664} x32
+%undefine	with_svthevc
 %endif
 
 %define		gstname		gst-plugins-bad
@@ -173,6 +187,7 @@ BuildRequires:	libxml2-devel >= 1:2.9.2
 %{?with_neon:BuildRequires:	neon-devel < 0.33}
 # for hls, could also use libgcrypt>=1.2.0 or openssl
 BuildRequires:	nettle-devel >= 3.0
+%{?with_vpl:BuildRequires:	oneVPL-devel}
 %if %{with opencv}
 BuildRequires:	opencv-devel >= 1:3.0.0
 BuildRequires:	opencv-devel < 1:4.6.0
@@ -189,6 +204,7 @@ BuildRequires:	qrencode-devel
 BuildRequires:	soundtouch-devel >= 1.4
 BuildRequires:	spandsp-devel >= 1:0.0.6
 BuildRequires:	srt-devel >= 1.3.0
+%{?with_svthevc:BuildRequires:	svt-hevc-devel >= 1.4.1}
 %{?with_tinyalsa:BuildRequires:	tinyalsa-devel}
 BuildRequires:	udev-glib-devel
 BuildRequires:	vo-aacenc-devel >= 0.1.0
@@ -1198,6 +1214,20 @@ GStreamer plugin for encoding/decoding SRTP.
 %description -n gstreamer-srtp -l pl.UTF-8
 Wtyczka GStremaera do kodowania/dekodowania SRTP.
 
+%package -n gstreamer-svthevcenc
+Summary:	GStreamer plugin for encoding H265 using SvtHevc library
+Summary(pl.UTF-8):	Wtyczka GStremaera do H265 przy użyciu biblioteki SvtHevc
+Group:		Libraries
+Requires:	gstreamer >= %{gst_ver}
+Requires:	gstreamer-plugins-base >= %{gstpb_ver}
+Requires:	svt-hevc >= 1.4.1
+
+%description -n gstreamer-svthevcenc
+GStreamer plugin for encoding H265 using SvtHevc library.
+
+%description -n gstreamer-svthevcenc -l pl.UTF-8
+Wtyczka GStremaera do H265 przy użyciu biblioteki SvtHevc.
+
 %package -n gstreamer-teletextdec
 Summary:	teletext plugin for GStreamer
 Summary(pl.UTF-8):	Wtyczka teletext dla GStreamera
@@ -1484,7 +1514,9 @@ export CXXFLAGS="%{rpmcxxflags} -std=c++11"
 	%{!?with_ldac:-Dldac=disabled} \
 	%{!?with_libde265:-Dlibde265=disabled} \
 	%{!?with_lv2:-Dlv2=disabled} \
+	%{?with_vpl:-Dmfx_api=oneVPL} \
 	%{!?with_mjpegtools:-Dmpeg2enc=disabled} \
+	%{!?with_msdk:-Dmsdk=disabled} \
 	%{!?with_musepack:-Dmusepack=disabled} \
 	%{!?with_neon:-Dneon=disabled} \
 	%{!?with_openal:-Dopenal=disabled} \
@@ -1492,6 +1524,7 @@ export CXXFLAGS="%{rpmcxxflags} -std=c++11"
 	%{!?with_openh264:-Dopenh264=disabled} \
 	%{!?with_openni2:-Dopenni2=disabled} \
 	-Dsctp-internal-usrsctp=disabled \
+	%{!?with_svthevc:-Dsvthevcenc=disabled} \
 	%{!?with_zvbi:-Dteletext=disabled} \
 	%{!?with_tinyalsa:-Dtinyalsa=disabled} \
 	%{!?with_uvch264:-Duvch264=disabled} \
@@ -2120,9 +2153,10 @@ rm -rf $RPM_BUILD_ROOT
 # R: libmodplug
 %attr(755,root,root) %{gstlibdir}/libgstmodplug.so
 
-%if %{with mfx}
+%if %{with msdk}
 %files -n gstreamer-msdk
 %defattr(644,root,root,755)
+# R: %{?with_mfx:mfx_dispatch} %{?with_vpl:oneVPL}
 %attr(755,root,root) %{gstlibdir}/libgstmsdk.so
 %endif
 
@@ -2250,6 +2284,12 @@ rm -rf $RPM_BUILD_ROOT
 %files -n gstreamer-srtp
 %defattr(644,root,root,755)
 %attr(755,root,root) %{gstlibdir}/libgstsrtp.so
+%endif
+
+%if %{with svthevc}
+%files -n gstreamer-svthevcenc
+%defattr(644,root,root,755)
+%attr(755,root,root) %{gstlibdir}/libgstsvthevcenc.so
 %endif
 
 %if %{with zvbi}
