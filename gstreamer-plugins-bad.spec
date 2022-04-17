@@ -78,7 +78,7 @@ Summary:	Bad GStreamer Streaming-media framework plugins
 Summary(pl.UTF-8):	Złe wtyczki do środowiska obróbki strumieni GStreamer
 Name:		gstreamer-plugins-bad
 Version:	1.20.1
-Release:	2
+Release:	3
 License:	LGPL v2+
 Group:		Libraries
 Source0:	https://gstreamer.freedesktop.org/src/gst-plugins-bad/%{gstname}-%{version}.tar.xz
@@ -1455,7 +1455,7 @@ Summary:	GStreamer WPE (WebKit web browser) source plugin
 Summary(pl.UTF-8):	Wtyczka GStreamera ze źródłem WPE (przeglądarki WWW opartej na WebKicie)
 Group:		Libraries
 Requires:	gstreamer >= %{gst_ver}
-Requires:	gstreamer-gl >= %{gstpb_ver}
+Requires:	gstreamer-gl-libs >= %{gstpb_ver}
 Requires:	gstreamer-plugins-base >= %{gstpb_ver}
 Requires:	wayland >= 1.11.0
 Requires:	wpe-webkit >= 2.28
