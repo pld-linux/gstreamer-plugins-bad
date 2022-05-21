@@ -94,6 +94,7 @@ BuildRequires:	gstreamer-gl-devel >= %{gstpb_ver}
 BuildRequires:	gstreamer-plugins-base-devel >= %{gstpb_ver}
 %{?with_apidocs:BuildRequires:	hotdoc >= 0.11.0}
 BuildRequires:	meson >= 0.59
+BuildRequires:	microdns-devel
 BuildRequires:	ninja >= 1.5
 BuildRequires:	orc-devel >= 0.4.17
 BuildRequires:	pkgconfig >= 1:0.9.0
@@ -203,6 +204,7 @@ BuildRequires:	opus-devel >= 0.9.4
 BuildRequires:	pango-devel >= 1:1.22.0
 BuildRequires:	qrencode-devel
 %{?with_sbc:BuildRequires:	sbc-devel >= 1.0}
+%{?with_vulkan:BuildRequires:	shaderc}
 BuildRequires:	soundtouch-devel >= 1.4
 BuildRequires:	spandsp-devel >= 1:0.0.6
 BuildRequires:	srt-devel >= 1.3.0
