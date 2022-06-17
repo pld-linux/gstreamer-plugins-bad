@@ -920,10 +920,11 @@ Requires:	gstreamer-plugins-base >= %{gstpb_ver}
 Conflicts:	gstreamer-plugins-bad < 1.20.1-2
 
 %description -n gstreamer-openaptx
-GStreamer OpenEXR plugin - Audio Processing Technology codec (aptX).
+Open Source implementation of Audio Processing Technology codec
+(aptX).
 
 %description -n gstreamer-openaptx -l pl.UTF-8
-Wtyczka OpenEXR dla GStreamera - kodek Audio Processing Technology
+Implementacja o otwartych źródłach kodeka Audio Processing Technology
 (aptX).
 
 %package -n gstreamer-opencv
