@@ -1,11 +1,8 @@
 # TODO:
 # - fix opencv
 #   /usr/include/opencv4/opencv2/tracking/tracking_internals.hpp:18:10: fatal error: opencv2/video/detail/tracking.private.hpp: No such file or directory
-# - gs (BR -storage_client.pc- google_cloud_cpp_storage.pc >= 1.25.0 [https://github.com/googleapis/google-cloud-cpp])
-# - onnx (BR: libonnxruntime.pc [https://github.com/microsoft/onnxruntime])
-# - nvenc (BR: cuda >= 6.5, nvEncodeAPI.h >= 5.0, -lnvidia-encode)
-#   nvdec (BR: libnvcuvid)
-#   to replace removed vdpau
+# - onnx (BR: libonnxruntime.pc >= 1.13.1 [https://github.com/microsoft/onnxruntime])
+# - nvbufsurface.h for nvcodec nvmm support
 # - OpenSLES (when available on pure Linux, not Android)
 #
 # Conditional build:
@@ -18,6 +15,7 @@
 %bcond_without	directfb	# DirectFB videosink plugin
 %bcond_without	dts		# DTS audio decoder plugin
 %bcond_without	faad		# faad audio decoder plugin
+%bcond_without	gcloud		# Google Cloud Storage source and sink plugin
 %bcond_without	gsm		# gsm audio decoder/encoder plugin
 %bcond_without	kate		# Kate text streams plugin
 %bcond_without	ladspa		# LADSPA plugins bridge plugin
@@ -72,28 +70,29 @@
 
 %define		gstname		gst-plugins-bad
 %define		gstmver		1.0
-%define		gst_ver		1.20.0
-%define		gstpb_ver	1.20.0
+%define		gst_ver		1.22.0
+%define		gstpb_ver	1.22.0
 Summary:	Bad GStreamer Streaming-media framework plugins
 Summary(pl.UTF-8):	Złe wtyczki do środowiska obróbki strumieni GStreamer
 Name:		gstreamer-plugins-bad
-Version:	1.20.5
-Release:	2
+Version:	1.22.1
+Release:	1
 License:	LGPL v2+
 Group:		Libraries
 Source0:	https://gstreamer.freedesktop.org/src/gst-plugins-bad/%{gstname}-%{version}.tar.xz
-# Source0-md5:	142bd94df6f9c3705054c7cd71a59987
+# Source0-md5:	0991107eb96378ad7ab262e6d1c1d461
 Patch0:		musepack.patch
+Patch1:		%{name}-gs-c++17.patch
 URL:		https://gstreamer.freedesktop.org/
 BuildRequires:	docbook-dtd412-xml
 BuildRequires:	gettext-tools >= 0.17
-BuildRequires:	glib2-devel >= 1:2.56.0
+BuildRequires:	glib2-devel >= 1:2.62.0
 BuildRequires:	gobject-introspection-devel >= 1.61.1
 BuildRequires:	gstreamer-devel >= %{gst_ver}
 BuildRequires:	gstreamer-gl-devel >= %{gstpb_ver}
 BuildRequires:	gstreamer-plugins-base-devel >= %{gstpb_ver}
 %{?with_apidocs:BuildRequires:	hotdoc >= 0.11.0}
-BuildRequires:	meson >= 0.59
+BuildRequires:	meson >= 0.62
 BuildRequires:	microdns-devel
 BuildRequires:	ninja >= 1.5
 BuildRequires:	orc-devel >= 0.4.17
@@ -115,7 +114,7 @@ BuildRequires:	xorg-lib-libXcomposite-devel
 %{?with_directfb:BuildRequires:	DirectFB-devel >= 1:0.9.24}
 %{?with_opengl:BuildRequires:	EGL-devel}
 %{?with_openal:BuildRequires:	OpenAL-devel >= 1.14}
-%{?with_openexr:BuildRequires:	OpenEXR-devel}
+%{?with_openexr:BuildRequires:	OpenEXR-devel >= 3}
 %{?with_opengl:BuildRequires:	OpenGLESv2-devel}
 %{?with_openni2:BuildRequires:	OpenNI2-devel >= 0.26}
 %{?with_vulkan:BuildRequires:	Vulkan-Loader-devel}
@@ -129,12 +128,14 @@ BuildRequires:	dssim-devel
 BuildRequires:	exempi-devel >= 1.99.5
 BuildRequires:	faac-devel
 %{?with_faad:BuildRequires:	faad2-devel >= 2.7}
-BuildRequires:	fdk-aac-devel >= 0.1.4
+BuildRequires:	fdk-aac-devel >= 2.0.0
 BuildRequires:	flite-devel
-BuildRequires:	fluidsynth-devel >= 1.0
+BuildRequires:	fluidsynth-devel >= 2.1
 BuildRequires:	game-music-emu-devel >= 0.5.6
 BuildRequires:	gnutls-devel >= 2.11.3
+%{?with_gcloud:BuildRequires:	google-cloud-cpp-devel >= 1.25.0}
 BuildRequires:	graphene-devel >= 1.4.0
+BuildRequires:	gtk+3-devel >= 3.0
 BuildRequires:	json-glib-devel
 %{?with_ladspa:BuildRequires:	ladspa-devel >= 1.12}
 BuildRequires:	lcms2-devel >= 2.7
@@ -143,13 +144,14 @@ BuildRequires:	libass-devel >= 0.10.2
 BuildRequires:	libavtp-devel
 %{?with_bs2b:BuildRequires:	libbs2b-devel >= 3.1.0}
 %{?with_chromaprint:BuildRequires:	libchromaprint-devel}
-%{?with_dc1394:BuildRequires:	libdc1394-devel >= 2.0.0}
+%{?with_dc1394:BuildRequires:	libdc1394-devel >= 2.2.5}
 %{?with_libde265:BuildRequires:	libde265-devel >= 0.9}
 BuildRequires:	libdrm-devel >= 2.4.98
 %{?with_dts:BuildRequires:	libdts-devel}
 BuildRequires:	libdvdnav-devel >= 4.1.2
 BuildRequires:	libdvdread-devel >= 4.1.2
 BuildRequires:	libexif-devel >= 1:0.6.16
+# libfreeaptx is preferred; alternatively libopenaptx==0.2.0
 BuildRequires:	libfreeaptx-devel >= 0.1.1
 %{?with_gsm:BuildRequires:	libgsm-devel}
 BuildRequires:	libiptcdata-devel >= 1.0.2
@@ -158,7 +160,7 @@ BuildRequires:	libjpeg-devel
 BuildRequires:	liblrdf-devel
 BuildRequires:	libltc-devel >= 1.1.4
 BuildRequires:	libmodplug-devel
-BuildRequires:	libnice-devel >= 0.1.17
+BuildRequires:	libnice-devel >= 0.1.20
 BuildRequires:	libopenmpt-devel
 BuildRequires:	libpng-devel >= 2:1.2.0
 %{?with_librsvg:BuildRequires:	librsvg-devel >= 1:2.36.2}
@@ -168,7 +170,11 @@ BuildRequires:	libssh2-devel >= 1.4.3
 %{?with_sndfile:BuildRequires:	libsndfile-devel >= 1.0.16}
 # or srtp, libsrtp2 is preferred
 %{?with_srtp:BuildRequires:	libsrtp2-devel >= 2.1.0}
+%if %{with zxing}
+BuildRequires:	libstdc++-devel >= 6:7
+%else
 BuildRequires:	libstdc++-devel >= 6:4.7
+%endif
 BuildRequires:	libtheora-devel >= 1.0
 %{?with_kate:BuildRequires:	libtiger-devel >= 0.3.2}
 %{?with_uvch264:BuildRequires:	libusb-devel >= 1.0}
@@ -190,7 +196,7 @@ BuildRequires:	libxml2-devel >= 1:2.9.2
 %{?with_neon:BuildRequires:	neon-devel < 0.33}
 # for hls, could also use libgcrypt>=1.2.0 or openssl
 BuildRequires:	nettle-devel >= 3.0
-%{?with_vpl:BuildRequires:	oneVPL-devel}
+%{?with_vpl:BuildRequires:	oneVPL-devel >= 2.2}
 %if %{with opencv}
 BuildRequires:	opencv-devel >= 1:3.0.0
 BuildRequires:	opencv-devel < 1:4.6.0
@@ -204,6 +210,7 @@ BuildRequires:	opus-devel >= 0.9.4
 BuildRequires:	pango-devel >= 1:1.22.0
 BuildRequires:	qrencode-devel
 %{?with_sbc:BuildRequires:	sbc-devel >= 1.0}
+# glslc program
 %{?with_vulkan:BuildRequires:	shaderc}
 BuildRequires:	soundtouch-devel >= 1.4
 BuildRequires:	spandsp-devel >= 1:0.0.6
@@ -214,12 +221,15 @@ BuildRequires:	udev-glib-devel
 BuildRequires:	vo-aacenc-devel >= 0.1.0
 %{?with_amr:BuildRequires:	vo-amrwbenc-devel >= 0.1.0}
 # wayland-client, wayland-cursor, wayland-scanner
-%{?with_wayland:BuildRequires:	wayland-devel >= 1.11.0}
+%{?with_wayland:BuildRequires:	wayland-devel >= 1.15}
 %{?with_wayland:BuildRequires:	wayland-protocols >= 1.15}
+# pkgconfig(webrtc-audio-processing)
 BuildRequires:	webrtc-audio-processing-devel < 0.4
 BuildRequires:	webrtc-audio-processing-devel >= 0.2
+# pkgconfig(webrtc-audio-coding-1)
 BuildRequires:	webrtc-audio-processing1-devel >= 1.0
-%{?with_wildmidi:BuildRequires:	wildmidi-devel >= 0.4}
+%{?with_wildmidi:BuildRequires:	wildmidi-devel >= 0.4.2}
+# wpe-webkit-1.1 (libsoup3 based, preferred) or wpe-webkit-1.0
 %{?with_wpe:BuildRequires:	wpe-webkit-devel >= 2.28}
 %{?with_wpe:BuildRequires:	wpebackend-fdo-devel >= 1.8}
 BuildRequires:	xorg-lib-libX11-devel
@@ -228,8 +238,8 @@ BuildRequires:	xorg-lib-libX11-devel
 BuildRequires:	xz
 BuildRequires:	zbar-devel >= 0.9
 %{?with_zvbi:BuildRequires:	zvbi-devel >= 0.2}
-%{?with_zxing:BuildRequires:	zxing-cpp-nu-devel >= 1.1.1}
-Requires:	glib2 >= 1:2.56.0
+%{?with_zxing:BuildRequires:	zxing-cpp-nu-devel >= 1.4.0}
+Requires:	glib2 >= 1:2.62.0
 Requires:	gstreamer >= %{gst_ver}
 Requires:	gstreamer-plugins-base >= %{gstpb_ver}
 # for libgstva
@@ -559,6 +569,7 @@ Summary(pl.UTF-8):	Wtyczka źródła obrazu 1394 IIDC (z kamer cyfrowych Firewir
 Group:		Libraries
 Requires:	gstreamer >= %{gst_ver}
 Requires:	gstreamer-plugins-base >= %{gstpb_ver}
+Requires:	libdc1394 >= 2.2.5
 
 %description -n gstreamer-dc1394
 GStreamer 1394 IIDC (Firewire digital cameras) video source plugin.
@@ -597,7 +608,7 @@ Wtyczka GStreamera obsługująca DTS Coherent Acoustics.
 Summary:	GStreamer FDK-AAC plugin
 Summary(pl.UTF-8):	Wtyczka FDK-AAC dla GStreamera
 Group:		Libraries
-Requires:	fdk-aac >= 0.1.4
+Requires:	fdk-aac >= 2.0.0
 Requires:	gstreamer >= %{gst_ver}
 Requires:	gstreamer-plugins-base >= %{gstpb_ver}
 
@@ -626,7 +637,7 @@ Summary(pl.UTF-8):	Wtyczka FluidSynth MIDI dla GStreamera
 Group:		Libraries
 # for generic gstmidi plugin
 Requires:	%{name} = %{version}-%{release}
-Requires:	fluidsynth >= 1.0
+Requires:	fluidsynth >= 2.1
 Requires:	gstreamer >= %{gst_ver}
 
 %description -n gstreamer-fluidsynth
@@ -650,11 +661,24 @@ GStreamer GME Audio Decoder plugin.
 %description -n gstreamer-gme -l pl.UTF-8
 Wtyczka GStreamera dekodująca dźwięk GME.
 
+%package -n gstreamer-gs
+Summary:	GStreamer Google Cloud Storage source and sink plugin
+Summary(pl.UTF-8):	Wtyczka GStreamera do obsługi źródła i wyjścia Google Cloud Storage
+Group:		Libraries
+Requires:	google-cloud-cpp >= 1.25.0
+Requires:	gstreamer >= %{gst_ver}
+
+%description -n gstreamer-gs
+GStreamer Google Cloud Storage source and sink plugin.
+
+%description -n gstreamer-gs -l pl.UTF-8
+Wtyczka GStreamera do obsługi źródła i wyjścia Google Cloud Storage.
+
 %package -n gstreamer-gsettings
 Summary:	GStreamer GSettings plugin
 Summary(pl.UTF-8):	Wtyczka GSettings dla GStreamera
 Group:		Libraries
-Requires:	glib2 >= 1:2.56.0
+Requires:	glib2 >= 1:2.62.0
 Requires:	gstreamer >= %{gst_ver}
 
 %description -n gstreamer-gsettings
@@ -1344,9 +1368,26 @@ GStreamer DirectFB output plugin.
 %description -n gstreamer-videosink-directfb -l pl.UTF-8
 Wtyczka wyjścia obrazu DirectFB dla GStreamera.
 
+%package -n gstreamer-videosink-gtkwayland
+Summary:	GStreamer GTK+/Wayland output plugin
+Summary(pl.UTF-8):	Wtyczka wyjścia obrazu GTK+/Wayland dla GStreamera
+Group:		Libraries
+# for libgstwayland
+Requires:	%{name} = %{version}-%{release}
+Requires:	gstreamer >= %{gst_ver}
+Requires:	gstreamer-plugins-base >= %{gstpb_ver}
+Requires:	gtk+3 >= 3.0
+Provides:	gstreamer-videosink = %{version}
+
+%description -n gstreamer-videosink-gtkwayland
+Plugin for sending output to the GTK+ on Wayland architecture.
+
+%description -n gstreamer-videosink-gtkwayland -l pl.UTF-8
+Wtyczka przekazująca wyjście do architektury GTK+ na Wayland.
+
 %package -n gstreamer-videosink-wayland
-Summary:	GStreamer plugin for outputing to Wayland
-Summary(pl.UTF-8):	Wtyczka wyjścia Wayland dla GStreamera
+Summary:	GStreamer plugin for outputing to GTK+/Wayland
+Summary(pl.UTF-8):	Wtyczka wyjścia GTK+/Wayland dla GStreamera
 Group:		Libraries
 # for libgstwayland
 Requires:	%{name} = %{version}-%{release}
@@ -1414,7 +1455,7 @@ Group:		Libraries
 Requires:	%{name} = %{version}-%{release}
 Requires:	gstreamer >= %{gst_ver}
 Requires:	gstreamer-plugins-base >= %{gstpb_ver}
-Requires:	libnice >= 0.1.17
+Requires:	libnice >= 0.1.20
 
 %description -n gstreamer-webrtc
 WebRTC plugin for GStreamer.
@@ -1445,7 +1486,7 @@ Group:		Libraries
 # for libgstbadaudio
 Requires:	%{name} = %{version}-%{release}
 Requires:	gstreamer >= %{gst_ver}
-Requires:	wildmidi >= 0.4
+Requires:	wildmidi >= 0.4.2
 
 %description -n gstreamer-wildmidi
 wildmidi plugin for GStreamer.
@@ -1505,7 +1546,7 @@ Summary(pl.UTF-8):	Wtyczka GStreamera ZXing wykrywająca kody kreskowe
 Group:		Libraries
 Requires:	gstreamer >= %{gst_ver}
 Requires:	gstreamer-plugins-base >= %{gstpb_ver}
-Requires:	zxing-cpp-nu >= 1.1.1
+Requires:	zxing-cpp-nu >= 1.4.0
 Conflicts:	gstreamer-plugins-bad < 1.20.1-2
 
 %description -n gstreamer-zxing
@@ -1517,13 +1558,13 @@ Wtyczka GStreamera ZXing wykrywająca kody kreskowe.
 %prep
 %setup -q -n %{gstname}-%{version}
 %patch0 -p1
+%patch1 -p1
 
 # disable SCTP debugging (even though gst_debug is enabled by default)
 # (SCTP_DEBUG requires libusrsctp built with debugging)
 %{__sed} -i -e "s/'-DSCTP_DEBUG'//" ext/sctp/meson.build
 
 %build
-export CXXFLAGS="%{rpmcxxflags} -std=c++11"
 %meson build \
 	--default-library=shared \
 	%{!?with_bluez:-Dbluez=disabled} \
@@ -1534,6 +1575,7 @@ export CXXFLAGS="%{rpmcxxflags} -std=c++11"
 	%{!?with_faad:-Dfaad=disabled} \
 	%{!?with_opengl:-Dgl=disabled} \
 	-Dgpl=enabled \
+	%{!?with_gcloud:-Dgs=disabled} \
 	%{!?with_gsm:-Dgsm=disabled} \
 	%{!?with_ladspa:-Dladspa=disabled} \
 	%{!?with_ldac:-Dldac=disabled} \
@@ -1606,6 +1648,8 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %ghost %{_libdir}/libgstcodecparsers-%{gstmver}.so.0
 %attr(755,root,root) %{_libdir}/libgstcodecs-%{gstmver}.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libgstcodecs-%{gstmver}.so.0
+%attr(755,root,root) %{_libdir}/libgstcuda-%{gstmver}.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libgstcuda-%{gstmver}.so.0
 %attr(755,root,root) %{_libdir}/libgstinsertbin-%{gstmver}.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libgstinsertbin-%{gstmver}.so.0
 %attr(755,root,root) %{_libdir}/libgstisoff-%{gstmver}.so.*.*.*
@@ -1630,12 +1674,17 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %ghost %{_libdir}/libgstwayland-%{gstmver}.so.0
 %attr(755,root,root) %{_libdir}/libgstwebrtc-%{gstmver}.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libgstwebrtc-%{gstmver}.so.0
+%attr(755,root,root) %{_libdir}/libgstwebrtcnice-%{gstmver}.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libgstwebrtcnice-%{gstmver}.so.0
+%{_libdir}/girepository-1.0/CudaGst-1.0.typelib
 %{_libdir}/girepository-1.0/GstBadAudio-1.0.typelib
 %{_libdir}/girepository-1.0/GstCodecs-1.0.typelib
+%{_libdir}/girepository-1.0/GstCuda-1.0.typelib
 %{_libdir}/girepository-1.0/GstInsertBin-1.0.typelib
 %{_libdir}/girepository-1.0/GstMpegts-1.0.typelib
 %{_libdir}/girepository-1.0/GstPlay-1.0.typelib
 %{_libdir}/girepository-1.0/GstPlayer-1.0.typelib
+%{_libdir}/girepository-1.0/GstVa-1.0.typelib
 %{_libdir}/girepository-1.0/GstVulkan-1.0.typelib
 %{_libdir}/girepository-1.0/GstVulkanWayland-1.0.typelib
 %{_libdir}/girepository-1.0/GstVulkanXCB-1.0.typelib
@@ -1655,6 +1704,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{gstlibdir}/libgstbz2.so
 %attr(755,root,root) %{gstlibdir}/libgstcamerabin.so
 %attr(755,root,root) %{gstlibdir}/libgstcodecalpha.so
+%attr(755,root,root) %{gstlibdir}/libgstcodectimestamper.so
 %attr(755,root,root) %{gstlibdir}/libgstcoloreffects.so
 %attr(755,root,root) %{gstlibdir}/libgstdebugutilsbad.so
 %attr(755,root,root) %{gstlibdir}/libgstdecklink.so
@@ -1714,6 +1764,8 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{gstdatadir}/presets
 %{gstdatadir}/presets/GstFreeverb.prs
 
+%attr(755,root,root) %{gstlibdir}/libgstgtkwayland.so
+
 %files devel
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libgstadaptivedemux-%{gstmver}.so
@@ -1721,6 +1773,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/libgstbasecamerabinsrc-%{gstmver}.so
 %attr(755,root,root) %{_libdir}/libgstcodecparsers-%{gstmver}.so
 %attr(755,root,root) %{_libdir}/libgstcodecs-%{gstmver}.so
+%attr(755,root,root) %{_libdir}/libgstcuda-%{gstmver}.so
 %attr(755,root,root) %{_libdir}/libgstinsertbin-%{gstmver}.so
 %attr(755,root,root) %{_libdir}/libgstisoff-%{gstmver}.so
 %attr(755,root,root) %{_libdir}/libgstmpegts-%{gstmver}.so
@@ -1733,11 +1786,13 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/libgstvulkan-%{gstmver}.so
 %attr(755,root,root) %{_libdir}/libgstwayland-%{gstmver}.so
 %attr(755,root,root) %{_libdir}/libgstwebrtc-%{gstmver}.so
+%attr(755,root,root) %{_libdir}/libgstwebrtcnice-%{gstmver}.so
 %{_includedir}/gstreamer-%{gstmver}/gst/audio/audio-bad-prelude.h
 %{_includedir}/gstreamer-%{gstmver}/gst/audio/gstnonstreamaudiodecoder.h
 %{_includedir}/gstreamer-%{gstmver}/gst/audio/gstplanaraudioadapter.h
 %{_includedir}/gstreamer-%{gstmver}/gst/basecamerabinsrc
 %{_includedir}/gstreamer-%{gstmver}/gst/codecparsers
+%{_includedir}/gstreamer-%{gstmver}/gst/cuda
 %{_includedir}/gstreamer-%{gstmver}/gst/insertbin
 %{_includedir}/gstreamer-%{gstmver}/gst/interfaces
 %{_includedir}/gstreamer-%{gstmver}/gst/isoff
@@ -1746,21 +1801,26 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/gstreamer-%{gstmver}/gst/player
 %{_includedir}/gstreamer-%{gstmver}/gst/sctp
 %{_includedir}/gstreamer-%{gstmver}/gst/uridownloader
+%{_includedir}/gstreamer-%{gstmver}/gst/va
 %{_includedir}/gstreamer-%{gstmver}/gst/vulkan
 %{_includedir}/gstreamer-%{gstmver}/gst/wayland
 %{_includedir}/gstreamer-%{gstmver}/gst/webrtc
+%{_datadir}/gir-1.0/CudaGst-1.0.gir
 %{_datadir}/gir-1.0/GstBadAudio-1.0.gir
 %{_datadir}/gir-1.0/GstCodecs-1.0.gir
+%{_datadir}/gir-1.0/GstCuda-1.0.gir
 %{_datadir}/gir-1.0/GstInsertBin-1.0.gir
 %{_datadir}/gir-1.0/GstMpegts-1.0.gir
 %{_datadir}/gir-1.0/GstPlay-1.0.gir
 %{_datadir}/gir-1.0/GstPlayer-1.0.gir
+%{_datadir}/gir-1.0/GstVa-1.0.gir
 %{_datadir}/gir-1.0/GstVulkan-1.0.gir
 %{_datadir}/gir-1.0/GstVulkanWayland-1.0.gir
 %{_datadir}/gir-1.0/GstVulkanXCB-1.0.gir
 %{_datadir}/gir-1.0/GstWebRTC-1.0.gir
 %{_pkgconfigdir}/gstreamer-bad-audio-%{gstmver}.pc
 %{_pkgconfigdir}/gstreamer-codecparsers-%{gstmver}.pc
+%{_pkgconfigdir}/gstreamer-cuda-%{gstmver}.pc
 %{_pkgconfigdir}/gstreamer-insertbin-%{gstmver}.pc
 %{_pkgconfigdir}/gstreamer-mpegts-%{gstmver}.pc
 %{_pkgconfigdir}/gstreamer-photography-%{gstmver}.pc
@@ -1768,11 +1828,13 @@ rm -rf $RPM_BUILD_ROOT
 %{_pkgconfigdir}/gstreamer-player-%{gstmver}.pc
 %{_pkgconfigdir}/gstreamer-plugins-bad-%{gstmver}.pc
 %{_pkgconfigdir}/gstreamer-sctp-%{gstmver}.pc
+%{_pkgconfigdir}/gstreamer-va-%{gstmver}.pc
 %{_pkgconfigdir}/gstreamer-vulkan-%{gstmver}.pc
 %{_pkgconfigdir}/gstreamer-vulkan-wayland-%{gstmver}.pc
 %{_pkgconfigdir}/gstreamer-vulkan-xcb-%{gstmver}.pc
 %{_pkgconfigdir}/gstreamer-wayland-1.0.pc
 %{_pkgconfigdir}/gstreamer-webrtc-%{gstmver}.pc
+%{_pkgconfigdir}/gstreamer-webrtc-nice-%{gstmver}.pc
 
 %if %{with apidocs}
 %files apidocs
@@ -1782,6 +1844,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_docdir}/gstreamer-%{gstmver}/adpcmenc-doc
 %{_docdir}/gstreamer-%{gstmver}/aes-doc
 %{_docdir}/gstreamer-%{gstmver}/aiff-doc
+%{_docdir}/gstreamer-%{gstmver}/amfcodec-doc
 %{_docdir}/gstreamer-%{gstmver}/aom-doc
 %{_docdir}/gstreamer-%{gstmver}/applemedia-doc
 %{_docdir}/gstreamer-%{gstmver}/asfmux-doc
@@ -1804,8 +1867,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_docdir}/gstreamer-%{gstmver}/closedcaption-doc
 %{_docdir}/gstreamer-%{gstmver}/codecalpha-doc
 %{_docdir}/gstreamer-%{gstmver}/codecs-doc
+%{_docdir}/gstreamer-%{gstmver}/codectimestamper-doc
 %{_docdir}/gstreamer-%{gstmver}/coloreffects-doc
 %{_docdir}/gstreamer-%{gstmver}/colormanagement-doc
+%{_docdir}/gstreamer-%{gstmver}/cuda-doc
 %{_docdir}/gstreamer-%{gstmver}/curl-doc
 %{_docdir}/gstreamer-%{gstmver}/d3d-doc
 %{_docdir}/gstreamer-%{gstmver}/d3d11-doc
@@ -1815,6 +1880,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_docdir}/gstreamer-%{gstmver}/debugutilsbad-doc
 %{_docdir}/gstreamer-%{gstmver}/decklink-doc
 %{_docdir}/gstreamer-%{gstmver}/directfb-doc
+%{_docdir}/gstreamer-%{gstmver}/directshow-doc
 %{_docdir}/gstreamer-%{gstmver}/directsoundsrc-doc
 %{_docdir}/gstreamer-%{gstmver}/dtls-doc
 %{_docdir}/gstreamer-%{gstmver}/dtsdec-doc
@@ -1841,6 +1907,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_docdir}/gstreamer-%{gstmver}/gsm-doc
 %{_docdir}/gstreamer-%{gstmver}/gst-plugins-bad-adaptivedemux-doc
 %{_docdir}/gstreamer-%{gstmver}/gst-plugins-bad-codecparsers-doc
+%{_docdir}/gstreamer-%{gstmver}/gtkwayland-doc
 %{_docdir}/gstreamer-%{gstmver}/hls-doc
 %{_docdir}/gstreamer-%{gstmver}/id3tag-doc
 %{_docdir}/gstreamer-%{gstmver}/insertbin-doc
@@ -1888,6 +1955,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_docdir}/gstreamer-%{gstmver}/pnm-doc
 %{_docdir}/gstreamer-%{gstmver}/proxy-doc
 %{_docdir}/gstreamer-%{gstmver}/qroverlay-doc
+%{_docdir}/gstreamer-%{gstmver}/qsv-doc
 %{_docdir}/gstreamer-%{gstmver}/removesilence-doc
 %{_docdir}/gstreamer-%{gstmver}/resindvd-doc
 %{_docdir}/gstreamer-%{gstmver}/rfbsrc-doc
@@ -1920,6 +1988,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_docdir}/gstreamer-%{gstmver}/uvch264-doc
 %{_docdir}/gstreamer-%{gstmver}/v4l2codecs-doc
 %{_docdir}/gstreamer-%{gstmver}/va-doc
+%{_docdir}/gstreamer-%{gstmver}/valib-doc
 %{_docdir}/gstreamer-%{gstmver}/videofiltersbad-doc
 %{_docdir}/gstreamer-%{gstmver}/videoframe_audiolevel-doc
 %{_docdir}/gstreamer-%{gstmver}/videoparsersbad-doc
@@ -1938,7 +2007,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_docdir}/gstreamer-%{gstmver}/webrtc-doc
 %{_docdir}/gstreamer-%{gstmver}/webrtcdsp-doc
 %{_docdir}/gstreamer-%{gstmver}/webrtclib-doc
+%{_docdir}/gstreamer-%{gstmver}/wic-doc
 %{_docdir}/gstreamer-%{gstmver}/wildmidi-doc
+%{_docdir}/gstreamer-%{gstmver}/win32ipc-doc
 %{_docdir}/gstreamer-%{gstmver}/winks-doc
 %{_docdir}/gstreamer-%{gstmver}/winscreencap-doc
 %{_docdir}/gstreamer-%{gstmver}/wpe-doc
@@ -2096,6 +2167,12 @@ rm -rf $RPM_BUILD_ROOT
 %files -n gstreamer-gme
 %defattr(644,root,root,755)
 %attr(755,root,root) %{gstlibdir}/libgstgme.so
+
+%if %{with gcloud}
+%files -n gstreamer-gs
+%defattr(644,root,root,755)
+%attr(755,root,root) %{gstlibdir}/libgstgs.so
+%endif
 
 # not ported to 1.0 yet
 %if 0
@@ -2352,6 +2429,10 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %attr(755,root,root) %{gstlibdir}/libgstdirectfb.so
 %endif
+
+%files -n gstreamer-videosink-gtkwayland
+%defattr(644,root,root,755)
+%attr(755,root,root) %{gstlibdir}/libgstgtkwayland.so
 
 %if %{with wayland}
 %files -n gstreamer-videosink-wayland

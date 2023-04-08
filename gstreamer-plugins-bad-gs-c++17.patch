@@ -1,0 +1,10 @@
+--- gst-plugins-bad-1.22.1/ext/gs/meson.build.orig	2023-04-07 06:47:15.386423238 +0200
++++ gst-plugins-bad-1.22.1/ext/gs/meson.build	2023-04-07 06:47:24.379707850 +0200
+@@ -16,6 +16,7 @@ if gs_dep.found()
+     dependencies : [gstbase_dep, gs_dep],
+     install : true,
+     install_dir : plugins_install_dir,
++    override_options : ['cpp_std=c++17'],
+   )
+   plugins += [gstgs]
+ endif
