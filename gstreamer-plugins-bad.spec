@@ -1588,6 +1588,7 @@ Wtyczka GStreamera ZXing wykrywająca kody kreskowe.
 	%{!?with_neon:-Dneon=disabled} \
 	%{!?with_openal:-Dopenal=disabled} \
 	%{!?with_opencv:-Dopencv=disabled} \
+	%{!?with_openexr:-Dopenexr=disabled} \
 	%{!?with_openh264:-Dopenh264=disabled} \
 	%{!?with_openni2:-Dopenni2=disabled} \
 	-Dsctp-internal-usrsctp=disabled \
