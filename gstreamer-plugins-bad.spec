@@ -12,7 +12,7 @@
 %bcond_without	bluez		# Bluez plugin
 %bcond_without	chromaprint	# chromaprint fingerprint plugin
 %bcond_without	dc1394		# dc1394 input plugin
-%bcond_without	directfb	# DirectFB videosink plugin
+%bcond_with	directfb	# DirectFB videosink plugin
 %bcond_without	dts		# DTS audio decoder plugin
 %bcond_without	faad		# faad audio decoder plugin
 %bcond_without	gcloud		# Google Cloud Storage source and sink plugin
@@ -76,7 +76,7 @@ Summary:	Bad GStreamer Streaming-media framework plugins
 Summary(pl.UTF-8):	Złe wtyczki do środowiska obróbki strumieni GStreamer
 Name:		gstreamer-plugins-bad
 Version:	1.22.6
-Release:	1
+Release:	2
 License:	LGPL v2+
 Group:		Libraries
 Source0:	https://gstreamer.freedesktop.org/src/gst-plugins-bad/%{gstname}-%{version}.tar.xz
