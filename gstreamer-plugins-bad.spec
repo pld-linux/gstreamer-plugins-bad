@@ -166,13 +166,13 @@ BuildRequires:	libpng-devel >= 2:1.2.0
 %{?with_librsvg:BuildRequires:	librsvg-devel >= 1:2.36.2}
 BuildRequires:	librtmp-devel
 BuildRequires:	libssh2-devel >= 1.4.3
-# for decklink, modplug, soundtouch
 %{?with_sndfile:BuildRequires:	libsndfile-devel >= 1.0.16}
 # or srtp, libsrtp2 is preferred
 %{?with_srtp:BuildRequires:	libsrtp2-devel >= 2.1.0}
 %if %{with zxing}
 BuildRequires:	libstdc++-devel >= 6:7
 %else
+# for decklink, modplug, soundtouch
 BuildRequires:	libstdc++-devel >= 6:4.7
 %endif
 BuildRequires:	libtheora-devel >= 1.0
@@ -199,7 +199,6 @@ BuildRequires:	nettle-devel >= 3.0
 %{?with_vpl:BuildRequires:	oneVPL-devel >= 2.2}
 %if %{with opencv}
 BuildRequires:	opencv-devel >= 1:3.0.0
-BuildRequires:	opencv-devel < 1:4.6.0
 %endif
 %{?with_openh264:BuildRequires:	openh264-devel >= 1.3.0}
 # or openjpeg >= 1.5, openjpeg2 is preferred
