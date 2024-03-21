@@ -1,5 +1,4 @@
 # TODO:
-# - ajantv2
 # - magicleap (ml_audio/lumin SDK - is it available on Linux?)
 # - fix opencv
 #   /usr/include/opencv4/opencv2/tracking/tracking_internals.hpp:18:10: fatal error: opencv2/video/detail/tracking.private.hpp: No such file or directory
@@ -8,6 +7,7 @@
 # - OpenSLES (when available on pure Linux, not Android)
 #
 # Conditional build:
+%bcond_without	aja		# AJA NTV2 input/output plugin
 %bcond_without	amr		# amrwbenc output plugin
 %bcond_without	apidocs		# API documentation
 %bcond_without	bs2b		# bs2b headphone stereo improvement plugin
@@ -41,7 +41,7 @@
 %bcond_without	svthevc		# SvtHevc encoder plugin
 %bcond_without	tinyalsa	# ALSA audiosink using tinyalsa library
 %bcond_without	uvch264		# uvch264 cameras plugin
-%bcond_with	vpl		# oneVPL instead of MFX in Intel MediaSDK plugin (x86_64 only)
+%bcond_with	vpl		# VPL instead of MFX in Intel MediaSDK plugin
 %bcond_without	vulkan		# Vulkan library and videosink/upload plugin
 %bcond_without	wayland		# Wayland videosink plugin, Wayland EGL support
 %bcond_without	wpe		# WebKit based web browser plugin
@@ -54,9 +54,6 @@
 %if %{without opengl}
 %undefine with_wayland
 %undefine with_wpe
-%endif
-%ifnarch %{x8664}
-%undefine	with_vpl
 %endif
 %if %{without mfx} && %{without vpl}
 %undefine	with_msdk
@@ -84,6 +81,7 @@ Source0:	https://gstreamer.freedesktop.org/src/gst-plugins-bad/%{gstname}-%{vers
 # Source0-md5:	22982dd1f7baffa6435551cbe156b888
 Patch0:		musepack.patch
 Patch1:		%{name}-gs-c++17.patch
+Patch2:		%{name}-aja-update.patch
 URL:		https://gstreamer.freedesktop.org/
 BuildRequires:	docbook-dtd412-xml
 BuildRequires:	gettext-tools >= 0.17
@@ -143,6 +141,7 @@ BuildRequires:	json-glib-devel >= 1.6.6
 %{?with_ladspa:BuildRequires:	ladspa-devel >= 1.12}
 BuildRequires:	lcms2-devel >= 2.7
 %{?with_ldac:BuildRequires:	ldacBT-devel}
+%{?with_aja:BuildRequires:	libajantv2-devel}
 BuildRequires:	libass-devel >= 0.10.2
 BuildRequires:	libavtp-devel >= 0.2.0
 %{?with_bs2b:BuildRequires:	libbs2b-devel >= 3.1.0}
@@ -174,7 +173,7 @@ BuildRequires:	libssh2-devel >= 1.4.3
 %if %{with zxing} || %{with gcloud}
 BuildRequires:	libstdc++-devel >= 6:7
 %else
-# C++11 for decklink, modplug, nvcodec, soundtouch
+# C++11 for aja, decklink, modplug, nvcodec, soundtouch
 # C++14 for nvcodec
 BuildRequires:	libstdc++-devel >= 6:5
 %endif
@@ -183,6 +182,7 @@ BuildRequires:	libtheora-devel >= 1.0
 BuildRequires:	libusrsctp-devel
 BuildRequires:	libva-devel >= 1.15
 BuildRequires:	libva-drm-devel >= 1.12
+%{?with_vpl:BuildRequires:	libvpl-devel >= 2.2}
 BuildRequires:	libvpx-devel
 BuildRequires:	libwebp-devel >= 0.2.1
 %{?with_x265:BuildRequires:	libx265-devel}
@@ -198,7 +198,6 @@ BuildRequires:	libxml2-devel >= 1:2.9.2
 %{?with_neon:BuildRequires:	neon-devel < 0.34}
 # for hls, could also use libgcrypt>=1.2.0 or openssl
 BuildRequires:	nettle-devel >= 3.0
-%{?with_vpl:BuildRequires:	oneVPL-devel >= 2.2}
 %if %{with opencv}
 BuildRequires:	opencv-devel >= 1:3.0.0
 %endif
@@ -379,6 +378,21 @@ GStreamer AES encryption/decryption plugin.
 
 %description -n gstreamer-aes -l pl.UTF-8
 Wtyczka szyfrująca/odszyfrowująca AES dla GStreamera.
+
+%package -n gstreamer-aja
+Summary:	GStreamer AJA source/sink plugin
+Summary(pl.UTF-8):	Wtyczka źródła/wyjścia AJA dla GStreamera
+Group:		Libraries
+Requires:	gstreamer >= %{gst_ver}
+Requires:	gstreamer-plugins-base >= %{gstpb_ver}
+
+%description -n gstreamer-aja
+GStreamer AJA audio/video source/sink plugin based on libajantv2
+library.
+
+%description -n gstreamer-aja -l pl.UTF-8
+Oparta na bibliotece libajantv2 wtyczka źródła/wyjścia dźwięku/obrazu
+GStreamera.
 
 %package -n gstreamer-amrwbenc
 Summary:	GStreamer plugin for AMR-WB audio encoding
@@ -761,21 +775,6 @@ GStreamer plugin to encode and decode audio using iSAC codec.
 Wtyczka GStreamera do kodowania i dekodowania dźwięku przy użyciu
 kodeka iSAC.
 
-%package -n gstreamer-videosink-kms
-Summary:	GStreamer KMS output plugin
-Summary(pl.UTF-8):	Wtyczka wyjścia obrazu KMS dla GStreamera
-Group:		Libraries
-Requires:	gstreamer >= %{gst_ver}
-Requires:	gstreamer-plugins-base >= %{gstpb_ver}
-Requires:	libdrm >= 2.4.104
-Provides:	gstreamer-videosink = %{version}
-
-%description -n gstreamer-videosink-kms
-GStreamer KMS output plugin.
-
-%description -n gstreamer-videosink-kms -l pl.UTF-8
-Wtyczka wyjścia obrazu KMS dla GStreamera.
-
 %package -n gstreamer-ladspa
 Summary:	GStreamer wrapper for LADSPA plugins
 Summary(pl.UTF-8):	Wrapper do wtyczek LADSPA dla GStreamera
@@ -897,6 +896,7 @@ Requires:	%{name} = %{version}-%{release}
 Requires:	gstreamer >= %{gst_ver}
 Requires:	gstreamer-plugins-base >= %{gstpb_ver}
 Requires:	libdrm >= 2.4.104
+%{?with_vpl:Requires:	libvpl >= 2.2}
 
 %description -n gstreamer-msdk
 GStreamer video decoder/encoder based on Intel MediaSDK (MFX) library.
@@ -1410,6 +1410,21 @@ Plugin for sending output to the GTK+ on Wayland architecture.
 %description -n gstreamer-videosink-gtkwayland -l pl.UTF-8
 Wtyczka przekazująca wyjście do architektury GTK+ na Wayland.
 
+%package -n gstreamer-videosink-kms
+Summary:	GStreamer KMS output plugin
+Summary(pl.UTF-8):	Wtyczka wyjścia obrazu KMS dla GStreamera
+Group:		Libraries
+Requires:	gstreamer >= %{gst_ver}
+Requires:	gstreamer-plugins-base >= %{gstpb_ver}
+Requires:	libdrm >= 2.4.104
+Provides:	gstreamer-videosink = %{version}
+
+%description -n gstreamer-videosink-kms
+GStreamer KMS output plugin.
+
+%description -n gstreamer-videosink-kms -l pl.UTF-8
+Wtyczka wyjścia obrazu KMS dla GStreamera.
+
 %package -n gstreamer-videosink-wayland
 Summary:	GStreamer plugin for outputing to GTK+/Wayland
 Summary(pl.UTF-8):	Wtyczka wyjścia GTK+/Wayland dla GStreamera
@@ -1584,6 +1599,7 @@ Wtyczka GStreamera ZXing wykrywająca kody kreskowe.
 %setup -q -n %{gstname}-%{version}
 %patch0 -p1
 %patch1 -p1
+%patch2 -p1
 
 # disable SCTP debugging (even though gst_debug is enabled by default)
 # (SCTP_DEBUG requires libusrsctp built with debugging)
@@ -1592,6 +1608,7 @@ Wtyczka GStreamera ZXing wykrywająca kody kreskowe.
 %build
 %meson build \
 	--default-library=shared \
+	%{!?with_aja:-Daja=disabled} \
 	%{!?with_bluez:-Dbluez=disabled} \
 	%{!?with_bs2b:-Dbs2b=disabled} \
 	%{!?with_directfb:-Ddirectfb=disabled} \
@@ -2163,6 +2180,13 @@ rm -rf $RPM_BUILD_ROOT
 # R: openssl >= 1.1.0
 %attr(755,root,root) %{gstlibdir}/libgstaes.so
 
+%if %{with aja}
+%files -n gstreamer-aja
+%defattr(644,root,root,755)
+# R: libajantv2 libstdc++
+%attr(755,root,root) %{gstlibdir}/libgstaja.so
+%endif
+
 %files -n gstreamer-aom
 %defattr(644,root,root,755)
 %attr(755,root,root) %{gstlibdir}/libgstaom.so
@@ -2295,14 +2319,6 @@ rm -rf $RPM_BUILD_ROOT
 # R: webrtc-audio-processing1 >= 1.0
 %attr(755,root,root) %{gstlibdir}/libgstisac.so
 
-%files -n gstreamer-videosink-gtkwayland
-%defattr(644,root,root,755)
-%attr(755,root,root) %{gstlibdir}/libgstgtkwayland.so
-
-%files -n gstreamer-videosink-kms
-%defattr(644,root,root,755)
-%attr(755,root,root) %{gstlibdir}/libgstkms.so
-
 %if %{with ladspa}
 %files -n gstreamer-ladspa
 %defattr(644,root,root,755)
@@ -2352,7 +2368,7 @@ rm -rf $RPM_BUILD_ROOT
 %if %{with msdk}
 %files -n gstreamer-msdk
 %defattr(644,root,root,755)
-# R: %{?with_mfx:mfx_dispatch} %{?with_vpl:oneVPL}
+# R: %{?with_mfx:mfx_dispatch} %{?with_vpl:libvpl}
 %attr(755,root,root) %{gstlibdir}/libgstmsdk.so
 %endif
 
@@ -2532,6 +2548,10 @@ rm -rf $RPM_BUILD_ROOT
 %files -n gstreamer-videosink-gtkwayland
 %defattr(644,root,root,755)
 %attr(755,root,root) %{gstlibdir}/libgstgtkwayland.so
+
+%files -n gstreamer-videosink-kms
+%defattr(644,root,root,755)
+%attr(755,root,root) %{gstlibdir}/libgstkms.so
 
 %if %{with wayland}
 %files -n gstreamer-videosink-wayland
