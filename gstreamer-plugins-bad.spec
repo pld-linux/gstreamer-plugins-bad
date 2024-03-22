@@ -91,7 +91,7 @@ BuildRequires:	gstreamer-devel >= %{gst_ver}
 BuildRequires:	gstreamer-gl-devel >= %{gstpb_ver}
 BuildRequires:	gstreamer-plugins-base-devel >= %{gstpb_ver}
 %{?with_apidocs:BuildRequires:	hotdoc >= 0.11.0}
-BuildRequires:	meson >= 0.62
+BuildRequires:	meson >= 1.1
 BuildRequires:	microdns-devel
 BuildRequires:	ninja >= 1.5
 BuildRequires:	orc-devel >= 0.4.38
