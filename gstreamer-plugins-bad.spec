@@ -143,6 +143,9 @@ BuildRequires:	lcms2-devel >= 2.7
 %{?with_ldac:BuildRequires:	ldacBT-devel}
 %{?with_aja:BuildRequires:	libajantv2-devel}
 BuildRequires:	libass-devel >= 0.10.2
+%ifnarch %{ix86} %{x8664} x32
+BuildRequires:	libatomic-devel
+%endif
 BuildRequires:	libavtp-devel >= 0.2.0
 %{?with_bs2b:BuildRequires:	libbs2b-devel >= 3.1.0}
 %{?with_chromaprint:BuildRequires:	libchromaprint-devel}
