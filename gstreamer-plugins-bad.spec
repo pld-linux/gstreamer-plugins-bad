@@ -158,6 +158,7 @@ BuildRequires:	libfreeaptx-devel >= 0.1.1
 %{?with_gsm:BuildRequires:	libgsm-devel}
 BuildRequires:	libiptcdata-devel >= 1.0.2
 BuildRequires:	libjpeg-devel
+BuildRequires:	liblc3-devel
 BuildRequires:	liblrdf-devel
 BuildRequires:	libltc-devel >= 1.1.4
 BuildRequires:	libmodplug-devel
