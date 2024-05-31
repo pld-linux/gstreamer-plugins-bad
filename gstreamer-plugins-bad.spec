@@ -184,7 +184,7 @@ BuildRequires:	libstdc++-devel >= 6:5
 BuildRequires:	libtheora-devel >= 1.0
 %{?with_uvch264:BuildRequires:	libusb-devel >= 1.0}
 BuildRequires:	libusrsctp-devel
-BuildRequires:	libva-devel >= 1.15
+BuildRequires:	libva-devel >= 2.21.0
 BuildRequires:	libva-drm-devel >= 1.12
 %{?with_vpl:BuildRequires:	libvpl-devel >= 2.2}
 BuildRequires:	libvpx-devel
@@ -254,7 +254,7 @@ Requires:	libdrm >= 2.4.98
 # for libgstwebrtcnice
 Requires:	libnice >= 0.1.22
 # for libgstva
-Requires:	libva >= 1.15
+Requires:	libva >= 2.21.0
 Requires:	libva-drm >= 1.12
 %{?with_vulkan:Requires:	libxcb >= 1.10}
 Requires:	orc >= 0.4.38
@@ -1722,7 +1722,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %ghost %{_libdir}/libgstsctp-%{gstmver}.so.0
 %attr(755,root,root) %{_libdir}/libgsturidownloader-%{gstmver}.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libgsturidownloader-%{gstmver}.so.0
-# R: libdrm >= 2.4 libva >= 1.12 libva-drm >= 1.12
+# R: libdrm >= 2.4 libva >= 2.21.0 libva-drm >= 1.12
 %attr(755,root,root) %{_libdir}/libgstva-%{gstmver}.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libgstva-%{gstmver}.so.0
 %if %{with vulkan}
