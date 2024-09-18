@@ -74,7 +74,7 @@ Summary:	Bad GStreamer Streaming-media framework plugins
 Summary(pl.UTF-8):	Złe wtyczki do środowiska obróbki strumieni GStreamer
 Name:		gstreamer-plugins-bad
 Version:	1.24.7
-Release:	1
+Release:	2
 License:	LGPL v2+
 Group:		Libraries
 Source0:	https://gstreamer.freedesktop.org/src/gst-plugins-bad/%{gstname}-%{version}.tar.xz
@@ -82,6 +82,7 @@ Source0:	https://gstreamer.freedesktop.org/src/gst-plugins-bad/%{gstname}-%{vers
 Patch0:		musepack.patch
 Patch1:		%{name}-gs-c++17.patch
 Patch2:		%{name}-aja-update.patch
+Patch3:		%{name}-x265.patch
 URL:		https://gstreamer.freedesktop.org/
 BuildRequires:	docbook-dtd412-xml
 BuildRequires:	gettext-tools >= 0.17
@@ -1604,6 +1605,7 @@ Wtyczka GStreamera ZXing wykrywająca kody kreskowe.
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
+%patch3 -p1
 
 # disable SCTP debugging (even though gst_debug is enabled by default)
 # (SCTP_DEBUG requires libusrsctp built with debugging)

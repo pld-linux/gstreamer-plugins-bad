@@ -1,0 +1,82 @@
+--- gst-plugins-bad-1.24.7/ext/x265/gstx265enc.c.orig	2024-08-21 13:25:15.000000000 +0200
++++ gst-plugins-bad-1.24.7/ext/x265/gstx265enc.c	2024-09-18 20:14:27.985406051 +0200
+@@ -1514,7 +1514,13 @@ gst_x265_enc_encode_frame (GstX265Enc *
+ {
+   GstVideoCodecFrame *frame = NULL;
+   GstBuffer *out_buf = NULL;
++  x265_picture *pic_outp;
++#if X265_BUILD >= 210
++  x265_picture pic_outl[MAX_SCALABLE_LAYERS];
++  x265_picture *pic_outlp[MAX_SCALABLE_LAYERS];
++#else
+   x265_picture pic_out;
++#endif
+   x265_nal *nal;
+   int i_size, i, offset;
+   int encoder_return;
+@@ -1522,6 +1528,14 @@ gst_x265_enc_encode_frame (GstX265Enc *
+   gboolean update_latency = FALSE;
+   const x265_api *api;
+ 
++#if X265_BUILD >= 210
++  for (int i = 0; i < MAX_SCALABLE_LAYERS; i++)
++    pic_outlp[i] = &pic_outl[i];
++  pic_outp = pic_outlp[0];
++#else
++  pic_outp = &pic_out;
++#endif
++
+   if (G_UNLIKELY (encoder->x265enc == NULL)) {
+     if (input_frame)
+       gst_video_codec_frame_unref (input_frame);
+@@ -1549,8 +1563,13 @@ gst_x265_enc_encode_frame (GstX265Enc *
+   if (G_UNLIKELY (update_latency))
+     gst_x265_enc_set_latency (encoder);
+ 
++#if X265_BUILD >= 210
++  encoder_return = api->encoder_encode (encoder->x265enc,
++      &nal, i_nal, pic_in, pic_outlp);
++#else
+   encoder_return = api->encoder_encode (encoder->x265enc,
+       &nal, i_nal, pic_in, &pic_out);
++#endif
+ 
+   GST_DEBUG_OBJECT (encoder, "encoder result (%d) with %u nal units",
+       encoder_return, *i_nal);
+@@ -1575,12 +1594,12 @@ gst_x265_enc_encode_frame (GstX265Enc *
+   }
+ 
+   frame = gst_video_encoder_get_frame (GST_VIDEO_ENCODER (encoder),
+-      GPOINTER_TO_INT (pic_out.userData));
++      GPOINTER_TO_INT (pic_outp->userData));
+   g_assert (frame || !send);
+ 
+   GST_DEBUG_OBJECT (encoder,
+-      "output picture ready POC=%d system=%d frame found %d", pic_out.poc,
+-      GPOINTER_TO_INT (pic_out.userData), frame != NULL);
++      "output picture ready POC=%d system=%d frame found %d", pic_outp->poc,
++      GPOINTER_TO_INT (pic_outp->userData), frame != NULL);
+ 
+   if (!send || !frame) {
+     GST_LOG_OBJECT (encoder, "not sending (%d) or frame not found (%d)", send,
+@@ -1599,7 +1618,7 @@ gst_x265_enc_encode_frame (GstX265Enc *
+     offset += nal[i].sizeBytes;
+   }
+ 
+-  if (pic_out.sliceType == X265_TYPE_IDR || pic_out.sliceType == X265_TYPE_I) {
++  if (pic_outp->sliceType == X265_TYPE_IDR || pic_outp->sliceType == X265_TYPE_I) {
+     GST_VIDEO_CODEC_FRAME_SET_SYNC_POINT (frame);
+   }
+ 
+@@ -1615,9 +1634,9 @@ gst_x265_enc_encode_frame (GstX265Enc *
+ 
+   GST_LOG_OBJECT (encoder,
+       "output: dts %" G_GINT64_FORMAT " pts %" G_GINT64_FORMAT,
+-      (gint64) pic_out.dts, (gint64) pic_out.pts);
++      (gint64) pic_outp->dts, (gint64) pic_outp->pts);
+ 
+-  frame->dts = pic_out.dts + encoder->dts_offset;
++  frame->dts = pic_outp->dts + encoder->dts_offset;
+ 
+ out:
+   if (frame) {
