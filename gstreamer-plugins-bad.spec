@@ -1602,10 +1602,10 @@ Wtyczka GStreamera ZXing wykrywająca kody kreskowe.
 
 %prep
 %setup -q -n %{gstname}-%{version}
-%patch0 -p1
-%patch1 -p1
-%patch2 -p1
-%patch3 -p1
+%patch -P 0 -p1
+%patch -P 1 -p1
+%patch -P 2 -p1
+%patch -P 3 -p1
 
 # disable SCTP debugging (even though gst_debug is enabled by default)
 # (SCTP_DEBUG requires libusrsctp built with debugging)
