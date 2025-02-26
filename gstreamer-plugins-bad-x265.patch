@@ -5,7 +5,7 @@
    GstVideoCodecFrame *frame = NULL;
    GstBuffer *out_buf = NULL;
 +  x265_picture *pic_outp;
-+#if X265_BUILD >= 210
++#if X265_BUILD >= 210 && X265_BUILD < 213
 +  x265_picture pic_outl[MAX_SCALABLE_LAYERS];
 +  x265_picture *pic_outlp[MAX_SCALABLE_LAYERS];
 +#else
@@ -18,7 +18,7 @@
    gboolean update_latency = FALSE;
    const x265_api *api;
  
-+#if X265_BUILD >= 210
++#if X265_BUILD >= 210 && X265_BUILD < 213
 +  for (int i = 0; i < MAX_SCALABLE_LAYERS; i++)
 +    pic_outlp[i] = &pic_outl[i];
 +  pic_outp = pic_outlp[0];
@@ -33,7 +33,7 @@
    if (G_UNLIKELY (update_latency))
      gst_x265_enc_set_latency (encoder);
  
-+#if X265_BUILD >= 210
++#if X265_BUILD >= 210 && X265_BUILD < 213
 +  encoder_return = api->encoder_encode (encoder->x265enc,
 +      &nal, i_nal, pic_in, pic_outlp);
 +#else
