@@ -99,7 +99,7 @@ BuildRequires:	orc-devel >= 0.4.38
 BuildRequires:	pkgconfig >= 1:0.9.0
 BuildRequires:	python3 >= 1:3.2
 BuildRequires:	rpm-build >= 4.6
-BuildRequires:	rpmbuild(macros) >= 1.736
+BuildRequires:	rpmbuild(macros) >= 2.042
 BuildRequires:	tar >= 1:1.22
 BuildRequires:	xorg-lib-libX11-devel
 %if %{with examples}
@@ -1612,7 +1612,7 @@ Wtyczka GStreamera ZXing wykrywająca kody kreskowe.
 %{__sed} -i -e "s/'-DSCTP_DEBUG'//" ext/sctp/meson.build
 
 %build
-%meson build \
+%meson \
 	--default-library=shared \
 	%{!?with_aja:-Daja=disabled} \
 	%{!?with_bluez:-Dbluez=disabled} \
@@ -1651,7 +1651,7 @@ Wtyczka GStreamera ZXing wykrywająca kody kreskowe.
 	%{!?with_x265:-Dx265=disabled} \
 	%{!?with_zxing:-Dzxing=disabled}
 
-%ninja_build -C build
+%meson_build
 
 %if %{with apidocs}
 cd build/docs
@@ -1663,7 +1663,7 @@ done
 %install
 rm -rf $RPM_BUILD_ROOT
 
-%ninja_install -C build
+%meson_install
 
 %if %{with apidocs}
 install -d $RPM_BUILD_ROOT%{_docdir}/gstreamer-%{gstmver}
