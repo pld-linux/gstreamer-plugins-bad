@@ -1,10 +1,8 @@
 # TODO:
-# - magicleap (ml_audio/lumin SDK - is it available on Linux?)
 # - fix opencv
 #   /usr/include/opencv4/opencv2/tracking/tracking_internals.hpp:18:10: fatal error: opencv2/video/detail/tracking.private.hpp: No such file or directory
 # - onnx (BR: libonnxruntime.pc >= 1.16.1 [https://github.com/microsoft/onnxruntime])
 # - nvbufsurface.h (nvidia deepstream) for nvcodec nvmm support
-# - OpenSLES (when available on pure Linux, not Android)
 #
 # Conditional build:
 %bcond_without	aja		# AJA NTV2 input/output plugin
@@ -73,12 +71,12 @@
 Summary:	Bad GStreamer Streaming-media framework plugins
 Summary(pl.UTF-8):	Złe wtyczki do środowiska obróbki strumieni GStreamer
 Name:		gstreamer-plugins-bad
-Version:	1.24.8
+Version:	1.24.12
 Release:	1
 License:	LGPL v2+
 Group:		Libraries
 Source0:	https://gstreamer.freedesktop.org/src/gst-plugins-bad/%{gstname}-%{version}.tar.xz
-# Source0-md5:	b0791b9671b875b25bb532f62edc6432
+# Source0-md5:	f2e4b24dca97397158e496059ec65ce6
 Patch0:		musepack.patch
 Patch1:		%{name}-gs-c++17.patch
 Patch2:		%{name}-aja-update.patch
@@ -1612,12 +1610,17 @@ Wtyczka GStreamera ZXing wykrywająca kody kreskowe.
 %{__sed} -i -e "s/'-DSCTP_DEBUG'//" ext/sctp/meson.build
 
 %build
+# amfcodec, directshow, qt6d3d11, wasapi, wasapi2 - Windows specific
+# magicleap, opensles - Android specific
+# onnx - TODO
 %meson \
 	--default-library=shared \
 	%{!?with_aja:-Daja=disabled} \
+	-Damfcodec=disabled \
 	%{!?with_bluez:-Dbluez=disabled} \
 	%{!?with_bs2b:-Dbs2b=disabled} \
 	%{!?with_directfb:-Ddirectfb=disabled} \
+	-Ddirectshow=disabled \
 	%{!?with_apidocs:-Ddoc=disabled} \
 	%{!?with_dts:-Ddts=disabled} \
 	%{!?with_examples:-Dexamples=disabled} \
@@ -1630,23 +1633,30 @@ Wtyczka GStreamera ZXing wykrywająca kody kreskowe.
 	%{!?with_ldac:-Dldac=disabled} \
 	%{!?with_libde265:-Dlibde265=disabled} \
 	%{!?with_lv2:-Dlv2=disabled} \
+	-Dmagicleap=disabled \
 	%{?with_vpl:-Dmfx_api=oneVPL} \
 	%{!?with_mjpegtools:-Dmpeg2enc=disabled} \
 	%{!?with_msdk:-Dmsdk=disabled} \
 	%{!?with_musepack:-Dmusepack=disabled} \
 	%{!?with_neon:-Dneon=disabled} \
+	-Donnx=disabled \
 	%{!?with_openal:-Dopenal=disabled} \
 	%{!?with_opencv:-Dopencv=disabled} \
 	%{!?with_openexr:-Dopenexr=disabled} \
 	%{!?with_openh264:-Dopenh264=disabled} \
 	%{!?with_openni2:-Dopenni2=disabled} \
+	-Dopensles=disabled \
+	-Dqt6d3d11=disabled \
 	-Dsctp-internal-usrsctp=disabled \
 	%{!?with_svthevc:-Dsvthevcenc=disabled} \
 	%{!?with_zvbi:-Dteletext=disabled} \
+	-Dtests=disabled \
 	%{!?with_tinyalsa:-Dtinyalsa=disabled} \
 	%{!?with_uvch264:-Duvch264=disabled} \
 	%{!?with_amr:-Dvoamrwbenc=disabled} \
 	%{!?with_vulkan:-Dvulkan=disabled} \
+	-Dwasapi=disabled \
+	-Dwasapi2=disabled \
 	%{!?with_wayland:-Dwayland=disabled} \
 	%{!?with_x265:-Dx265=disabled} \
 	%{!?with_zxing:-Dzxing=disabled}
@@ -1689,7 +1699,6 @@ rm -rf $RPM_BUILD_ROOT
 %files -f %{gstname}-%{gstmver}.lang
 %defattr(644,root,root,755)
 %doc AUTHORS ChangeLog NEWS README.md RELEASE
-%{?with_examples:%attr(755,root,root) %{_bindir}/playout}
 %attr(755,root,root) %{_libdir}/libgstadaptivedemux-%{gstmver}.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libgstadaptivedemux-%{gstmver}.so.0
 %attr(755,root,root) %{_libdir}/libgstanalytics-%{gstmver}.so.*.*.*
