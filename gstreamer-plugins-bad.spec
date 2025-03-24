@@ -2,7 +2,10 @@
 # - fix opencv
 #   /usr/include/opencv4/opencv2/tracking/tracking_internals.hpp:18:10: fatal error: opencv2/video/detail/tracking.private.hpp: No such file or directory
 # - onnx (BR: libonnxruntime.pc >= 1.16.1 [https://github.com/microsoft/onnxruntime])
+# - lcevcencoder (BR: lcevc_eil - proprietary, one can get trial from download.v-novacom, see README.md in plugin dir)
 # - nvbufsurface.h (nvidia deepstream) for nvcodec nvmm support
+# - nvcomp SDK for nvcomp plugin
+# - nvds SDK for nvdswrapper plugin
 #
 # Conditional build:
 %bcond_without	aja		# AJA NTV2 input/output plugin
@@ -66,17 +69,17 @@
 
 %define		gstname		gst-plugins-bad
 %define		gstmver		1.0
-%define		gst_ver		1.24.0
-%define		gstpb_ver	1.24.0
+%define		gst_ver		1.26.0
+%define		gstpb_ver	1.26.0
 Summary:	Bad GStreamer Streaming-media framework plugins
 Summary(pl.UTF-8):	Złe wtyczki do środowiska obróbki strumieni GStreamer
 Name:		gstreamer-plugins-bad
-Version:	1.24.12
+Version:	1.26.0
 Release:	1
 License:	LGPL v2+
 Group:		Libraries
 Source0:	https://gstreamer.freedesktop.org/src/gst-plugins-bad/%{gstname}-%{version}.tar.xz
-# Source0-md5:	f2e4b24dca97397158e496059ec65ce6
+# Source0-md5:	6c58efbdf2f3686e02519acbdffd7296
 Patch0:		musepack.patch
 Patch1:		%{name}-gs-c++17.patch
 Patch2:		%{name}-aja-update.patch
@@ -84,16 +87,16 @@ Patch3:		%{name}-x265.patch
 URL:		https://gstreamer.freedesktop.org/
 BuildRequires:	docbook-dtd412-xml
 BuildRequires:	gettext-tools >= 0.17
-BuildRequires:	glib2-devel >= 1:2.62.0
+BuildRequires:	glib2-devel >= 1:2.64.0
 BuildRequires:	gobject-introspection-devel >= 1.61.1
 BuildRequires:	gstreamer-devel >= %{gst_ver}
 BuildRequires:	gstreamer-gl-devel >= %{gstpb_ver}
 BuildRequires:	gstreamer-plugins-base-devel >= %{gstpb_ver}
 %{?with_apidocs:BuildRequires:	hotdoc >= 0.11.0}
-BuildRequires:	meson >= 1.1
+BuildRequires:	meson >= 1.4
 BuildRequires:	microdns-devel
 BuildRequires:	ninja >= 1.5
-BuildRequires:	orc-devel >= 0.4.38
+BuildRequires:	orc-devel >= 0.4.41
 BuildRequires:	pkgconfig >= 1:0.9.0
 BuildRequires:	python3 >= 1:3.2
 BuildRequires:	rpm-build >= 4.6
@@ -113,6 +116,7 @@ BuildRequires:	xorg-lib-libXcomposite-devel
 %if %{with opengl} || %{with wpe}
 BuildRequires:	EGL-devel
 %endif
+BuildRequires:	LCEVCdec-devel
 %{?with_openal:BuildRequires:	OpenAL-devel >= 1.14}
 %{?with_openexr:BuildRequires:	OpenEXR-devel >= 3}
 %{?with_opengl:BuildRequires:	OpenGLESv2-devel}
@@ -124,7 +128,7 @@ BuildRequires:	aom-devel >= 3.2
 BuildRequires:	bzip2-devel
 %{?with_librsvg:BuildRequires:	cairo-devel}
 BuildRequires:	curl-devel >= 7.55.0
-BuildRequires:	dssim-devel
+BuildRequires:	dssim-devel < 2
 BuildRequires:	exempi-devel >= 1.99.5
 BuildRequires:	faac-devel
 %{?with_faad:BuildRequires:	faad2-devel >= 2.7}
@@ -198,8 +202,7 @@ BuildRequires:	libxml2-devel >= 1:2.9.2
 # libmpcdecsv8
 %{?with_musepack:BuildRequires:	musepack-devel}
 %{?with_neon:BuildRequires:	neon-devel >= 0.27.0}
-%{?with_neon:BuildRequires:	neon-devel < 0.34}
-# for hls, could also use libgcrypt>=1.2.0 or openssl
+# for hls, could also use libgcrypt>=1.2.0 or openssl (-Dhls-crypto=libgcrypt|openssl)
 BuildRequires:	nettle-devel >= 3.0
 %if %{with opencv}
 BuildRequires:	opencv-devel >= 1:3.0.0
@@ -219,7 +222,8 @@ BuildRequires:	spandsp-devel >= 1:0.0.6
 BuildRequires:	srt-devel >= 1.3.0
 BuildRequires:	svt-av1-devel >= 1.1
 %{?with_svthevc:BuildRequires:	svt-hevc-devel >= 1.4.1}
-%{?with_tinyalsa:BuildRequires:	tinyalsa-devel}
+BuildRequires:	svt-jpeg-xs-devel >= 0.9
+%{?with_tinyalsa:BuildRequires:	tinyalsa-devel >= 2.0.0}
 BuildRequires:	udev-glib-devel
 BuildRequires:	vo-aacenc-devel >= 0.1.0
 %{?with_amr:BuildRequires:	vo-amrwbenc-devel >= 0.1.0}
@@ -235,7 +239,7 @@ BuildRequires:	webrtc-audio-processing-devel >= 0.2
 BuildRequires:	webrtc-audio-processing1-devel >= 1.0
 %{?with_wildmidi:BuildRequires:	wildmidi-devel >= 0.4.2}
 # in order of preference: wpe-webkit2 >= 2.40.1, wpe-webkit-1.1 >= 2.33.1 (libsoup3 based) or wpe-webkit-1.0 >= 2.28.0 (libsoup 2 based)
-%{?with_wpe:BuildRequires:	wpe-webkit-devel >= 2.28}
+%{?with_wpe:BuildRequires:	wpe-webkit2-devel >= 2.40.1}
 %{?with_wpe:BuildRequires:	wpebackend-fdo-devel >= 1.8}
 BuildRequires:	xorg-lib-libX11-devel
 %{?with_wpe:BuildRequires:	xorg-lib-libxkbcommon-devel >= 0.8}
@@ -245,7 +249,7 @@ BuildRequires:	zbar-devel >= 0.9
 %{?with_zvbi:BuildRequires:	zvbi-devel >= 0.2}
 %{?with_zxing:BuildRequires:	zxing-cpp-nu-devel >= 1.4.0}
 %{?with_vulkan:Requires:	Vulkan-Loader >= 1.3.238}
-Requires:	glib2 >= 1:2.62.0
+Requires:	glib2 >= 1:2.64.0
 Requires:	gstreamer >= %{gst_ver}
 Requires:	gstreamer-plugins-base >= %{gstpb_ver}
 # for libgstva, libgstwayland
@@ -256,7 +260,7 @@ Requires:	libnice >= 0.1.22
 Requires:	libva >= 2.21.0
 Requires:	libva-drm >= 1.12
 %{?with_vulkan:Requires:	libxcb >= 1.10}
-Requires:	orc >= 0.4.38
+Requires:	orc >= 0.4.41
 %{?with_wayland:Requires:	wayland >= 1.15}
 Obsoletes:	gstreamer-cdaudio < 1.0
 Obsoletes:	gstreamer-mms < 1.19.3
@@ -708,7 +712,7 @@ Wtyczka GStreamera do obsługi źródła i wyjścia Google Cloud Storage.
 Summary:	GStreamer GSettings plugin
 Summary(pl.UTF-8):	Wtyczka GSettings dla GStreamera
 Group:		Libraries
-Requires:	glib2 >= 1:2.62.0
+Requires:	glib2 >= 1:2.64.0
 Requires:	gstreamer >= %{gst_ver}
 
 %description -n gstreamer-gsettings
@@ -804,6 +808,19 @@ LC3 bluetooth audio codec plugin for GStreamer.
 
 %description -n gstreamer-lc3 -l pl.UTF-8
 Wtyczka kodeka dźwięku bluetooth LC3 dla GStreamera.
+
+%package -n gstreamer-lcevc
+Summary:	GStreamer LCEVC audio codec plugin
+Summary(pl.UTF-8):	Wtyczka kodeka dźwięku LCEVC dla GStreamera
+Group:		Libraries
+Requires:	gstreamer >= %{gst_ver}
+Requires:	gstreamer-plugins-base >= %{gstpb_ver}
+
+%description -n gstreamer-lcevc
+LCEVC audio codec decoder plugin for GStreamer.
+
+%description -n gstreamer-lcevc -l pl.UTF-8
+Wtyczka dekodera kodeka dźwięku LCEVC dla GStreamera.
 
 %package -n gstreamer-ldac
 Summary:	GStreamer LDAC plugin
@@ -1294,6 +1311,21 @@ GStreamer plugin for encoding H265 using SvtHevc library.
 %description -n gstreamer-svthevcenc -l pl.UTF-8
 Wtyczka GStreamera do kodowania H265 przy użyciu biblioteki SvtHevc.
 
+%package -n gstreamer-svtjpegxs
+Summary:	GStreamer plugin for encoding JPEG XS using SVT-JPEG-XS library
+Summary(pl.UTF-8):	Wtyczka GStreamera do kodowania JPEG XS przy użyciu biblioteki SVT-JPEG-XS
+Group:		Libraries
+Requires:	gstreamer >= %{gst_ver}
+Requires:	gstreamer-plugins-base >= %{gstpb_ver}
+Requires:	svt-jpeg-xs >= 0.9
+
+%description -n gstreamer-svtjpegxs
+GStreamer plugin for encoding JPEG-XS using SVT-JPEG-XS library.
+
+%description -n gstreamer-svtjpegxs -l pl.UTF-8
+Wtyczka GStreamera do kodowania JPEG-XS przy użyciu biblioteki
+SVT-JPEG-XS.
+
 %package -n gstreamer-teletextdec
 Summary:	teletext plugin for GStreamer
 Summary(pl.UTF-8):	Wtyczka teletext dla GStreamera
@@ -1545,7 +1577,7 @@ Requires:	gstreamer >= %{gst_ver}
 Requires:	gstreamer-gl-libs >= %{gstpb_ver}
 Requires:	gstreamer-plugins-base >= %{gstpb_ver}
 Requires:	wayland >= 1.11.0
-Requires:	wpe-webkit >= 2.28
+Requires:	wpe-webkit2 >= 2.40.1
 Requires:	wpebackend-fdo >= 1.8
 Requires:	xorg-lib-libxkbcommon >= 0.8
 
@@ -1610,60 +1642,229 @@ Wtyczka GStreamera ZXing wykrywająca kody kreskowe.
 %{__sed} -i -e "s/'-DSCTP_DEBUG'//" ext/sctp/meson.build
 
 %build
-# amfcodec, directshow, qt6d3d11, wasapi, wasapi2 - Windows specific
-# magicleap, opensles - Android specific
-# onnx - TODO
+# amfcodec, asio, d3dvideosink, d3d11, d3d12, directshow, directsound, dwrite, mediafoundation, qt6d3d11, wasapi, wasapi2, wic, win32ipc, winks, winscreencap - Windows specific
+# androidmedia, magicleap, opensles - Android specific
+# applemedia - MacOS specific
+# cuda-nvmm, nvcomp, nvdswrapper require some NVIDIA SDKs (CUDA, nvCOMP, NVDS)
+# lcevcencoder, onnx - TODO
 %meson \
 	--default-library=shared \
-	%{!?with_aja:-Daja=disabled} \
+	-Daccurip=enabled \
+	-Dadpcmdec=enabled \
+	-Dadpcmenc=enabled \
+	-Daes=enabled \
+	-Daiff=enabled \
+	-Daja=%{__enabled_disabled aja} \
 	-Damfcodec=disabled \
-	%{!?with_bluez:-Dbluez=disabled} \
-	%{!?with_bs2b:-Dbs2b=disabled} \
-	%{!?with_directfb:-Ddirectfb=disabled} \
+	-Danalyticsoverlay=enabled \
+	-Dandroidmedia=disabled \
+	-Daom=enabled \
+	-Dapplemedia=disabled \
+	-Dasio=disabled \
+	-Dasfmux=enabled \
+	-Dassrender=enabled \
+	-Daudiobuffersplit=enabled \
+	-Daudiofxbad=enabled \
+	-Daudiolatency=enabled \
+	-Daudiomixmatrix=enabled \
+	-Daudiovisualizers=enabled \
+	-Dautoconvert=enabled \
+	-Davtp=enabled \
+	-Dbayer=enabled \
+	-Dbluez=%{__enabled_disabled bluez} \
+	-Dbs2b=%{__enabled_disabled bs2b} \
+	-Dcamerabin2=enabled \
+	-Dchromaprint=enabled \
+	-Dclosedcaption=enabled \
+	-Dcodec2json=enabled \
+	-Dcodecalpha=enabled \
+	-Dcodectimestamper=enabled \
+	-Dcoloreffects=enabled \
+	-Dcolormanagement=enabled \
+	-Dcuda-nvmm=disabled \
+	-Dcurl=enabled \
+	-Dcurl-ssh2=enabled \
+	-Dd3dvideosink=disabled \
+	-Dd3d11=disabled \
+	-Dd3d12=disabled \
+	-Ddash=enabled \
+	-Ddc1394=enabled \
+	-Ddebugutils=enabled \
+	-Ddirectfb=%{__enabled_disabled directfb} \
 	-Ddirectshow=disabled \
-	%{!?with_apidocs:-Ddoc=disabled} \
-	%{!?with_dts:-Ddts=disabled} \
-	%{!?with_examples:-Dexamples=disabled} \
-	%{!?with_faad:-Dfaad=disabled} \
-	%{!?with_opengl:-Dgl=disabled} \
+	-Ddirectsound=disabled \
+	-Ddoc=%{__enabled_disabled apidocs} \
+	-Ddrm=enabled \
+	-Ddtls=enabled \
+	-Ddts=%{__enabled_disabled dts} \
+	-Ddvb=enabled \
+	-Ddvbsubenc=enabled \
+	-Ddvbsuboverlay=enabled \
+	-Ddvdspu=enabled \
+	-Ddwrite=disabled \
+	-Dexamples=%{__enabled_disabled examples} \
+	-Dfaac=enabled \
+	-Dfaad=%{__enabled_disabled faad} \
+	-Dfaceoverlay=enabled \
+	-Dfbdev=enabled \
+	-Dfdkaac=enabled \
+	-Dfestival=enabled \
+	-Dfieldanalysis=enabled \
+	-Dflite=enabled \
+	-Dfluidsynth=enabled \
+	-Dfreeverb=enabled \
+	-Dfrei0r=enabled \
+	-Dgaudieffects=enabled \
+	-Dgdp=enabled \
+	-Dgeometrictransform=enabled \
+	-Dgl=%{__enabled_disabled opengl} \
+	-Dglib_assert=false \
+	-Dglib_checks=false \
+	-Dglib_debug=disabled \
 	-Dgpl=enabled \
-	%{!?with_gcloud:-Dgs=disabled} \
-	%{!?with_gsm:-Dgsm=disabled} \
-	%{!?with_ladspa:-Dladspa=disabled} \
-	%{!?with_ldac:-Dldac=disabled} \
-	%{!?with_libde265:-Dlibde265=disabled} \
-	%{!?with_lv2:-Dlv2=disabled} \
+	-Dgs=%{__enabled_disabled gcloud} \
+	-Dgsm=%{__enabled_disabled gsm} \
+	-Dgtk3=enabled \
+	-Dhls=enabled \
+	-Dhls-crypto=nettle \
+	-Did3tag=enabled \
+	-Dinsertbin=enabled \
+	-Dinter=enabled \
+	-Dinterlace=enabled \
+	-Dintrospection=enabled \
+	-Dipcpipeline=enabled \
+	-Diqa=enabled \
+	-Disac=enabled \
+	-Divfparse=enabled \
+	-Divtc=enabled \
+	-Djp2kdecimator=enabled \
+	-Djpegformat=enabled \
+	-Dkms=enabled \
+	-Dladspa=%{__enabled_disabled ladspa} \
+	-Dladspa-rdf=%{__enabled_disabled ladspa} \
+	-Dlc3=enabled \
+	-Dlcevcdecoder=enabled \
+	-Dlcevcencoder=disabled \
+	-Dldac=%{__enabled_disabled ldac} \
+	-Dlibde265=%{__enabled_disabled libde265} \
+	-Dlibrfb=enabled \
+	-Dlv2=%{__enabled_disabled lv2} \
 	-Dmagicleap=disabled \
-	%{?with_vpl:-Dmfx_api=oneVPL} \
-	%{!?with_mjpegtools:-Dmpeg2enc=disabled} \
-	%{!?with_msdk:-Dmsdk=disabled} \
-	%{!?with_musepack:-Dmusepack=disabled} \
-	%{!?with_neon:-Dneon=disabled} \
+	-Dmediafoundation=disabled \
+	-Dmfx_api=%{?with_vpl:oneVPL}%{!?with_vpl:MSDK} \
+	-Dmicrodns=enabled \
+	-Dmidi=enabled \
+	-Dmodplug=enabled \
+	-Dmpeg2enc=%{__enabled_disabled mjpegtools} \
+	-Dmpegdemux=enabled \
+	-Dmpegpsmux=enabled \
+	-Dmpegtsdemux=enabled \
+	-Dmpegtsmux=enabled \
+	-Dmplex=enabled \
+	-Dmse=enabled \
+	-Dmsdk=%{__enabled_disabled msdk} \
+	-Dmusepack=%{__enabled_disabled musepack} \
+	-Dmxf=enabled \
+	-Dneon=%{__enabled_disabled neon} \
+	-Dnetsim=enabled \
+	-Dnls=enabled \
+	-Dnvcomp=disabled \
+	-Dnvcodec=enabled \
+	-Dnvdswrapper=disabled \
+	-Dorc=enabled \
 	-Donnx=disabled \
-	%{!?with_openal:-Dopenal=disabled} \
-	%{!?with_opencv:-Dopencv=disabled} \
-	%{!?with_openexr:-Dopenexr=disabled} \
-	%{!?with_openh264:-Dopenh264=disabled} \
-	%{!?with_openni2:-Dopenni2=disabled} \
+	-Donvif=enabled \
+	-Dopenal=%{__enabled_disabled openal} \
+	-Dopenaptx=enabled \
+	-Dopencv=%{__enabled_disabled opencv} \
+	-Dopenexr=%{__enabled_disabled openexr} \
+	-Dopenh264=%{__enabled_disabled openh264} \
+	-Dopenjpeg=enabled \
+	-Dopenmpt=enabled \
+	-Dopenni2=%{__enabled_disabled openni2} \
 	-Dopensles=disabled \
+	-Dopus=enabled \
+	-Dpcapparse=enabled \
+	-Dpnm=enabled \
+	-Dproxy=enabled \
+	-Dqroverlay=enabled \
+	-Dqsv=enabled \
 	-Dqt6d3d11=disabled \
+	-Drawparse=enabled \
+	-Dremovesilence=enabled \
+	-Dresindvd=enabled \
+	-Drist=enabled \
+	-Drsvg=enabled \
+	-Drtmp2=enabled \
+	-Drtp=enabled \
+	-Dsbc=enabled \
+	-Dsctp=enabled \
 	-Dsctp-internal-usrsctp=disabled \
-	%{!?with_svthevc:-Dsvthevcenc=disabled} \
-	%{!?with_zvbi:-Dteletext=disabled} \
+	-Dshm=enabled \
+	-Dsdp=enabled \
+	-Dsegmentclip=enabled \
+	-Dsiren=enabled \
+	-Dsmooth=enabled \
+	-Dsmoothstreaming=enabled \
+	-Dsndfile=enabled \
+	-Dsoundtouch=enabled \
+	-Dspandsp=enabled \
+	-Dspeed=enabled \
+	-Dsrt=enabled \
+	-Dsrtp=enabled \
+	-Dsubenc=enabled \
+	-Dsvtav1=enabled \
+	-Dsvthevcenc=%{__enabled_disabled svthevc} \
+	-Dsvtjpegxs=enabled \
+	-Dswitchbin=enabled \
+	-Dteletext=%{__enabled_disabled zvbi} \
+	-Dtensordecoders=enabled \
 	-Dtests=disabled \
-	%{!?with_tinyalsa:-Dtinyalsa=disabled} \
-	%{!?with_uvch264:-Duvch264=disabled} \
-	%{!?with_amr:-Dvoamrwbenc=disabled} \
-	%{!?with_vulkan:-Dvulkan=disabled} \
+	-Dtimecode=enabled \
+	-Dtinyalsa=%{__enabled_disabled tinyalsa} \
+	-Dtools=enabled \
+	-Dtranscode=enabled \
+	-Dttml=enabled \
+	-Dudev=enabled \
+	-Dunixfd=enabled \
+	-Duvcgadget=enabled \
+	-Duvch264=%{__enabled_disabled uvch264} \
+	-Dv4l2codecs=enabled \
+	-Dva=enabled \
+	-Dvideofilters=enabled \
+	-Dvideoframe_audiolevel=enabled \
+	-Dvideoparsers=enabled \
+	-Dvideosignal=enabled \
+	-Dvmnc=enabled \
+	-Dvoaacenc=enabled \
+	-Dvoamrwbenc=%{__enabled_disabled amr} \
+	-Dvulkan=%{__enabled_disabled vulkan} \
+	-Dvulkan-video=%{__enabled_disabled vulkan} \
 	-Dwasapi=disabled \
 	-Dwasapi2=disabled \
-	%{!?with_wayland:-Dwayland=disabled} \
-	%{!?with_x265:-Dx265=disabled} \
-	%{!?with_zxing:-Dzxing=disabled}
+	-Dwayland=%{__enabled_disabled wayland} \
+	-Dwebview2=enabled \
+	-Dwebp=enabled \
+	-Dwebrtc=enabled \
+	-Dwebrtcdsp=enabled \
+	-Dwildmidi=enabled \
+	-Dwic=disabled \
+	-Dwin32ipc=disabled \
+	-Dwinks=disabled \
+	-Dwinscreencap=disabled \
+	-Dwpe=enabled \
+	-Dwpe_api=2.0 \
+	-Dx11=enabled \
+	-Dx265=%{__enabled_disabled x265} \
+	-Dy4m=enabled \
+	-Dzbar=enabled \
+	-Dzxing=%{__enabled_disabled zxing}
 
 %meson_build
 
 %if %{with apidocs}
+%meson_build build-libs-hotdoc-configs build-hotdoc-configs
+
 cd build/docs
 for config in *-doc.json plugin-*.json ; do
 	LC_ALL=C.UTF-8 hotdoc run --conf-file "$config"
@@ -1842,6 +2043,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{gstlibdir}/libgstsmoothstreaming.so
 %attr(755,root,root) %{gstlibdir}/libgstsubenc.so
 %attr(755,root,root) %{gstlibdir}/libgstswitchbin.so
+%attr(755,root,root) %{gstlibdir}/libgsttensordecoders.so
 %attr(755,root,root) %{gstlibdir}/libgstunixfd.so
 # R: libgudev
 %attr(755,root,root) %{gstlibdir}/libgstuvcgadget.so
@@ -1951,14 +2153,14 @@ rm -rf $RPM_BUILD_ROOT
 %if %{with apidocs}
 %files apidocs
 %defattr(644,root,root,755)
+%{_docdir}/gstreamer-%{gstmver}/adaptivedemux-doc
 %{_docdir}/gstreamer-%{gstmver}/analytics-doc
 %{_docdir}/gstreamer-%{gstmver}/bad-audio-doc
 %{_docdir}/gstreamer-%{gstmver}/basecamerabinsrc-doc
+%{_docdir}/gstreamer-%{gstmver}/codecparsers-doc
 %{_docdir}/gstreamer-%{gstmver}/codecs-doc
 %{_docdir}/gstreamer-%{gstmver}/cuda-doc
 %{_docdir}/gstreamer-%{gstmver}/dxva-doc
-%{_docdir}/gstreamer-%{gstmver}/gst-plugins-bad-adaptivedemux-doc
-%{_docdir}/gstreamer-%{gstmver}/gst-plugins-bad-codecparsers-doc
 %{_docdir}/gstreamer-%{gstmver}/insertbin-doc
 %{_docdir}/gstreamer-%{gstmver}/mpegts-doc
 %{_docdir}/gstreamer-%{gstmver}/mselib-doc
@@ -1980,6 +2182,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_docdir}/gstreamer-%{gstmver}/plugin-aom
 %{_docdir}/gstreamer-%{gstmver}/plugin-applemedia
 %{_docdir}/gstreamer-%{gstmver}/plugin-asfmux
+%{_docdir}/gstreamer-%{gstmver}/plugin-asio
 %{_docdir}/gstreamer-%{gstmver}/plugin-assrender
 %{_docdir}/gstreamer-%{gstmver}/plugin-audiobuffersplit
 %{_docdir}/gstreamer-%{gstmver}/plugin-audiofxbad
@@ -2044,6 +2247,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_docdir}/gstreamer-%{gstmver}/plugin-interlace
 %{_docdir}/gstreamer-%{gstmver}/plugin-ipcpipeline
 %{_docdir}/gstreamer-%{gstmver}/plugin-iqa
+%{_docdir}/gstreamer-%{gstmver}/plugin-isac
 %{_docdir}/gstreamer-%{gstmver}/plugin-ivfparse
 %{_docdir}/gstreamer-%{gstmver}/plugin-ivtc
 %{_docdir}/gstreamer-%{gstmver}/plugin-jp2kdecimator
@@ -2051,6 +2255,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_docdir}/gstreamer-%{gstmver}/plugin-kms
 %{_docdir}/gstreamer-%{gstmver}/plugin-ladspa
 %{_docdir}/gstreamer-%{gstmver}/plugin-lc3
+%{_docdir}/gstreamer-%{gstmver}/plugin-ldac
 %{_docdir}/gstreamer-%{gstmver}/plugin-legacyrawparse
 %{_docdir}/gstreamer-%{gstmver}/plugin-lv2
 %{_docdir}/gstreamer-%{gstmver}/plugin-mediafoundation
@@ -2070,7 +2275,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_docdir}/gstreamer-%{gstmver}/plugin-neonhttpsrc
 %{_docdir}/gstreamer-%{gstmver}/plugin-netsim
 %{_docdir}/gstreamer-%{gstmver}/plugin-nvcodec
+%{_docdir}/gstreamer-%{gstmver}/plugin-nvcomp
+%{_docdir}/gstreamer-%{gstmver}/plugin-nvdswrapper
 %{_docdir}/gstreamer-%{gstmver}/plugin-openal
+%{_docdir}/gstreamer-%{gstmver}/plugin-openaptx
 %{_docdir}/gstreamer-%{gstmver}/plugin-opencv
 %{_docdir}/gstreamer-%{gstmver}/plugin-openexr
 %{_docdir}/gstreamer-%{gstmver}/plugin-openh264
@@ -2108,8 +2316,12 @@ rm -rf $RPM_BUILD_ROOT
 %{_docdir}/gstreamer-%{gstmver}/plugin-srt
 %{_docdir}/gstreamer-%{gstmver}/plugin-srtp
 %{_docdir}/gstreamer-%{gstmver}/plugin-subenc
+%{_docdir}/gstreamer-%{gstmver}/plugin-svtav1
+%{_docdir}/gstreamer-%{gstmver}/plugin-svthevcenc
+%{_docdir}/gstreamer-%{gstmver}/plugin-svtjpegxs
 %{_docdir}/gstreamer-%{gstmver}/plugin-switchbin
 %{_docdir}/gstreamer-%{gstmver}/plugin-teletext
+%{_docdir}/gstreamer-%{gstmver}/plugin-tensordecoders
 %{_docdir}/gstreamer-%{gstmver}/plugin-timecode
 %{_docdir}/gstreamer-%{gstmver}/plugin-tinyalsa
 %{_docdir}/gstreamer-%{gstmver}/plugin-ttmlsubs
@@ -2132,6 +2344,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_docdir}/gstreamer-%{gstmver}/plugin-webp
 %{_docdir}/gstreamer-%{gstmver}/plugin-webrtc
 %{_docdir}/gstreamer-%{gstmver}/plugin-webrtcdsp
+%{_docdir}/gstreamer-%{gstmver}/plugin-webview2
 %{_docdir}/gstreamer-%{gstmver}/plugin-wic
 %{_docdir}/gstreamer-%{gstmver}/plugin-wildmidi
 %{_docdir}/gstreamer-%{gstmver}/plugin-win32ipc
@@ -2141,6 +2354,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_docdir}/gstreamer-%{gstmver}/plugin-x265
 %{_docdir}/gstreamer-%{gstmver}/plugin-y4mdec
 %{_docdir}/gstreamer-%{gstmver}/plugin-zbar
+%{_docdir}/gstreamer-%{gstmver}/plugin-zxing
 %endif
 
 %files -n gstreamer-transcoder
@@ -2344,6 +2558,11 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %attr(755,root,root) %{gstlibdir}/libgstlc3.so
 
+%files -n gstreamer-lcevc
+%defattr(644,root,root,755)
+# R: LCEVCdec
+%attr(755,root,root) %{gstlibdir}/libgstlcevcdecoder.so
+
 %if %{with ldac}
 %files -n gstreamer-ldac
 %defattr(644,root,root,755)
@@ -2523,6 +2742,11 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %attr(755,root,root) %{gstlibdir}/libgstsvthevcenc.so
 %endif
+
+%files -n gstreamer-svtjpegxs
+%defattr(644,root,root,755)
+# R: svt-jpeg-xs >= 0.9
+%attr(755,root,root) %{gstlibdir}/libgstsvtjpegxs.so
 
 %if %{with zvbi}
 %files -n gstreamer-teletextdec
