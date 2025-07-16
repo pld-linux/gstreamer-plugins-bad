@@ -75,7 +75,7 @@ Summary:	Bad GStreamer Streaming-media framework plugins
 Summary(pl.UTF-8):	Złe wtyczki do środowiska obróbki strumieni GStreamer
 Name:		gstreamer-plugins-bad
 Version:	1.26.0
-Release:	4
+Release:	5
 License:	LGPL v2+
 Group:		Libraries
 Source0:	https://gstreamer.freedesktop.org/src/gst-plugins-bad/%{gstname}-%{version}.tar.xz
@@ -127,6 +127,7 @@ BuildRequires:	aom-devel >= 3.2
 %{?with_bluez:BuildRequires:	bluez-libs-devel >= 5.0}
 BuildRequires:	bzip2-devel
 %{?with_librsvg:BuildRequires:	cairo-devel}
+BuildRequires:	crc32c-devel
 BuildRequires:	curl-devel >= 7.55.0
 BuildRequires:	dssim-devel < 2
 BuildRequires:	exempi-devel >= 1.99.5
@@ -1865,8 +1866,15 @@ Wtyczka GStreamera ZXing wykrywająca kody kreskowe.
 %if %{with apidocs}
 %meson_build build-libs-hotdoc-configs build-hotdoc-configs
 
+# FIXME: repair building with these skipped docs
+skip_docs="dxva-doc.json vulkan-wayland-doc.json vulkan-xcb-doc.json"
 cd build/docs
 for config in *-doc.json plugin-*.json ; do
+	skip_now=0
+	for skip in $skip_docs; do
+		[ "$skip" = "$config" ] && skip_now=1
+	done
+	[ "$skip_now" -eq 1 ] && echo "Skipping $config doc..." >&2 && continue
 	LC_ALL=C.UTF-8 hotdoc run --conf-file "$config"
 done
 %endif
@@ -2160,15 +2168,15 @@ rm -rf $RPM_BUILD_ROOT
 %{_docdir}/gstreamer-%{gstmver}/codecparsers-doc
 %{_docdir}/gstreamer-%{gstmver}/codecs-doc
 %{_docdir}/gstreamer-%{gstmver}/cuda-doc
-%{_docdir}/gstreamer-%{gstmver}/dxva-doc
+#%{_docdir}/gstreamer-%{gstmver}/dxva-doc
 %{_docdir}/gstreamer-%{gstmver}/insertbin-doc
 %{_docdir}/gstreamer-%{gstmver}/mpegts-doc
 %{_docdir}/gstreamer-%{gstmver}/mselib-doc
 %{_docdir}/gstreamer-%{gstmver}/play-doc
 %{_docdir}/gstreamer-%{gstmver}/player-doc
 %{_docdir}/gstreamer-%{gstmver}/valib-doc
-%{_docdir}/gstreamer-%{gstmver}/vulkan-wayland-doc
-%{_docdir}/gstreamer-%{gstmver}/vulkan-xcb-doc
+#%{_docdir}/gstreamer-%{gstmver}/vulkan-wayland-doc
+#%{_docdir}/gstreamer-%{gstmver}/vulkan-xcb-doc
 %{_docdir}/gstreamer-%{gstmver}/vulkanlib-doc
 %{_docdir}/gstreamer-%{gstmver}/webrtclib-doc
 %{_docdir}/gstreamer-%{gstmver}/plugin-accurip
