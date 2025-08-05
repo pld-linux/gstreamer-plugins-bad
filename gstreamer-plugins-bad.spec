@@ -40,6 +40,7 @@
 %bcond_without	sndfile		# sndfile audio files encoder/decoder plugin
 %bcond_without	srtp		# SRTP decoder/encoder plugin
 %bcond_without	svthevc		# SvtHevc encoder plugin
+%bcond_without	svtjpegxs	# SVT JPEG-XS plugin
 %bcond_without	tinyalsa	# ALSA audiosink using tinyalsa library
 %bcond_without	uvch264		# uvch264 cameras plugin
 %bcond_with	vpl		# VPL instead of MFX in Intel MediaSDK plugin
@@ -65,6 +66,9 @@
 %endif
 %ifnarch %{x8664} x32
 %undefine	with_svthevc
+%endif
+%ifnarch %{ix86} %{x8664} x32
+%undefine	with_svtjpegxs
 %endif
 
 %define		gstname		gst-plugins-bad
@@ -223,7 +227,7 @@ BuildRequires:	spandsp-devel >= 1:0.0.6
 BuildRequires:	srt-devel >= 1.3.0
 BuildRequires:	svt-av1-devel >= 1.1
 %{?with_svthevc:BuildRequires:	svt-hevc-devel >= 1.4.1}
-BuildRequires:	svt-jpeg-xs-devel >= 0.9
+%{?with_svtjpegxs:BuildRequires:	svt-jpeg-xs-devel >= 0.9}
 %{?with_tinyalsa:BuildRequires:	tinyalsa-devel >= 2.0.0}
 BuildRequires:	udev-glib-devel
 BuildRequires:	vo-aacenc-devel >= 0.1.0
@@ -1816,7 +1820,7 @@ Wtyczka GStreamera ZXing wykrywająca kody kreskowe.
 	-Dsubenc=enabled \
 	-Dsvtav1=enabled \
 	-Dsvthevcenc=%{__enabled_disabled svthevc} \
-	-Dsvtjpegxs=enabled \
+	-Dsvtjpegxs=%{__enabled_disabled svtjpegxs} \
 	-Dswitchbin=enabled \
 	-Dteletext=%{__enabled_disabled zvbi} \
 	-Dtensordecoders=enabled \
@@ -2751,10 +2755,12 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{gstlibdir}/libgstsvthevcenc.so
 %endif
 
+%if %{with svtjpegxs}
 %files -n gstreamer-svtjpegxs
 %defattr(644,root,root,755)
 # R: svt-jpeg-xs >= 0.9
 %attr(755,root,root) %{gstlibdir}/libgstsvtjpegxs.so
+%endif
 
 %if %{with zvbi}
 %files -n gstreamer-teletextdec
