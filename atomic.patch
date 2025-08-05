@@ -1,0 +1,11 @@
+--- gst-plugins-bad-1.26.0/gst-libs/gst/cuda/meson.build.orig	2025-03-11 21:14:44.000000000 +0100
++++ gst-plugins-bad-1.26.0/gst-libs/gst/cuda/meson.build	2025-08-05 17:41:09.463823745 +0200
+@@ -49,7 +49,7 @@
+ endif
+ 
+ # Linux ARM would need -latomic for std::atomic<int64_t>
+-if host_system == 'linux' and host_machine.cpu_family() in ['aarch64', 'arm']
++if get_option('cuda-nvmm').allowed() and host_system == 'linux' and host_machine.cpu_family() in ['aarch64', 'arm']
+   libatomic_dep = cxx.find_library('atomic', required: get_option('cuda-nvmm'))
+   if not libatomic_dep.found()
+     subdir_done()

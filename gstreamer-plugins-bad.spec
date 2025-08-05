@@ -88,6 +88,7 @@ Patch0:		musepack.patch
 Patch1:		%{name}-gs-c++17.patch
 Patch2:		%{name}-aja-update.patch
 Patch3:		%{name}-x265.patch
+Patch4:		atomic.patch
 URL:		https://gstreamer.freedesktop.org/
 BuildRequires:	docbook-dtd412-xml
 BuildRequires:	gettext-tools >= 0.17
@@ -1641,6 +1642,7 @@ Wtyczka GStreamera ZXing wykrywająca kody kreskowe.
 %patch -P 1 -p1
 %patch -P 2 -p1
 %patch -P 3 -p1
+%patch -P 4 -p1
 
 # disable SCTP debugging (even though gst_debug is enabled by default)
 # (SCTP_DEBUG requires libusrsctp built with debugging)
