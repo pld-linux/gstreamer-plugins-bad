@@ -37,7 +37,6 @@
 %bcond_without	librsvg		# RSVG SVG decoder/overlay plugin
 %bcond_without	sbc		# SBC bluetooth audio codec plugin
 %bcond_without	sndfile		# sndfile audio files encoder/decoder plugin
-%bcond_without	srtp		# SRTP decoder/encoder plugin
 %bcond_without	svthevc		# SvtHevc encoder plugin
 %bcond_without	svtjpegxs	# SVT JPEG-XS plugin
 %bcond_without	tinyalsa	# ALSA audiosink using tinyalsa library
@@ -181,7 +180,7 @@ BuildRequires:	librtmp-devel
 BuildRequires:	libssh2-devel >= 1.4.3
 %{?with_sndfile:BuildRequires:	libsndfile-devel >= 1.0.16}
 # or srtp >= 1.6.0, libsrtp2 is preferred
-%{?with_srtp:BuildRequires:	libsrtp2-devel >= 2.1.0}
+BuildRequires:	libsrtp2-devel >= 2.1.0
 %if %{with zxing} || %{with gcloud}
 BuildRequires:	libstdc++-devel >= 6:7
 %else
@@ -2737,11 +2736,9 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %attr(755,root,root) %{gstlibdir}/libgstsrt.so
 
-%if %{with srtp}
 %files -n gstreamer-srtp
 %defattr(644,root,root,755)
 %attr(755,root,root) %{gstlibdir}/libgstsrtp.so
-%endif
 
 %files -n gstreamer-svtav1
 %defattr(644,root,root,755)
