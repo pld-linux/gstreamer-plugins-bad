@@ -1857,7 +1857,7 @@ Wtyczka GStreamera ZXing wykrywająca kody kreskowe.
 	-Dwin32ipc=disabled \
 	-Dwinks=disabled \
 	-Dwinscreencap=disabled \
-	-Dwpe=enabled \
+	-Dwpe=%{__enabled_disabled wpe} \
 	-Dwpe_api=2.0 \
 	-Dx11=enabled \
 	-Dx265=%{__enabled_disabled x265} \
