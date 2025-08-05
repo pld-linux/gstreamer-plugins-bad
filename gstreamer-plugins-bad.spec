@@ -26,7 +26,6 @@
 %bcond_without	lv2		# LV2 plugins bridge plugin
 %bcond_without	mfx		# MFX support in Intel MediaSDK plugin
 %bcond_without	msdk		# Intel MediaSDK plugin (MFX or oneAPI based)
-%bcond_without	mjpegtools	# mpeg2enc video encoder plugin
 %bcond_without	musepack	# musepack audio decoder plugin
 %bcond_without	neon		# neonhttpsrc HTTP client plugin
 %bcond_without	openal		# OpenAL audiosink plugin
@@ -204,7 +203,7 @@ BuildRequires:	libxml2-devel >= 1:2.9.2
 %{?with_lv2:BuildRequires:	lilv-devel >= 0.22}
 %{?with_mfx:BuildRequires:	mfx_dispatch-devel >= 1.0}
 %{?with_mfx:BuildRequires:	mfx_dispatch-devel < 2}
-%{?with_mjpegtools:BuildRequires:	mjpegtools-devel >= 2.0.0}
+BuildRequires:	mjpegtools-devel >= 2.0.0
 # libmpcdecsv8
 %{?with_musepack:BuildRequires:	musepack-devel}
 %{?with_neon:BuildRequires:	neon-devel >= 0.27.0}
@@ -1762,7 +1761,7 @@ Wtyczka GStreamera ZXing wykrywająca kody kreskowe.
 	-Dmicrodns=enabled \
 	-Dmidi=enabled \
 	-Dmodplug=enabled \
-	-Dmpeg2enc=%{__enabled_disabled mjpegtools} \
+	-Dmpeg2enc=enabled \
 	-Dmpegdemux=enabled \
 	-Dmpegpsmux=enabled \
 	-Dmpegtsdemux=enabled \
@@ -2601,12 +2600,10 @@ rm -rf $RPM_BUILD_ROOT
 # R: libmicrodns
 %attr(755,root,root) %{gstlibdir}/libgstmicrodns.so
 
-%if %{with mjpegtools}
 %files -n gstreamer-mjpegtools
 %defattr(644,root,root,755)
 %attr(755,root,root) %{gstlibdir}/libgstmpeg2enc.so
 %attr(755,root,root) %{gstlibdir}/libgstmplex.so
-%endif
 
 %files -n gstreamer-modplug
 %defattr(644,root,root,755)
