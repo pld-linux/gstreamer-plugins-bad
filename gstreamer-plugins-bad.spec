@@ -8,7 +8,7 @@
 # - nvds SDK for nvdswrapper plugin
 #
 # Conditional build:
-%bcond_without	aja		# AJA NTV2 input/output plugin
+%bcond_with	aja		# AJA NTV2 input/output plugin
 %bcond_without	amr		# amrwbenc output plugin
 %bcond_without	apidocs		# API documentation
 %bcond_without	bs2b		# bs2b headphone stereo improvement plugin
@@ -37,6 +37,7 @@
 %bcond_without	librsvg		# RSVG SVG decoder/overlay plugin
 %bcond_without	sbc		# SBC bluetooth audio codec plugin
 %bcond_without	sndfile		# sndfile audio files encoder/decoder plugin
+%bcond_with	svtav1		# SVT-AV1 Encoder
 %bcond_without	svthevc		# SvtHevc encoder plugin
 %bcond_without	svtjpegxs	# SVT JPEG-XS plugin
 %bcond_without	tinyalsa	# ALSA audiosink using tinyalsa library
@@ -77,7 +78,7 @@ Summary:	Bad GStreamer Streaming-media framework plugins
 Summary(pl.UTF-8):	Złe wtyczki do środowiska obróbki strumieni GStreamer
 Name:		gstreamer-plugins-bad
 Version:	1.26.8
-Release:	3
+Release:	4
 License:	LGPL v2+
 Group:		Libraries
 Source0:	https://gstreamer.freedesktop.org/src/gst-plugins-bad/%{gstname}-%{version}.tar.xz
@@ -223,7 +224,7 @@ BuildRequires:	qrencode-devel
 BuildRequires:	soundtouch-devel >= 1.4
 BuildRequires:	spandsp-devel >= 1:0.0.6
 BuildRequires:	srt-devel >= 1.3.0
-BuildRequires:	svt-av1-devel >= 1.1
+%{?with_svtav1:BuildRequires:	svt-av1-devel >= 1.1}
 %{?with_svthevc:BuildRequires:	svt-hevc-devel >= 1.4.1}
 %{?with_svtjpegxs:BuildRequires:	svt-jpeg-xs-devel >= 0.9}
 %{?with_tinyalsa:BuildRequires:	tinyalsa-devel >= 2.0.0}
@@ -1816,7 +1817,7 @@ Wtyczka GStreamera ZXing wykrywająca kody kreskowe.
 	-Dsrt=enabled \
 	-Dsrtp=enabled \
 	-Dsubenc=enabled \
-	-Dsvtav1=enabled \
+	-Dsvtav1=%{__enabled_disabled svtav1} \
 	-Dsvthevcenc=%{__enabled_disabled svthevc} \
 	-Dsvtjpegxs=%{__enabled_disabled svtjpegxs} \
 	-Dswitchbin=enabled \
@@ -2738,10 +2739,12 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %attr(755,root,root) %{gstlibdir}/libgstsrtp.so
 
+%if %{with svtav1}
 %files -n gstreamer-svtav1
 %defattr(644,root,root,755)
 # R: svt-av1 >= 1.1
 %attr(755,root,root) %{gstlibdir}/libgstsvtav1.so
+%endif
 
 %if %{with svthevc}
 %files -n gstreamer-svthevcenc
