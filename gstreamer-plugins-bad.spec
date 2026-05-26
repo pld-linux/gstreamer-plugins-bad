@@ -10,7 +10,7 @@
 # Conditional build:
 %bcond_with	aja		# AJA NTV2 input/output plugin
 %bcond_without	amr		# amrwbenc output plugin
-%bcond_without	apidocs		# API documentation
+%bcond_with	apidocs		# API documentation
 %bcond_without	bs2b		# bs2b headphone stereo improvement plugin
 %bcond_without	bluez		# Bluez plugin
 %bcond_without	chromaprint	# chromaprint fingerprint plugin
@@ -78,7 +78,7 @@ Summary:	Bad GStreamer Streaming-media framework plugins
 Summary(pl.UTF-8):	Złe wtyczki do środowiska obróbki strumieni GStreamer
 Name:		gstreamer-plugins-bad
 Version:	1.26.8
-Release:	5
+Release:	6
 License:	LGPL v2+
 Group:		Libraries
 Source0:	https://gstreamer.freedesktop.org/src/gst-plugins-bad/%{gstname}-%{version}.tar.xz
