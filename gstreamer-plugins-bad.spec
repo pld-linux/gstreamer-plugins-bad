@@ -87,6 +87,7 @@ Patch0:		musepack.patch
 Patch1:		%{name}-gs-c++17.patch
 Patch2:		%{name}-aja-update.patch
 Patch3:		%{name}-x265.patch
+Patch4:		%{name}-lcevc.patch
 URL:		https://gstreamer.freedesktop.org/
 BuildRequires:	docbook-dtd412-xml
 BuildRequires:	gettext-tools >= 0.17
@@ -119,7 +120,7 @@ BuildRequires:	xorg-lib-libXcomposite-devel
 %if %{with opengl} || %{with wpe}
 BuildRequires:	EGL-devel
 %endif
-BuildRequires:	LCEVCdec-devel
+BuildRequires:	LCEVCdec-devel >= 4.1
 %{?with_openal:BuildRequires:	OpenAL-devel >= 1.14}
 %{?with_openexr:BuildRequires:	OpenEXR-devel >= 3}
 %{?with_opengl:BuildRequires:	OpenGLESv2-devel}
@@ -819,6 +820,7 @@ Summary(pl.UTF-8):	Wtyczka kodeka dźwięku LCEVC dla GStreamera
 Group:		Libraries
 Requires:	gstreamer >= %{gst_ver}
 Requires:	gstreamer-plugins-base >= %{gstpb_ver}
+Requires:	LCEVCdec >= 4.1
 
 %description -n gstreamer-lcevc
 LCEVC audio codec decoder plugin for GStreamer.
@@ -1636,10 +1638,11 @@ Wtyczka GStreamera ZXing wykrywająca kody kreskowe.
 
 %prep
 %setup -q -n %{gstname}-%{version}
-%patch -P 0 -p1
-%patch -P 1 -p1
-%patch -P 2 -p1
-%patch -P 3 -p1
+%patch -P0 -p1
+%patch -P1 -p1
+%patch -P2 -p1
+%patch -P3 -p1
+%patch -P4 -p1
 
 # disable SCTP debugging (even though gst_debug is enabled by default)
 # (SCTP_DEBUG requires libusrsctp built with debugging)
