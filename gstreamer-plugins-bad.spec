@@ -1,6 +1,4 @@
 # TODO:
-# - fix opencv
-#   /usr/include/opencv4/opencv2/tracking/tracking_internals.hpp:18:10: fatal error: opencv2/video/detail/tracking.private.hpp: No such file or directory
 # - onnx (BR: libonnxruntime.pc >= 1.16.1 [https://github.com/microsoft/onnxruntime])
 # - tflite (TensorFlow Lite, LiteRT), tflite-edgetpu (Coral EdgeTPU support) https://www.tensorflow.org/lite/guide/build_cmake
 # - lcevcencoder (BR: lcevc_eil - proprietary, one can get trial from download.v-novacom, see README.md in plugin dir)
@@ -30,8 +28,9 @@
 %bcond_without	msdk		# Intel MediaSDK plugin (MFX or oneAPI based)
 %bcond_without	musepack	# musepack audio decoder plugin
 %bcond_without	neon		# neonhttpsrc HTTP client plugin
+%bcond_with	onnx		# ONNX neural network plugin
 %bcond_without	openal		# OpenAL audiosink plugin
-%bcond_with	opencv		# OpenCV effects plugin
+%bcond_without	opencv		# OpenCV effects plugin
 %bcond_without	opengl		# OpenGL integration (in various plugins)
 %bcond_without	openexr		# OpenEXR EXR decoder plugin
 %bcond_without	openh264	# OpenH264 encoder/decoder
@@ -208,6 +207,7 @@ BuildRequires:	mpeghdec-devel >= 3.0.2
 %{?with_neon:BuildRequires:	neon-devel >= 0.27.0}
 # for hls, could also use libgcrypt>=1.2.0 or openssl (-Dhls-crypto=libgcrypt|openssl)
 BuildRequires:	nettle-devel >= 3.0
+%{?with_onnx:BuildRequires:	onnxruntime-devel >= 1.16.1}
 %if %{with opencv}
 BuildRequires:	opencv-devel >= 1:3.0.0
 %endif
@@ -1822,7 +1822,7 @@ Wtyczka GStreamera ZXing wykrywająca kody kreskowe.
 	-Dnvdswrapper=disabled \
 	-Dorc=enabled \
 	-Dorc-compiler=enabled \
-	-Donnx=disabled \
+	-Donnx=%{__enabled_disabled onnx} \
 	-Donvif=enabled \
 	-Dopenal=%{__enabled_disabled openal} \
 	-Dopenaptx=enabled \
@@ -1917,15 +1917,8 @@ Wtyczka GStreamera ZXing wykrywająca kody kreskowe.
 %if %{with apidocs}
 %meson_build build-libs-hotdoc-configs build-hotdoc-configs
 
-# FIXME: repair building with these skipped docs
-skip_docs="dxva-doc.json vulkan-wayland-doc.json vulkan-xcb-doc.json"
 cd build/docs
 for config in *-doc.json plugin-*.json ; do
-	skip_now=0
-	for skip in $skip_docs; do
-		[ "$skip" = "$config" ] && skip_now=1
-	done
-	[ "$skip_now" -eq 1 ] && echo "Skipping $config doc..." >&2 && continue
 	LC_ALL=C.UTF-8 hotdoc run --conf-file "$config"
 done
 %endif
@@ -2231,15 +2224,18 @@ rm -rf $RPM_BUILD_ROOT
 %{_docdir}/gstreamer-%{gstmver}/codecparsers-doc
 %{_docdir}/gstreamer-%{gstmver}/codecs-doc
 %{_docdir}/gstreamer-%{gstmver}/cuda-doc
-#%{_docdir}/gstreamer-%{gstmver}/dxva-doc
+%{_docdir}/gstreamer-%{gstmver}/dxva-doc
 %{_docdir}/gstreamer-%{gstmver}/insertbin-doc
 %{_docdir}/gstreamer-%{gstmver}/mpegts-doc
 %{_docdir}/gstreamer-%{gstmver}/mselib-doc
+%if %{with opencv}
+%{_docdir}/gstreamer-%{gstmver}/opencvlib-doc
+%endif
 %{_docdir}/gstreamer-%{gstmver}/play-doc
 %{_docdir}/gstreamer-%{gstmver}/player-doc
 %{_docdir}/gstreamer-%{gstmver}/valib-doc
-#%{_docdir}/gstreamer-%{gstmver}/vulkan-wayland-doc
-#%{_docdir}/gstreamer-%{gstmver}/vulkan-xcb-doc
+%{_docdir}/gstreamer-%{gstmver}/vulkan-wayland-doc
+%{_docdir}/gstreamer-%{gstmver}/vulkan-xcb-doc
 %{_docdir}/gstreamer-%{gstmver}/vulkanlib-doc
 %{_docdir}/gstreamer-%{gstmver}/webrtclib-doc
 %{_docdir}/gstreamer-%{gstmver}/plugin-accurip
@@ -2708,20 +2704,16 @@ rm -rf $RPM_BUILD_ROOT
 %files -n gstreamer-opencv
 %defattr(644,root,root,755)
 %{gstlibdir}/libgstopencv.so
-# possibly common dir (but no other users so far)
-%dir %{_datadir}/gst-plugins-bad
-%dir %{_datadir}/gst-plugins-bad/1.0
-%{_datadir}/gst-plugins-bad/1.0/opencv_haarcascades
 
 %files -n gstreamer-opencv-libs
 %defattr(644,root,root,755)
-%{_libdir}/libgstopencv-1.0.so.*.*.*
-%ghost %{_libdir}/libgstopencv-1.0.so.0
+%{_libdir}/libgstopencv-%{gstmver}.so.*.*.*
+%ghost %{_libdir}/libgstopencv-%{gstmver}.so.0
 
 %files -n gstreamer-opencv-devel
 %defattr(644,root,root,755)
-%{_libdir}/libgstopencv-1.0.so
-%{_includedir}/gstreamer-1.0/gst/opencv
+%{_libdir}/libgstopencv-%{gstmver}.so
+%{_includedir}/gstreamer-%{gstmver}/gst/opencv
 %endif
 
 %if %{with openexr}
