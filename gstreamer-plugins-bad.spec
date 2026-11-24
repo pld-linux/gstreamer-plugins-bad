@@ -12,7 +12,7 @@
 # Conditional build:
 %bcond_without	aja		# AJA NTV2 input/output plugin
 %bcond_without	amr		# amrwbenc output plugin
-%bcond_with	apidocs		# API documentation
+%bcond_without	apidocs		# API documentation
 %bcond_without	bs2b		# bs2b headphone stereo improvement plugin
 %bcond_without	bluez		# Bluez plugin
 %bcond_without	chromaprint	# chromaprint fingerprint plugin
@@ -2311,6 +2311,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_docdir}/gstreamer-%{gstmver}/plugin-gs
 %{_docdir}/gstreamer-%{gstmver}/plugin-gsm
 %{_docdir}/gstreamer-%{gstmver}/plugin-gtkwayland
+%{_docdir}/gstreamer-%{gstmver}/plugin-hip
 %{_docdir}/gstreamer-%{gstmver}/plugin-hls
 %{_docdir}/gstreamer-%{gstmver}/plugin-id3tag
 %{_docdir}/gstreamer-%{gstmver}/plugin-insertbin
@@ -2348,6 +2349,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_docdir}/gstreamer-%{gstmver}/plugin-nvcodec
 %{_docdir}/gstreamer-%{gstmver}/plugin-nvcomp
 %{_docdir}/gstreamer-%{gstmver}/plugin-nvdswrapper
+%{_docdir}/gstreamer-%{gstmver}/plugin-onnx
 %{_docdir}/gstreamer-%{gstmver}/plugin-openal
 %{_docdir}/gstreamer-%{gstmver}/plugin-openaptx
 %{_docdir}/gstreamer-%{gstmver}/plugin-opencv
@@ -2405,6 +2407,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_docdir}/gstreamer-%{gstmver}/plugin-videoframe_audiolevel
 %{_docdir}/gstreamer-%{gstmver}/plugin-videoparsersbad
 %{_docdir}/gstreamer-%{gstmver}/plugin-videosignal
+%{_docdir}/gstreamer-%{gstmver}/plugin-vmaf
 %{_docdir}/gstreamer-%{gstmver}/plugin-vmnc
 %{_docdir}/gstreamer-%{gstmver}/plugin-voaacenc
 %{_docdir}/gstreamer-%{gstmver}/plugin-voamrwbenc
